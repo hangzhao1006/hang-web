@@ -1,42 +1,43 @@
-/* css/project.css - Light Mode Edition */
+/* css/project.css - Final Visual Polish */
 
-/* --- 1. 全局白底设定 --- */
+/* --- 1. 全局基础 --- */
 .project-page {
-    background-color: #ffffff !important; /* 纯白背景 */
-    color: #111111;                       /* 深黑文字 */
+    background-color: #ffffff !important;
+    color: #111111;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: none; /* 保持自定义鼠标，但要改颜色 */
+    cursor: none;
     min-height: 100vh;
 }
 
-/* 在白底上，我们去掉噪点层，追求纸张的干净质感 */
-.noise-overlay, .vignette {
+.noise-overlay,
+.vignette {
     display: none !important;
 }
 
-/* --- 2. 黑色光标 (覆盖主页的白色光标) --- */
-/* 我们需要把 SVG 里的 fill='white' 改成 fill='black' */
+/* --- 2. 黑色光标 --- */
 #cursor-wrapper .cursor-main {
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15)); /* 阴影淡一点 */
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
 }
 
 #cursor-wrapper .cursor-reflection {
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-    opacity: 0.15; /* 倒影淡一点 */
+    opacity: 0.15;
 }
 
-/* --- 3. 悬浮返回栏 --- */
+/* --- 3. 导航 --- */
 .project-nav {
     position: fixed;
-    top: 40px; left: 60px;
+    top: 40px;
+    left: 60px;
     z-index: 100;
-    mix-blend-mode: difference; /* 关键：让它在黑图和白底上都能看见 */
+    mix-blend-mode: difference;
 }
+
 .back-link {
-    color: #fff; /* 配合 mix-blend-mode */
+    color: #fff;
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
@@ -48,221 +49,334 @@
     align-items: center;
     gap: 10px;
 }
+
 .back-link:hover {
     transform: translateX(-5px);
 }
 
-/* --- 4. Hero 全屏封面 (白底适配) --- */
+/* --- 4. Hero --- */
 .project-hero {
     position: relative;
-    height: 85vh; 
+    width: 100%;
+    height: 85vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     margin-bottom: 100px;
-    padding: 0 60px 40px 60px;
-    /* 确保背景颜色不是透明导致看起来像没加载 */
-    background-color: #f9f9f9; 
+    background-color: #f2f2f2;
+    overflow: hidden;
 }
 
 .hero-bg {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0; /* 修改为 0，确保在内容 (-1) 之下但在背景之上，或者调整 hero-content z-index */
-}
-
-/* 修正层级问题：让内容浮在图片上 */
-.hero-content {
-    position: relative;
-    z-index: 2; /* 提高层级 */
-    max-width: 1200px;
-    margin: 0 auto;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
-.hero-bg img, .hero-bg video {
-    width: 100%; height: 100%;
+.hero-bg img,
+.hero-bg video {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    filter: none; /* 白底不需要压暗图片，原色展示 */
-    display: block; /* 确保是块级元素 */
+    object-position: center center;
+    display: block;
+    transition: transform 0.3s ease;
 }
 
-
-
-/* 底部渐变：从图片过渡到白色背景 */
 .hero-gradient {
     position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 40%;
-    /* 关键：渐变到纯白 */
-    background: linear-gradient(to top, #ffffff, rgba(255,255,255,0));
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 1) 100%);
+    z-index: 1;
+    pointer-events: none;
 }
 
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px 40px;
+}
 
+/* 【修改点 2】Title 增强 */
 .title {
-    font-family: 'Inter', sans-serif;
-    font-size: 4.5rem; /* 字体加大 */
-    font-weight: 800;
-    color: #000; /* 纯黑标题 */
-    margin: 0 0 10px 0;
-    line-height: 1;
-    letter-spacing: -1.5px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 6rem;
+    /* 字号加大 */
+    font-weight: 900;
+    /* 字重加粗 */
+    text-transform: uppercase;
+    /* 全大写，视觉冲击力更强 */
+    line-height: 0.95;
+    margin: 0 0 25px 0;
+    color: #000;
+    letter-spacing: -0.03em;
+    /* 字母缩进，更紧凑 */
+    text-shadow: 0 20px 40px rgba(255, 255, 255, 0.9);
 }
+
 .subtitle {
-    font-size: 1.4rem;
-    color: #555; /* 深灰副标题 */
-    margin: 0 0 60px 0;
+    font-size: 1.5rem;
+    color: #444;
     font-weight: 400;
     max-width: 600px;
+    margin-bottom: 60px;
+    line-height: 1.4;
+    text-shadow: 0 10px 20px rgba(255, 255, 255, 0.8);
 }
 
-/* HUD 仪表盘 (白底版) */
 .info-hud {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 40px;
-    padding-top: 30px;
-    /* 细黑线分割 */
-    border-top: 1px solid rgba(0,0,0,0.1); 
+    padding-top: 25px;
+    border-top: 1px solid #000;
 }
+
 .hud-item {
     display: flex;
     flex-direction: column;
 }
+
 .hud-item label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888; /* 浅灰标签 */
+    color: #888;
     margin-bottom: 8px;
-    font-family: 'Courier New', monospace;
+    font-family: monospace;
 }
+
 .hud-item span {
     font-size: 1rem;
+    font-weight: 600;
     color: #000;
-    font-weight: 500;
 }
+
+.link-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .hud-link {
-    display: inline-block;
     color: #000;
     text-decoration: none;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
-    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    width: fit-content;
     transition: border-color 0.3s;
     cursor: none;
 }
-.hud-link:hover { border-color: #000; }
 
-/* --- 5. 正文排版 (杂志风) --- */
+.hud-link:hover {
+    border-color: #000;
+}
+
+/* --- 5. 正文排版 --- */
 .project-body {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 60px;
 }
 
+/* 默认布局：左标签 + 右内容 (Sidebar Layout) */
 .content-row {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 180px 1fr;
+    /* 固定左栏 180px */
     gap: 60px;
-    margin-bottom: 120px;
+    margin-bottom: 100px;
+    align-items: start;
 }
 
+/* 标签样式 */
 .row-label {
-    font-family: 'Courier New', monospace;
+    font-family: monospace;
     font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #999; /* 标签颜色变浅 */
+    color: #999;
     position: sticky;
     top: 40px;
     height: fit-content;
+    text-align: left;
+}
+
+/* Subtitle 样式 */
+.row-sub {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.9rem;
+    color: #444;
+    font-weight: 600;
+    margin-top: 8px;
+    text-transform: none;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+/* 内容区 */
+.row-content {
+    min-width: 0;
 }
 
 .row-content p {
     font-size: 1.15rem;
-    color: #333; /* 正文深灰，比纯黑更易读 */
     margin-bottom: 25px;
     font-weight: 400;
+    color: #222;
 }
 
+/* 【修改点 1】Overview (Lead Text) 调小 */
 .lead-text p {
-    font-size: 1.6rem; /* 导语更大 */
-    line-height: 1.4;
-    color: #000;
-    font-weight: 500;
+    font-size: 1.35rem;
+    /* 之前是 1.8rem，改小 */
+    line-height: 1.6;
+    font-weight: 400;
+    /* 稍微细一点，显得更精致 */
+    color: #111;
+    letter-spacing: 0;
 }
 
-/* --- 6. 画廊样式 (白底阴影) --- */
+/* --- 修复 List 渲染问题 --- */
+.row-content ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin-bottom: 25px;
+}
+
+.row-content ol {
+    list-style: decimal;
+    padding-left: 20px;
+    margin-bottom: 25px;
+}
+
+.row-content li {
+    font-size: 1.15rem;
+    color: #222;
+    margin-bottom: 8px;
+    display: list-item;
+}
+
+/* Center Mode */
+.content-row.mode-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    grid-template-columns: none;
+}
+
+.content-row.mode-center .row-label {
+    position: static;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.content-row.mode-center .row-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- 图片样式 --- */
+.large-image {
+    display: block;
+}
+
+.large-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+}
+
+/* 画廊 */
 .gallery-grid {
     display: flex;
     flex-direction: column;
-    gap: 100px; /* 图片间距拉大 */
+    gap: 80px;
 }
+
 .gallery-grid img {
     width: 100%;
-    height: auto;
-    border-radius: 0; /* 直角更现代 */
-    /* 柔和的投影，让图片浮在白纸上 */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); 
+    display: block;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
-.gallery-grid figcaption {
+
+figcaption {
     margin-top: 15px;
     font-size: 0.85rem;
-    color: #666;
+    color: #777;
     text-align: center;
-    font-family: 'Courier New', monospace;
+    font-family: monospace;
 }
 
 /* Footer */
 .project-footer {
     margin-top: 150px;
-    padding: 60px 0;
+    padding: 80px 0;
     text-align: center;
     font-size: 0.8rem;
-    color: #bbb;
-    border-top: 1px solid rgba(0,0,0,0.05);
-}
-
-.row-content strong {
-    color: #000; /* 粗体纯黑 */
-    font-weight: 600;
-}
-
-.row-content ul.md-list {
-    padding-left: 20px;
-    margin-bottom: 20px;
-}
-
-.row-content ul.md-list li {
-    list-style-type: disc;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.text-link {
-    color: #000;
-    text-decoration: underline;
-    text-decoration-color: rgba(0,0,0,0.3);
-    transition: all 0.2s;
-    cursor: pointer !important; /* 确保链接有鼠标手势 */
-    pointer-events: auto;
-}
-.text-link:hover {
-    text-decoration-color: #000;
-    background: rgba(0,0,0,0.05);
+    color: #ccc;
+    border-top: 1px solid #f0f0f0;
 }
 
 /* 响应式 */
 @media (max-width: 768px) {
-    .project-nav { top: 20px; left: 20px; .back-link {color: #000;} } /* 手机上如果是白底，要把返回键变黑 */
-    .project-hero { padding: 0 20px 40px 20px; height: auto; min-height: 60vh; }
-    .title { font-size: 2.5rem; }
-    .info-hud { grid-template-columns: 1fr; gap: 20px; border-top: none; }
-    .content-row { display: block; margin-bottom: 60px; }
-    .row-label { 
-        position: static; margin-bottom: 10px; 
-        border-bottom: 1px solid #eee; padding-bottom: 5px; display: inline-block;
+    .project-hero {
+        height: auto;
+        min-height: 70vh;
     }
-    .project-body { padding: 0 20px; }
+
+    .hero-bg {
+        height: 60vh;
+    }
+
+    .hero-content {
+        padding: 0 20px;
+        margin-top: -60px;
+    }
+
+    .title {
+        font-size: 3.5rem;
+        /* 移动端稍微小一点，但依然要大 */
+    }
+
+    .info-hud {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding-top: 20px;
+    }
+
+    .content-row {
+        display: block;
+        margin-bottom: 80px;
+    }
+
+    .row-label {
+        position: static;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        display: inline-block;
+    }
+
+    .project-body {
+        padding: 0 20px;
+        margin-top: 60px;
+    }
+
+    .project-nav {
+        top: 20px;
+        left: 20px;
+    }
 }

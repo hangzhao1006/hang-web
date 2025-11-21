@@ -1,0 +1,128 @@
+/* css/glass-wall.css - B&W to Color Edition */
+
+/* 1. 覆盖基础背景，设为纯黑 */
+body {
+    background-color: #000 !important;
+}
+
+/* 隐藏 index.php 默认的 SVG 背景 */
+.reflection-layer {
+    display: none !important;
+}
+
+/* 2. 定义网格作为窗框结构 */
+.glass-grid {
+    /* 黑色背景，通过 gap 露出背景形成黑线 */
+    background-color: #000;
+    gap: 4px; /* 窗框厚度 */
+    border: 4px solid #000; /* 外框 */
+    
+    /* 确保网格填满，不留白 */
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+}
+
+/* 3. 每一格都是一块物理玻璃 */
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    /* 默认背景色，防透 */
+    background-color: #050505;
+    
+    /* 【核心】视差背景图 */
+    /* 使用 fixed 让所有格子共享同一张大图，且随滚动产生透视错觉 */
+    background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+
+    /* 【需求实现：黑白效果】 */
+    /* 默认全黑白，加一点对比度让质感更强，稍微压暗 */
+    filter: grayscale(100%) contrast(1.2) brightness(0.6);
+
+    /* 物理玻璃的体积感：内发光 + 内阴影 */
+    /* 这种阴影模拟了玻璃嵌入金属框时的边缘凹陷 (Oil Canning) */
+    box-shadow: 
+        inset 0 0 0 1px rgba(255,255,255,0.1), /* 极细边缘高光 */
+        inset 0 0 20px rgba(0,0,0,0.8);        /* 内部深邃阴影 */
+    
+    /* 移除可能存在的边框，由 gap 控制 */
+    border: none !important; 
+    
+    /* 平滑过渡：当鼠标移开变回黑白时，有一个 0.5s 的过渡 */
+    transition: filter 0.5s ease, box-shadow 0.3s ease, transform 0.4s ease;
+}
+
+/* 4. 玻璃表面光泽 (Sheen) */
+.grid-item::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* 模拟从右上角打下来的环境光反射 */
+    background: linear-gradient(
+        135deg, 
+        rgba(255,255,255,0.08) 0%, 
+        rgba(255,255,255,0) 50%, 
+        rgba(255,255,255,0.02) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 5. Hover 交互：点亮屏幕 (变彩色) */
+.grid-item:hover {
+    /* 【需求实现：变彩色】 */
+    /* 恢复色彩，提高亮度，像点亮屏幕一样 */
+    filter: grayscale(0%) contrast(1.05) brightness(1.0);
+    
+    /* 阴影变化，仿佛浮起 */
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), inset 0 0 20px rgba(0,0,0,0.2);
+    z-index: 2;
+    
+    /* 鼠标放上去瞬间变色，不需要太长延迟，显得响应快 */
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 6. 特定作品倒影 (内容显示) */
+/* 当 hover 时，覆盖背景图，显示作品图 */
+.grid-item::before {
+    content: '';
+    position: absolute; 
+    top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: 0; /* 在光泽层(::after)之下，背景图之上 */
+    
+    background-image: var(--project-img); 
+    background-size: cover; 
+    background-position: center;
+    
+    opacity: 0;
+    /* 作品图出现的速度 */
+    transition: opacity 0.4s ease;
+}
+
+.grid-item:hover::before {
+    opacity: 1;
+}
+
+/* 文字优化 */
+.content {
+    z-index: 10;
+    /* 确保文字在最上层 */
+    mix-blend-mode: normal;
+    /* 因为背景变黑白了，文字用白色加阴影最清晰 */
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* 填补的空格子样式 (Hero 背后的墙) */
+.empty-pane {
+    cursor: default;
+}
+
+.empty-pane:hover {
+    /* 空格子 hover 时不要完全变彩色，保持低调的高级灰 */
+    /* 稍微亮一点，但不抢戏 */
+    filter: grayscale(100%) contrast(1.0) brightness(0.8);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+}

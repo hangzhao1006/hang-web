@@ -2,172 +2,167 @@
 
 /* --- 基础设定 --- */
 :root {
-  --grid-cols: 4; /* 桌面端固定 4 列 */
-  --border-color: rgba(255, 255, 255, 0.2); /* 边框颜色 */
+  --grid-cols: 4;
+  --border-color: rgba(255, 255, 255, 0.2);
 }
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100%;
-  background-color: #050505; /* 深黑背景 */
+  background-color: #050505;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #fff;
-  cursor: none; /* 隐藏默认鼠标 */
+  cursor: none;
   overflow-x: hidden;
 }
 
-/* --- 1. 全局背景层 (始终黑白 + 扭曲) --- */
+/* --- 1. 全局背景层 (SVG 扭曲版) --- */
+/* 这个是 index.php 用的背景，demo.php 会隐藏它 */
 .reflection-layer {
-  position: fixed; /* 固定背景，不随滚动移动 */
+  position: fixed;
   top: -10%;
   left: -10%;
   width: 120%;
   height: 120%;
-  /* 默认背景图 */
   background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop');
   background-size: cover;
   background-position: center;
-  /* 背景始终扭曲 */
+
+  /* 默认状态：模糊+扭曲 */
   filter: grayscale(100%) contrast(120%) brightness(0.6) url(#glass-warp);
   z-index: 0;
   pointer-events: none;
-  /* 配合 JS 实现视差移动 */
   transition: transform 0.1s ease-out;
 }
 
-/* --- 2. 界面层 (Header & Filters) - 固定在顶部 --- */
+/* --- 2. UI Layer --- */
 .ui-layer {
-  position: fixed; /* 悬浮固定 */
-  top: 0; 
-  left: 0; 
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  z-index: 50; /* 保证在最上层 */
-  padding: 40px 60px; /* 增加留白 */
+  z-index: 50;
+  padding: 40px 60px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  pointer-events: none; /* 让空白区域不挡鼠标 */
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
 }
 
-/* 让里面的交互元素可以点击 */
-.ui-layer header, .ui-layer form {
-    pointer-events: auto;
+.ui-layer header,
+.ui-layer form {
+  pointer-events: auto;
 }
 
 header h1 {
   margin: 0;
-  font-family: 'Inter', sans-serif; /* 建议使用更现代的无衬线字体 */
-  font-size: 1.2rem;
-  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 10px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav a {
   display: inline-block;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  font-size: 0.9rem;
-  margin-right: 15px;
+  font-size: 0.85rem;
+  margin-right: 20px;
   transition: color 0.3s;
-  padding: 0;
-  border: none;
-  cursor: none; /* 保持自定义鼠标 */
+  cursor: none;
 }
 
 .nav a:hover {
-    color: #fff;
+  color: #fff;
 }
 
-/* --- Filter 样式 (极简风) --- */
 .filters {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.filters input, .filters select, .filters button {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.3); /* 只有下划线 */
-    border-radius: 0;
-    color: #fff;
-    padding: 5px 0;
-    font-family: inherit;
-    font-size: 0.9rem;
-    cursor: none;
-    text-align: right; 
-    transition: border-color 0.3s;
+.filters input,
+.filters select,
+.filters button {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 5px 0;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: none;
+  text-align: right;
 }
 
-.filters input { width: 100px; }
-.filters input::placeholder { color: rgba(255,255,255,0.3); }
-
-.filters input:focus, .filters select:focus {
-    outline: none;
-    border-bottom-color: #fff;
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-bottom-color: #fff;
 }
 
 .filters button {
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 20px; /* 按钮保留圆角 */
-    padding: 5px 20px;
-    margin-left: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.3); /* 重置 */
-}
-.filters button:hover {
-    background: #fff;
-    color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 5px 20px;
+  margin-left: 10px;
 }
 
-/* --- 3. Hero Section (杂志感大标题) --- */
+.filters button:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* --- 3. Hero Section --- */
 .hero-section {
-    position: relative;
-    height: 70vh; /* 占据首屏 70% 高度 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 60px; /* 左侧对齐 Logo */
-    z-index: 10;
-    pointer-events: none; /* 文字不挡鼠标交互 */
+  position: relative;
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 60px;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .hero-text {
-    font-size: 5vw; /* 响应式大字体 */
-    line-height: 1.1;
-    font-weight: 300;
-    color: #fff;
-    /* 混合模式，让文字与背景产生反应 */
-    mix-blend-mode: difference; 
-    opacity: 0.9;
+  font-size: 5vw;
+  line-height: 1.1;
+  font-weight: 300;
+  color: #fff;
+  mix-blend-mode: difference;
+  opacity: 0.9;
 }
 
 .hero-text .highlight {
-    font-family: 'Times New Roman', serif; /* 衬线体混搭 */
-    font-style: italic;
-    font-weight: 400;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
 }
 
 .hero-sub {
-    margin-top: 40px;
-    font-size: 1rem;
-    font-family: 'Courier New', monospace;
-    opacity: 0.6;
-    max-width: 400px;
-    line-height: 1.6;
+  margin-top: 30px;
+  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  opacity: 0.6;
+  max-width: 400px;
 }
 
-/* --- 4. 鼠标与倒影 --- */
+/* --- 4. Cursor --- */
 #cursor-wrapper {
   position: fixed;
   top: 0;
   left: 0;
-  width: 30px; 
+  width: 30px;
   height: 60px;
   pointer-events: none;
   z-index: 100;
@@ -182,7 +177,7 @@ header h1 {
   height: 24px;
   background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='white' stroke='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .cursor-reflection {
@@ -195,95 +190,115 @@ header h1 {
   background-repeat: no-repeat;
   opacity: 0.4;
   transform-origin: 0 0;
-  transform: scaleY(-1) skewX(-10deg) translateY(2px); 
+  transform: scaleY(-1) skewX(-10deg) translateY(2px);
   filter: blur(1px);
 }
 
-/* --- 5. 网格系统 (正方形、无重影) --- */
+/* --- 5. Grid System --- */
 .glass-grid {
   position: relative;
   z-index: 10;
   display: grid;
-  
-  /* 固定 4 列 */
   grid-template-columns: repeat(4, 1fr);
-  
-  /* 容器只画 上/左 边框 */
-  border-top: 1px solid var(--border-color); /* 如果想要无限感，这行可以去掉 */
-  border-left: 1px solid var(--border-color);
-  
-  background: none; 
   width: 100vw;
   box-sizing: border-box;
+  border-top: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
 }
 
 .grid-item {
   position: relative;
   width: 100%;
-  
-  /* 强制正方形 1:1 */
-  aspect-ratio: 1 / 1; 
+  aspect-ratio: 1 / 1;
   height: auto;
-  
-  /* 格子只画 右/下 边框 */
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-  
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
 }
 
-/* 悬停效果 */
+/* .grid-item {
+  position: relative;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: border-color 0.5s ease;
+  /* 只过渡边框，背景图单独过渡 
+  overflow: hidden;
+}
+*/
+
+
 .grid-item:hover {
   background: rgba(255, 255, 255, 0.02);
   box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.05);
-  border-color: rgba(255,255,255,0.6); /* 边框变亮 */
+  border-color: rgba(255, 255, 255, 0.6);
   z-index: 2;
 }
 
-/* --- 特定作品倒影 (核心) --- */
+/* --- 核心修复：特定作品倒影 --- */
 .grid-item::before {
   content: '';
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  z-index: -1;
+  background-image: var(--project-img);
+  background-size: cover;
+  background-position: center;
+
+  /* 默认状态：隐藏，且带有扭曲滤镜 */
+  opacity: 0;
+  transform: scale(1.2);
+  filter: grayscale(100%) contrast(120%) brightness(0.7) url(#glass-warp);
+
+  /* 【关键修改】Transition Delay 
+     离开时：opacity 立即变0 (耗时0.5s)，但 filter 延迟 0.5s 才变回扭曲。
+     这样就看不到变回去的那个瞬间了。
+  */
+  transition:
+    opacity 0.6s ease 0s,
+    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 0s linear 0.5s;
+  /* 延迟 0.5s */
+}
+
+.grid-item:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  /* 悬停时：变为彩色，去掉扭曲 */
+  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1) url(#glass-warp);
+
+  /* 进入时：立即生效，没有延迟 */
+  /* transition:
+    opacity 0.5s ease 0s,
+    transform 0.6s ease 0s, */
+}
+
+.grid-item:hover::after {
+  background-position: 0 0;
+}
+
+.grid-link {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
-  
-  background-image: var(--project-img);
-  background-size: cover;
-  background-position: center;
-  
-  /* 默认隐藏 + 扭曲 */
-  opacity: 0;
-  transform: scale(1.1);
-  filter: grayscale(100%) contrast(120%) brightness(0.6) url(#glass-warp);
-  
-  transition: opacity 0.5s ease, transform 0.6s ease, filter 0.5s ease;
+  z-index: 20;
+  cursor: none;
 }
 
-/* 【Hover】：彩色 + 边缘变直 (去掉url滤镜) */
-.grid-item:hover::before {
-  opacity: 1;
-  transform: scale(1);
-  filter: grayscale(0%) contrast(105%) brightness(1.0);
-}
-
-/* 链接覆盖 */
-.grid-link {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 20;
-    cursor: none; 
-}
-
-/* 扫光动画 */
+/* --- 扫光效果 (更细腻) --- */
 .grid-item::after {
   content: '';
   position: absolute;
@@ -291,19 +306,17 @@ header h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 70%);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0) 70%);
   background-size: 200% 100%;
   background-position: 100% 0;
-  transition: background-position 0.8s;
+  transition: background-position 1s ease-out;
   pointer-events: none;
   z-index: 1;
+  mix-blend-mode: overlay;
+  /* 叠加模式让光更自然 */
 }
 
-.grid-item:hover::after {
-  background-position: 0 0;
-}
 
-/* 内容文字 */
 .content {
   opacity: 0;
   transform: translateY(20px);
@@ -318,36 +331,50 @@ header h1 {
   transform: translateY(0);
 }
 
-h2 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px; margin: 0; font-weight: 300; }
-p { font-size: 0.8rem; margin-top: 10px; font-family: 'Courier New', monospace; opacity: 0.8; }
-
-footer {
-    position: relative;
-    z-index: 20;
-    text-align: center;
-    padding: 40px;
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.4);
+h2 {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  font-weight: 300;
 }
 
-/* --- 响应式适配 --- */
+p {
+  font-size: 0.8rem;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
+  opacity: 0.8;
+}
+
+footer {
+  position: relative;
+  z-index: 20;
+  text-align: center;
+  padding: 40px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
 @media (max-width: 1024px) {
-    .glass-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .hero-text {
-        font-size: 8vw; /* 移动端标题放大 */
-    }
-    .ui-layer {
-        padding: 20px;
-    }
+  .glass-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-text {
+    font-size: 8vw;
+  }
+
+  .ui-layer {
+    padding: 20px;
+  }
 }
 
 @media (max-width: 600px) {
-    .glass-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
-    .filters {
-        display: none; /* 移动端可能需要隐藏筛选，或改样式 */
-    }
+  .glass-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .filters {
+    display: none;
+  }
 }

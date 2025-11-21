@@ -82,7 +82,7 @@ $config = require __DIR__ . '/../src/config.php';
                     </div>
                 </div>
                 <div class="resume-item">
-                    <div class="year">2020–2024</div>
+                    <div class="year">2020–2025</div>
                     <div class="details">
                         <strong>Tsinghua University</strong><br>
                         B.F.A. Info Design & B.A. Economics · GPA 3.87/4.0

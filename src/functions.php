@@ -16,11 +16,11 @@ function ensure_schema(): void
       title TEXT NOT NULL,
       slug TEXT UNIQUE,
       description TEXT,
-      tags TEXT,                 -- 逗号分隔，或存 JSON
-      image_url TEXT,            -- 首图
-      gallery_json TEXT,         -- 其他图 JSON 数组
-      meta_json TEXT,            -- 可扩展的结构化元数据（JSON），用于 subtitle/links/tools/process 等
-      url TEXT,                  -- 外链（Behance/GitHub/视频等）
+      tags TEXT,                 
+      image_url TEXT,            
+      gallery_json TEXT,         
+      meta_json TEXT,            
+      url TEXT,                  
        year INTEGER,
        month INTEGER,
       featured INTEGER DEFAULT 0,
@@ -30,6 +30,18 @@ function ensure_schema(): void
     );
     CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);
     CREATE INDEX IF NOT EXISTS idx_projects_order ON projects(order_index);
+    
+    CREATE TABLE IF NOT EXISTS tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS project_tags (
+      project_id INTEGER NOT NULL,
+      tag_id INTEGER NOT NULL,
+      PRIMARY KEY (project_id, tag_id),
+      FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+      FOREIGN KEY (tag_id)     REFERENCES tags(id)     ON DELETE CASCADE
+    );
   ");
 
   // 新增：规范化标签表
@@ -46,53 +58,55 @@ function ensure_schema(): void
       FOREIGN KEY (tag_id)     REFERENCES tags(id)     ON DELETE CASCADE
     );
   ");
-  
-    // 如果旧表里没有某些列，尝试添加（兼容旧数据库）
-    $cols = $pdo->query("PRAGMA table_info(projects)")->fetchAll(PDO::FETCH_ASSOC);
-    $existing = [];
-    foreach ($cols as $col) { $existing[$col['name']] = true; }
 
-    if (empty($existing['month'])) {
-      $pdo->exec("ALTER TABLE projects ADD COLUMN month INTEGER;");
-    }
-    if (empty($existing['meta_json'])) {
-      $pdo->exec("ALTER TABLE projects ADD COLUMN meta_json TEXT;");
-    }
+  // 如果旧表里没有某些列，尝试添加（兼容旧数据库）
+  $cols = $pdo->query("PRAGMA table_info(projects)")->fetchAll(PDO::FETCH_ASSOC);
+  $existing = [];
+  foreach ($cols as $col) {
+    $existing[$col['name']] = true;
+  }
 
-    // 直接编辑的便捷字段
-    $convenienceCols = [
-      'subtitle',      // 副标题（纯文本）
-      'links',         // JSON 对象字符串
-      'tools',         // JSON 数组字符串
-      'hero_media'     // JSON 对象字符串 {src,alt} 或 {type:"video",src}
-    ];
-    foreach ($convenienceCols as $cc) {
-      if (empty($existing[$cc])) {
-        $pdo->exec("ALTER TABLE projects ADD COLUMN {$cc} TEXT;");
-      }
-    }
+  if (empty($existing['month'])) {
+    $pdo->exec("ALTER TABLE projects ADD COLUMN month INTEGER;");
+  }
+  if (empty($existing['meta_json'])) {
+    $pdo->exec("ALTER TABLE projects ADD COLUMN meta_json TEXT;");
+  }
 
-    // Details 字段作为独立列，便于直接编辑
-    $detailCols = [
-      'background_problem',
-      'design_goals',
-      'solution_overview',
-      'interaction_design',
-      'pipeline',
-      'prototype_highlights',
-      'usability_testing',
-      'outcomes',
-      'ethics',
-      'next_steps',
-      'media_notes',
-      'acknowledgements',
-      'contact'
-    ];
-    foreach ($detailCols as $dc) {
-      if (empty($existing[$dc])) {
-        $pdo->exec("ALTER TABLE projects ADD COLUMN {$dc} TEXT;");
-      }
+  // 直接编辑的便捷字段
+  $convenienceCols = [
+    'subtitle',      // 副标题（纯文本）
+    'links',         // JSON 对象字符串
+    'tools',         // JSON 数组字符串
+    'hero_media'     // JSON 对象字符串 {src,alt} 或 {type:"video",src}
+  ];
+  foreach ($convenienceCols as $cc) {
+    if (empty($existing[$cc])) {
+      $pdo->exec("ALTER TABLE projects ADD COLUMN {$cc} TEXT;");
     }
+  }
+
+  // Details 字段作为独立列，便于直接编辑
+  $detailCols = [
+    'background_problem',
+    'design_goals',
+    'solution_overview',
+    'interaction_design',
+    'pipeline',
+    'prototype_highlights',
+    'usability_testing',
+    'outcomes',
+    'ethics',
+    'next_steps',
+    'media_notes',
+    'acknowledgements',
+    'contact'
+  ];
+  foreach ($detailCols as $dc) {
+    if (empty($existing[$dc])) {
+      $pdo->exec("ALTER TABLE projects ADD COLUMN {$dc} TEXT;");
+    }
+  }
 }
 
 // 基础校验与清洗
@@ -102,46 +116,11 @@ function slugify(string $s): string
   $s = preg_replace('/[^a-z0-9-]+/', '-', $s);
   return trim($s, '-');
 }
-
 // CRUD
 function create_project(array $data): int
 {
   $pdo = get_pdo();
-  $sql = "INSERT INTO projects
-    (title, slug, description, tags, image_url, gallery_json, meta_json, url, year, month, featured, order_index, created_at, updated_at)
-    VALUES (:title, :slug, :description, :tags, :image_url, :gallery_json, :meta_json, :url, :year, :month, :featured, :order_index, :created_at, :updated_at)";
-  $stmt = $pdo->prepare($sql);
-  $now = now();
-  $stmt->execute([
-    ':title' => $data['title'],
-    ':slug' => $data['slug'] ?: slugify($data['title']),
-    ':description' => $data['description'] ?? '',
-    ':tags' => $data['tags'] ?? '',
-    ':image_url' => $data['image_url'] ?? '',
-    ':gallery_json' => isset($data['gallery']) ? json_encode($data['gallery']) : '[]',
-    ':meta_json' => isset($data['meta']) ? json_encode($data['meta']) : '{}',
-  ':url' => $data['url'] ?? '',
-  ':year' => (int) ($data['year'] ?? date('Y')),
-  ':month' => norm_month($data['month'] ?? null),
-    ':featured' => !empty($data['featured']) ? 1 : 0,
-    ':order_index' => (int) ($data['order_index'] ?? 0),
-    ':created_at' => $now,
-    ':updated_at' => $now,
-  ]);
-  return (int) $pdo->lastInsertId();
-}
-
-function update_project(int $id, array $data): void
-{
-  $pdo = get_pdo();
-  $sql = "UPDATE projects SET
-            title=:title, slug=:slug, description=:description, tags=:tags,
-            image_url=:image_url, gallery_json=:gallery_json, url=:url,
-            meta_json=:meta_json,
-            year=:year, month=:month, featured=:featured, order_index=:order_index,
-            updated_at=:updated_at
-          WHERE id=:id";
-  $stmt = $pdo->prepare($sql);
+  $stmt = $pdo->prepare("INSERT INTO projects (title, slug, description, tags, image_url, gallery_json, meta_json, url, year, month, featured, order_index, created_at, updated_at) VALUES (:title, :slug, :description, :tags, :image_url, :gallery_json, :meta_json, :url, :year, :month, :featured, :order_index, :created_at, :updated_at)");
   $stmt->execute([
     ':title' => $data['title'],
     ':slug' => $data['slug'] ?: slugify($data['title']),
@@ -151,13 +130,21 @@ function update_project(int $id, array $data): void
     ':gallery_json' => isset($data['gallery']) ? json_encode($data['gallery']) : '[]',
     ':meta_json' => isset($data['meta']) ? json_encode($data['meta']) : '{}',
     ':url' => $data['url'] ?? '',
-  ':year' => norm_year($data['year'] ?? null),
-  ':month' => norm_month($data['month'] ?? null),
-
+    ':year' => (int) ($data['year'] ?? date('Y')),
+    ':month' => norm_month($data['month'] ?? null),
     ':featured' => !empty($data['featured']) ? 1 : 0,
     ':order_index' => (int) ($data['order_index'] ?? 0),
-    ':updated_at' => now(),
-    ':id' => $id,
+    ':created_at' => now(),
+    ':updated_at' => now()
+  ]);
+  return (int) $pdo->lastInsertId();
+}
+
+function update_project(int $id, array $data): void {
+  $pdo = get_pdo();
+  $stmt = $pdo->prepare("UPDATE projects SET title=:title, slug=:slug, description=:description, tags=:tags, image_url=:image_url, gallery_json=:gallery_json, url=:url, meta_json=:meta_json, year=:year, month=:month, featured=:featured, order_index=:order_index, updated_at=:updated_at WHERE id=:id");
+  $stmt->execute([
+    ':title' => $data['title'], ':slug' => $data['slug'] ?: slugify($data['title']), ':description' => $data['description'] ?? '', ':tags' => $data['tags'] ?? '', ':image_url' => $data['image_url'] ?? '', ':gallery_json' => isset($data['gallery']) ? json_encode($data['gallery']) : '[]', ':meta_json' => isset($data['meta']) ? json_encode($data['meta']) : '{}', ':url' => $data['url'] ?? '', ':year' => norm_year($data['year'] ?? null), ':month' => norm_month($data['month'] ?? null), ':featured' => !empty($data['featured']) ? 1 : 0, ':order_index' => (int)($data['order_index'] ?? 0), ':updated_at' => now(), ':id' => $id
   ]);
 }
 
@@ -223,25 +210,28 @@ function get_projects_filtered(array $q = []): array
 }
 //用 GET 参数做“筛选/排序”是最直观的 URL 交互；输出时一律 htmlspecialchars()（安全输出）。
 
-function upsert_tags_for_project(int $project_id, string $csv): void {
+function upsert_tags_for_project(int $project_id, string $csv): void
+{
   $pdo = get_pdo();
-  $pdo->prepare("DELETE FROM project_tags WHERE project_id = :pid")->execute([':pid'=>$project_id]);
+  $pdo->prepare("DELETE FROM project_tags WHERE project_id = :pid")->execute([':pid' => $project_id]);
 
-  $parts = array_filter(array_map(fn($s)=>trim($s), explode(',', $csv)));
+  $parts = array_filter(array_map(fn($s) => trim($s), explode(',', $csv)));
   foreach ($parts as $name) {
-    if ($name === '') continue;
+    if ($name === '')
+      continue;
     $name_norm = strtolower($name);
-    $pdo->prepare("INSERT OR IGNORE INTO tags(name) VALUES(:n)")->execute([':n'=>$name_norm]);
-    $tag_id = $pdo->query("SELECT id FROM tags WHERE name=".$pdo->quote($name_norm))->fetchColumn();
+    $pdo->prepare("INSERT OR IGNORE INTO tags(name) VALUES(:n)")->execute([':n' => $name_norm]);
+    $tag_id = $pdo->query("SELECT id FROM tags WHERE name=" . $pdo->quote($name_norm))->fetchColumn();
     if ($tag_id) {
       $pdo->prepare("INSERT OR IGNORE INTO project_tags(project_id, tag_id) VALUES(:p,:t)")
-          ->execute([':p'=>$project_id, ':t'=>$tag_id]);
+        ->execute([':p' => $project_id, ':t' => $tag_id]);
     }
   }
 }
 
 
-function get_projects_filtered_joined(array $q = []): array {
+function get_projects_filtered_joined(array $q = []): array
+{
   $pdo = get_pdo();
   $sql = "
     SELECT p.*,
@@ -273,7 +263,7 @@ function get_projects_filtered_joined(array $q = []): array {
 
   if (!empty($q['year'])) {
     $sql .= " AND p.year = :year";
-    $params[':year'] = (int)$q['year'];
+    $params[':year'] = (int) $q['year'];
   }
 
   $sort = $q['sort'] ?? 'recent';
@@ -288,59 +278,64 @@ function get_projects_filtered_joined(array $q = []): array {
   return $stmt->fetchAll();
 }
 
-function norm_year($v) {
-  $v = trim((string)($v ?? ''));
-  if ($v === '' || !is_numeric($v)) return null;
-  $y = (int)$v;
+function norm_year($v)
+{
+  $v = trim((string) ($v ?? ''));
+  if ($v === '' || !is_numeric($v))
+    return null;
+  $y = (int) $v;
   return ($y >= 1900 && $y <= 2100) ? $y : null;
 }
 
-function norm_month($v) {
-  $v = trim((string)($v ?? ''));
-  if ($v === '' || !is_numeric($v)) return null;
-  $m = (int)$v;
+function norm_month($v)
+{
+  $v = trim((string) ($v ?? ''));
+  if ($v === '' || !is_numeric($v))
+    return null;
+  $m = (int) $v;
   return ($m >= 1 && $m <= 12) ? $m : null;
 }
 
-function render_markdown($text) {
-    if (!$text) return '';
-    
-    // 1. 安全转义 (防止 XSS，但允许我们后续替换的标签)
-    $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
-    
-    // 2. 替换链接 [text](url) -> <a href="url" target="_blank">text</a>
-    $text = preg_replace('/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2" target="_blank" class="text-link">$1</a>', $text);
-    
-    // 3. 替换粗体 **text** -> <strong>text</strong>
-    $text = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $text);
-    
-    // 4. 替换列表
-    // 将以 "- " 开头的行转换为列表项
-    $lines = explode("\n", $text);
-    $inList = false;
-    $out = [];
-    
-    foreach ($lines as $line) {
-        $trim = trim($line);
-        if (str_starts_with($trim, '- ')) {
-            if (!$inList) {
-                $out[] = '<ul class="md-list">';
-                $inList = true;
-            }
-            $content = substr($trim, 2);
-            $out[] = '<li>' . $content . '</li>';
-        } else {
-            if ($inList) {
-                $out[] = '</ul>';
-                $inList = false;
-            }
-            // 普通段落，非空行加 <p>
-            if ($trim !== '') {
-                $out[] = '<p>' . $line . '</p>';
-            }
-        }
+function render_markdown($text)
+{
+  if (!$text)
+    return '';
+
+  $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+
+  // Links
+  $text = preg_replace('/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2" target="_blank" class="text-link">$1</a>', $text);
+
+  // Bold
+  $text = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $text);
+
+  // Lists
+  $lines = explode("\n", $text);
+  $inList = false;
+  $out = [];
+
+  foreach ($lines as $line) {
+    $trim = trim($line);
+    // Check for list item (dash or asterisk)
+    if (preg_match('/^[-*]\s+(.*)$/', $trim, $matches)) {
+      if (!$inList) {
+        $out[] = '<ul>'; // No class needed, we use generic ul in CSS
+        $inList = true;
+      }
+      $out[] = '<li>' . $matches[1] . '</li>';
+    } else {
+      if ($inList) {
+        $out[] = '</ul>';
+        $inList = false;
+      }
+      if ($trim !== '') {
+        $out[] = '<p>' . $line . '</p>';
+      }
     }
-    if ($inList) $out[] = '</ul>';
-    
-    return implode("\n", $out);
+  }
+  if ($inList)
+    $out[] = '</ul>';
+
+  return implode("\n", $out);
 }
+
