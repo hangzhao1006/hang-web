@@ -1,0 +1,1197 @@
+/* 你之前的 hover 阴影/动画可以继续保留 */
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  margin: 0;
+  color: #222;
+  background: #000000;
+}
+
+header,
+footer {
+  padding: 20px;
+  text-align: center;
+}
+
+header {
+  background: #000000;
+  color: #fff;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  padding-inline: 12px;
+}
+
+.screens {
+  display: flex;
+  /*gap: 16px;*/
+  width: 100%;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow: visible;
+  /* grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;*/
+}
+
+.screens>.card {
+  position: relative;
+  isolation: isolate;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-top: 50px;
+  border-radius: 14px;
+  overflow: hidden;
+  /*box-shadow: 0 2px 6px rgba(0, 0, 0, .04);*/
+  transform-style: preserve-3d;
+  transition: box-shadow .25s ease;
+  --k: 1;
+  --s: 1;
+  --ty: 0px;
+  --rx: 0deg;
+  --ry: 0deg;
+  --shift: 0px;
+
+  transform:
+    translateX(var(--shift)) translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(var(--k) * var(--s)));
+  transform: center;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), filter .25s ease;
+  will-change: transform;
+  z-index: 0;
+}
+
+.screens>.card img {
+  width: 100%;
+  height: clamp(320px, 48vh, 500px);
+  display: block;
+  object-fit: cover;
+  filter: grayscale(1);
+  transition: filter 1s;
+  aspect-ratio: 16/9;
+  backface-visibility: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.screens>.card .blur-inner {
+  --blur: 2px;
+
+  position: absolute;
+  inset: var(--margin);
+  border-radius: 10px;
+  pointer-events: none;
+
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* 可选：模糊边界更柔和（让模糊在靠边 6px 渐隐） */
+.screens>.card .blur-inner::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  /* Use tiled noise to avoid one big centered blob; add a light sheen layer for glass */
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+    url('../css/glass-noise.svg');
+  background-repeat: repeat, repeat;
+  /* make noise smaller-scale so texture is visible (tweak as needed) */
+  background-size: 160% 160%, 160px 160px;
+  background-position: center, center;
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  border-radius: inherit;
+  backdrop-filter: inherit;
+  -webkit-backdrop-filter: inherit;
+  /* subtle inner fade so card edges stay soft */
+  mask-image: linear-gradient(black 0%, black 92%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(black 0%, black 92%, rgba(0,0,0,0) 100%);
+}
+
+/* 中央模糊：默认有；hover 卡片时把模糊降为 0（或淡出） */
+@property --blur {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 8px;
+}
+
+/* 让模糊可动画 */
+.screens>.card .blur-inner {
+  --blur: 8px;
+  /* 默认模糊强度 */
+  --margin: 0px;
+  /* 边缘清晰带（越大越清晰） */
+  transition: --blur .25s ease;
+  /* 让模糊有过渡 */
+}
+
+.screens>.card:hover .blur-inner {
+  --blur: 0px;
+}
+
+/* hover 时不模糊 */
+
+.screens>.card {
+  transition: box-shadow .8s ease;
+}
+
+/*
+.screens:has(.card:hover)>.card {
+  --k: .94;
+  filter: brightness(.92) saturate(.9);
+}
+*/
+.screens>.card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
+  z-index: 5;
+  filter: none;
+}
+
+.screens>.card img:hover {
+  filter: grayscale(0);
+}
+
+.screens>.card .content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 14px 16px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, .60), rgba(0, 0, 0, .0));
+  transform: translateY(6px);
+  opacity: .98;
+  transition: transform .45s cubic-bezier(.2, .9, .2, 1), opacity .45s ease;
+  pointer-events: none;
+  /* 整卡可点时可用 */
+}
+
+.screens>.card:hover .content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 文案层的细节 */
+.screens>.card .title {
+  margin: 0 0 4px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.screens>.card .title a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.screens>.card .title a:hover {
+  text-decoration: underline;
+}
+
+.screens>.card .meta {
+  opacity: .9;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.screens>.card p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  display: -webkit-box;
+  /* 夹断 3 行，避免把遮罩占满 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  /* standard property for compatibility */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .55);
+}
+
+.screens>.card .badge {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  margin-top: 6px;
+  color: #fff;
+  /*border: 1px solid rgba(255, 255, 255, .25);*/
+  background: rgba(255, 255, 255, .18);
+  border-radius: 999px;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  background: #f1f1f1;
+  border-radius: 999px;
+}
+
+a {
+  color: #0c66f0;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.nav {
+  margin-top: 12px;
+  margin-bottom: 28px;
+}
+
+.nav a {
+  color: #717171;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid #717171;
+  border-radius: 999px;
+  color: #1e1e1e;
+}
+
+.btn:hover {
+  background: #222;
+  color: #fff;
+  text-decoration: none;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+
+
+/* filter */
+
+/* —— 暗色磨砂玻璃过滤条 —— */
+.filters {
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0 16px;
+
+  padding: 0 12px;
+  border-radius: 14px;
+
+  /* 半透明 + 模糊（不刺眼） */
+  background: rgba(20, 20, 20, 0.35);
+  /* 深色半透明 */
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  /* Safari */
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18) inset;
+}
+
+/* 统一控件高度/字体/盒模型 */
+.filters input,
+.filters select,
+.filters .btn {
+  height: 44px;
+  /* ← 关键：统一高度 */
+  box-sizing: border-box;
+  font: inherit;
+  /* 用页面当前字体 */
+  border-radius: 12px;
+}
+
+/* 输入与下拉的内边距一致 */
+.filters input,
+.filters select {
+  padding: 0 12px;
+  color: #f2f2f2;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .16);
+  outline: none;
+}
+
+.filters input {
+  margin-top: 12px;
+}
+
+/* 按钮用 flex 居中文本，避免文字偏上/偏下 */
+.filters .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  /* 垂直 padding=0，靠 height 控制高度 */
+  color: #f7f7f7;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .18);
+  cursor: pointer;
+}
+
+/* 下拉选择：移除原生外观，统一箭头与内边距 */
+.filters select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 36px;
+  /* 给箭头留空间 */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}
+
+/* Number 输入在不同浏览器的微调 */
+.filters input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  /* standard property for compatibility */
+  /* Firefox */
+}
+
+.filters input[type="number"]::-webkit-outer-spin-button,
+.filters input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  /* WebKit */
+  margin: 0;
+}
+
+/* 占位符不要太亮 */
+.filters ::placeholder {
+  color: rgba(255, 255, 255, .7);
+}
+
+/* 悬停/聚焦的微变化（不刺眼） */
+.filters input:focus,
+.filters select:focus {
+  background: rgba(255, 255, 255, .12);
+  border-color: rgba(138, 180, 248, .45);
+  box-shadow: 0 0 0 2px rgba(138, 180, 248, .25);
+}
+
+.filters .btn:hover {
+  background: rgba(255, 255, 255, .18);
+}
+
+/* 容器允许重叠，hover 的卡片可以盖住邻居一点点 */
+.screens {
+  overflow: visible;
+}
+
+/* 用 CSS 变量组合 transform：k=谁大谁小，s=你的弹簧缩放 */
+.screens>.card {
+  position: relative;
+  isolation: isolate;
+  /* 独立层，避免阴影被剪 */
+  transform-style: preserve-3d;
+  will-change: transform, filter;
+
+  --k: 1;
+  /* 基础缩放：由容器的状态决定（谁大谁小） */
+  --s: 1;
+  /* 你的 JS 弹簧缩放 */
+  --ty: 0px;
+  /* 你的 JS Y 位移 */
+  --rx: 0deg;
+  --ry: 0deg;
+  /* 你的 JS 倾斜 */
+
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), filter .25s ease;
+  transform: translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(var(--k) * var(--s)));
+}
+
+/* 现代浏览器：用 :has 让“其它卡片”缩小/变暗 */
+.screens:has(.card:hover)>.card {
+  --k: .94;
+  /* 其它卡片微缩 */
+  filter: brightness(.92) saturate(.9);
+}
+
+.screens>.card:hover {
+  --k: 1.10;
+  /* 当前卡片放大 */
+  z-index: 5;
+  /* 盖住邻居的上层 */
+  filter: none;
+}
+
+/* 若你要更顺滑：把 .35s 调大，或把 --k 的 1.10 / .94 微调 */
+
+
+
+/* timeline*/
+
+.timeline {
+  position: sticky;
+  top: 8px;
+  z-index: 30;
+  margin: 8px 0 6px;
+  padding: 10px 12px;
+  min-height: 44px;
+  /* 先有高度 */
+  border-radius: 14px;
+  background: rgba(20, 20, 20, .35);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+}
+
+.timeline .track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+}
+
+.timeline .ticks {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline .tick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/*
+.timeline .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bbb;
+  opacity: .75;
+  transition: transform .2s ease, opacity .2s ease;
+}
+*/
+.timeline .label {
+  font-size: 12px;
+  color: #767575;
+  opacity: .7;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+/*
+.timeline .tick.active .dot {
+  transform: scale(2);
+  background: #ee5f5f;
+  opacity: 1;
+}
+*/
+.timeline .tick.active .label {
+  opacity: 1;
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.timeline .cursor {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(166, 227, 140, 0.22);
+  /* make the inner ring subtler for a smaller dot */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12) inset;
+  left: 0;
+  transition: left .35s cubic-bezier(.2, .8, .2, 1);
+  pointer-events: none;
+}
+
+/* 小屏如需显示，去掉下面这行隐藏规则 */
+
+
+/*about*/
+
+.page {
+  width: 90%;
+}
+
+/* 头像区域 */
+.bio-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 16px 0 22px;
+  border: 1px solid #0c66f0;
+}
+
+.avatar-wrap {
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .12);
+  backdrop-filter: blur(6px) saturate(112%);
+  -webkit-backdrop-filter: blur(6px) saturate(112%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35) inset, 0 6px 20px rgba(0, 0, 0, .25);
+
+  border: 1px solid #ffffff;
+}
+
+.avatar {
+  border-radius: 14px;
+  width: 250px;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, .22);
+}
+
+
+
+/* 小屏：换行排布 */
+
+
+/* 中等尺寸（≤1200px）：允许换行成两列 */
+@media (max-width: 1200px) {
+  .screens {
+    flex-wrap: wrap;
+  }
+
+  .screens>.card {
+    flex: 1 1 calc(50% - 16px);
+  }
+
+  /* 两列 */
+}
+
+/* 小屏（≤640px）：单列堆叠 */
+@media (max-width:1040px) {
+
+  .screens {
+    flex-wrap: wrap;
+  }
+
+  .screens>.card {
+    flex: 1 1 100%;
+  }
+
+  .screens>.card img {
+    height: 400px;
+  }
+
+  .screens>.card .content {
+    position: static;
+    background: transparent;
+    color: #222;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .screens>.card .title a {
+    color: #0c66f0;
+  }
+
+  .screens>.card .badge {
+    color: #222;
+    background: #f1f1f1;
+    border: none;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filters .btn {
+    width: 100%;
+  }
+
+  .timeline {
+    display: none;
+  }
+
+  .bio-head {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid #bb3737;
+  }
+
+  .avatar {
+    width: 200px;
+    height: 200px;
+  }
+
+
+  /* 小屏按钮单独一行可选 */
+}
+
+/* Detail page overrides: white background and higher contrast for text */
+.project header {
+  background: #ffffff;
+  color: #111;
+  border-bottom: 1px solid #09ff6c;
+}
+
+/* target the body when class is applied on the <body> element */
+body.project {
+  background: #fff !important;
+  color: #111 !important;
+}
+
+
+/* Project hero layout */
+body.project .project-hero {
+  position: relative;
+  width: 100%;
+  max-height: 62vh;
+  /* Allow overlay to extend visually without being clipped */
+  overflow: visible;
+  display: block;
+  background: #f6f6f6;
+  border: 2px solid #2306ff;
+}
+
+body.project .project-hero-media {
+  width: 100%;
+  height: 62vh;
+  object-fit: cover;
+  display: block;
+  border: 1px solid #bfff00;
+}
+
+body.project .project-hero-placeholder {
+  height: 62vh;
+  background: linear-gradient(180deg, #818181, #f9f9f9);
+  border: 1px solid #f1f1f1;
+}
+
+body.project .project-hero-overlay {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 控制 overlay 最大宽度（可按需调整） */
+  max-width: 1100px;
+  width: calc(100% - 36px);
+  /* overlay 锚定在图片底部 */
+  bottom: 18px;
+
+  /* Flexible layout tuning */
+  --hero-gap: 12px;
+  --hero-padding: 14px 18px;
+  /* 2:1:1 ratio for left:center:right */
+  --hero-title-basis: 40%;
+  --hero-center-basis: 20%;
+  --hero-right-basis: 30%;
+  /* tool logo size variable */
+  --tool-logo-size: 50px;
+
+  display: block;
+  color: #ffffff !important;
+  text-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), 0 4px 8px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  padding: var(--hero-padding);
+  border: 1px solid #09ff6c;
+}
+
+/* dark gradient overlay to improve text contrast on light hero images */
+body.project .project-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.65) 45%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* (padding unified in the main overlay block above) */
+
+/* Ensure the three columns inside the overlay align at the top.
+   Reset common top margins that cause vertical offsets and make
+   each direct child start from the same top edge. */
+/* top-level elements stack naturally now (no special overrides needed) */
+
+body.project .project-hero-overlay h1,
+body.project .project-hero-overlay .subtitle,
+body.project .project-hero-overlay .meta-row,
+body.project .project-hero-overlay .meta-right,
+body.project .project-hero-overlay .meta-left {
+  margin-top: 0;
+  /* 移除可能的顶部外边距 */
+  padding-top: 0;
+  border: 1px solid #09ff6c;
+}
+
+/* Paragraphs inside overlay should not add extra top gap */
+body.project .project-hero-overlay p {
+  margin-top: 0;
+}
+
+/* Make right meta stack vertically and align its content to the top/right */
+body.project .project-hero-overlay .meta-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  /* move left */
+  border: 1px solid #09ff6c;
+}
+
+body.project .project-hero-overlay h1 {
+  margin: 0;
+  font-size: 56px;
+  /* bigger title */
+  color: #ffffff !important;
+  font-weight: 800;
+  line-height: 1.02;
+  text-shadow: inherit;
+  max-width: 100%;
+}
+
+/* Use flex sizing so subtitle can grow and wrap without being clipped */
+body.project .project-hero-overlay .subtitle {
+  color: #ffffff !important;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-top: 6px;
+  text-shadow: inherit;
+  padding: 6px 0;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
+}
+
+/* overlay grid: left title/subtitle/meta, center tags, right tools+links */
+body.project .project-hero-overlay .overlay-grid {
+  display: grid;
+  grid-template-columns: var(--hero-title-basis) var(--hero-center-basis) var(--hero-right-basis);
+  gap: 50px;
+  align-items: start;
+  border: 1px solid #0988ff;
+}
+
+/* When tags (center) are absent, redistribute columns to 2:0:1 (collapse center) */
+body.project .project-hero-overlay .overlay-grid.no-center {
+  grid-template-columns: calc(var(--hero-title-basis) + var(--hero-center-basis)) 0 var(--hero-right-basis);
+}
+
+/* When right column is absent, redistribute to 2:1:0 (collapse right) */
+body.project .project-hero-overlay .overlay-grid.no-right {
+  grid-template-columns: var(--hero-title-basis) var(--hero-center-basis) 0;
+}
+
+body.project .project-hero-overlay .overlay-grid .col {
+  min-width: 0;
+}
+
+body.project .project-hero-overlay .col-left h1 {
+  margin: 0;
+  font-size: 56px;
+  line-height: 1.02;
+  font-weight: 800;
+}
+
+body.project .project-hero-overlay .col-left .subtitle {
+  margin-top: 6px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+body.project .project-hero-overlay .col-left .when {
+  margin-top: 10px;
+  opacity: 0.95;
+}
+
+body.project .project-hero-overlay .col-left .meta-items {
+  margin-top: 4px;
+  opacity: 0.95;
+}
+
+body.project .project-hero-overlay .col-center .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 1px solid #09ff6c;
+}
+
+body.project .project-hero-overlay .col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: right;
+  border: 1px solid #d609ff;
+}
+
+body.project .project-hero-overlay .col-right .tools-strip {
+  justify-content: flex-start;
+  border: 4px solid #90ff09;
+  gap: 14px;
+}
+
+@media (max-width: 880px) {
+  body.project .project-hero-overlay {
+    display: block;
+    bottom: 12px;
+    width: calc(100% - 24px);
+    /* smaller logos on mobile */
+    --tool-logo-size: 38px;
+  }
+
+  body.project .project-hero-overlay .overlay-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* stack to single column */
+    gap: 10px;
+  }
+
+  body.project .project-hero-overlay .col-right {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  body.project .project-hero-overlay .col-right .tools-strip {
+    justify-content: flex-start;
+  }
+
+  body.project .project-hero-overlay .col-left h1 {
+    font-size: 36px;
+  }
+
+  body.project .project-hero-overlay .col-left .subtitle {
+    font-size: 16px;
+  }
+}
+
+/* allow overlay to expand vertically but not overflow the viewport; scroll if needed */
+body.project .project-hero-overlay {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* legacy meta-row not used in new grid; keep minimal compatibility if present */
+body.project .project-hero-overlay .meta-row {
+  display: contents;
+}
+
+body.project .project-hero-overlay .meta-left,
+body.project .project-hero-overlay .meta-right {
+  color: #ffffff !important;
+}
+
+/* Ensure all text elements in overlay are white */
+body.project .project-hero-overlay * {
+  color: #ffffff !important;
+  text-shadow: inherit;
+}
+
+/* Better buttons on dark overlay */
+body.project .project-hero-overlay .btn {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff !important;
+}
+
+body.project .project-hero-overlay .btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+body.project .project-hero-overlay .badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-shadow: inherit;
+}
+
+/* Tools / skills logo strip */
+body.project .project-hero-overlay .tools-strip {
+  margin-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+body.project .project-hero-overlay .tool-logo img {
+  height: var(--tool-logo-size);
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+  border: 1px solid #ffde09;
+}
+
+body.project .project-hero-overlay .tool-logo,
+body.project .project-hero-overlay .tool-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.project .project-hero-overlay .tool-chip {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 12px;
+}
+
+/* Content spacing under hero */
+body.project .container {
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 0 18px;
+}
+
+body.project section h3 {
+  margin-top: 0;
+}
+
+@media (max-width: 800px) {
+  body.project .project-hero-overlay {
+    width: calc(100% - 24px);
+    bottom: 12px;
+  }
+
+  body.project .project-hero-overlay h1 {
+    font-size: 20px;
+  }
+
+  body.project .project-hero-media {
+    height: 48vh;
+  }
+}
+
+body.project .container,
+body.project header,
+body.project footer {
+  background: #fff;
+  color: #111;
+}
+
+.project h1,
+.project h2,
+.project h3 {
+  color: #0b0b0b;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.project p,
+.project .meta,
+.project .badge,
+.project .btn {
+  color: #222 !important;
+}
+
+.project .btn {
+  background: #f5f5f7;
+  border: 1px solid #e6e6e6;
+  color: #111;
+}
+
+.project .btn:hover {
+  background: #eef;
+}
+
+.project aside {
+  background: transparent;
+}
+
+.project .grid img.card {
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #f0f0f0;
+}
+
+.project img[alt=""] {
+  max-width: 100%;
+  display: block;
+}
+
+.project video {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.project section {
+  padding: 12px 0;
+  border-top: 1px solid #f2f2f2;
+}
+
+.project .badge {
+  background: #f1f1f1;
+  color: #111;
+}
+
+.project header p {
+  margin: 6px 0 0;
+  color: #444;
+}
+
+/* Make the content column and aside spacing cleaner */
+.project .container>div {
+  gap: 18px;
+}
+
+.project aside {
+  padding: 6px 0 0;
+}
+
+/* Improve link contrast inside project page */
+.project a {
+  color: #0b66f0;
+}
+
+/* Ensure footer on project looks consistent */
+.project footer {
+  background: #fff;
+  color: #666;
+  border-top: 1px solid #f4f4f4;
+  padding-top: 14px;
+}
+
+/* -----------------------------
+   Placeholder gallery styles for first project
+   Usage: copy the example HTML below into the project's gallery section
+   (e.g. in `public/project.php`) to show visual placeholders while
+   real images are being prepared.
+   ----------------------------- */
+.placeholder-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 12px 0 24px;
+}
+
+.placeholder-card {
+  background: linear-gradient(180deg, #e9e9ea, #f6f6f7);
+  border: 1px dashed rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.placeholder-card .label {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #444;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.placeholder-card.small {
+  height: 100px;
+}
+
+.placeholder-card.tall {
+  height: 220px;
+}
+
+/* Example HTML to paste into your project page:
+
+
+
+*/
+
+/* Carousel (左右切换大图) */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+}
+
+.carousel .slides {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+}
+
+.carousel .slide {
+  min-width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.carousel .controls {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.carousel .controls button {
+  pointer-events: all;
+  margin: 0 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  height: 44px;
+  width: 44px;
+  border-radius: 999px;
+}
+
+/* Numbered image + caption list */
+.numbered-list {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.numbered-item {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.numbered-item .num {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.numbered-item img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+.numbered-item .caption {
+  color: #222;
+}
+
+@media (min-width: 800px) {
+  .numbered-list {
+    grid-template-columns: 1fr;
+  }
+}
