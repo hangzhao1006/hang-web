@@ -27,10 +27,12 @@ function h($str)
         return '';
     return htmlspecialchars((string) $str, ENT_QUOTES, 'UTF-8');
 }
+// --- 【核心修改】接收视觉参数 ---
+// 1. Hero Height (默认 85vh)
 $heroHeight = (isset($meta['hero_height']) && $meta['hero_height']) ? $meta['hero_height'] . 'vh' : '85vh';
-// 2. Hero Scale: 默认 1.0
+// 2. Hero Scale (默认 1.0)
 $heroScale = $meta['hero_scale'] ?? 1.0;
-// 3. Hero Pos Y: 默认 50 (center)
+// 3. Hero Focus Y (默认 50, 即 center)
 $heroPosY = $meta['hero_pos_y'] ?? 50;
 ?>
 <!doctype html>
@@ -100,9 +102,11 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
 
             <?php if ($heroSrc): ?>
                 <?php if ($isVideo): ?>
-                    <video autoplay loop muted playsinline src="<?= h($heroSrc) ?>"></video>
+                    <video autoplay loop muted playsinline src="<?= h($heroSrc) ?>"
+                        style="object-position: center <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);"></video>
                 <?php else: ?>
-                    <img src="<?= h($heroSrc) ?>" alt="Hero" onerror="this.style.display='none'">
+                    <img src="<?= h($heroSrc) ?>" alt="Hero"
+                        style="object-position: center <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);">
                 <?php endif; ?>
             <?php else: ?>
                 <div style="width:100%;height:100%;background:#f0f0f0;"></div>
@@ -184,14 +188,14 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
                         <div class="row-content">
                             <?php
                             // 读取自定义样式
-                            $width = $b['width'] ?? '100%';
-                            $align = ($b['layout'] ?? 'center') === 'center' ? '0 auto' : '0';
+                            $wVal = $b['width'] ?? 100;
+                            $wStyle = $wVal . '%';
+                            $alignStyle = ($b['layout'] ?? 'center') === 'center' ? '0 auto' : '0';
                             ?>
-                            <figure class="large-image" style="width: <?= h($width) ?>; margin: <?= h($align) ?>;">
-                                <img src="<?= h($b['src']) ?>" alt="Image" loading="lazy">
+                            <figure class="large-image" style="width: <?= h($wStyle) ?>; margin: <?= $alignStyle ?>;">
+                                <img src="<?= h($b['src']) ?>" alt="Img">
                                 <?php if (!empty($b['caption'])): ?>
-                                    <figcaption><?= h($b['caption']) ?></figcaption>
-                                <?php endif; ?>
+                                    <figcaption><?= h($b['caption']) ?></figcaption><?php endif; ?>
                             </figure>
                         </div>
                     </section>

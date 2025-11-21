@@ -1,37 +1,107 @@
 /* css/admin.css */
 
 body.admin-page {
-    background-color: #f4f4f4; color: #333;
+    background-color: #f4f4f4;
+    color: #333;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* ... (Header/Container/Button styles same as before) ... */
-.admin-header { background: #111; color: #fff; padding: 15px 0; position: sticky; top: 0; z-index: 100; }
-.header-inner { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-.admin-header h1 { margin: 0; font-size: 1.2rem; font-weight: 600; letter-spacing: 1px; }
-.btn-text { color: #ccc; text-decoration: none; font-size: 0.9rem; margin-left: 20px; transition: color 0.2s; }
-.btn-text:hover { color: #fff; }
-.btn-text.danger:hover { color: #ff6b6b; }
-.admin-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-.btn-primary { background: #111; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
-.btn-primary:hover { background: #333; }
-.btn-danger { background: transparent; color: #d9534f; border: 1px solid #d9534f; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
-.btn-danger:hover { background: #d9534f; color: #fff; }
+.admin-header {
+    background: #111;
+    color: #fff;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.btn-text {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 20px;
+    transition: color 0.2s;
+}
+
+.btn-text:hover {
+    color: #fff;
+}
+
+.btn-text.danger:hover {
+    color: #ff6b6b;
+}
+
+.admin-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.btn-primary {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #333;
+}
+
+.btn-danger {
+    background: transparent;
+    color: #d9534f;
+    border: 1px solid #d9534f;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #d9534f;
+    color: #fff;
+}
 
 /* --- Sliders Specific (Fixed for visibility) --- */
 /* 确保滑块容器有足够的空间 */
 .range-control-group input[type=range] {
-    -webkit-appearance: none; /* 清除默认样式 */
+    -webkit-appearance: none;
+    /* 清除默认样式 */
     appearance: none;
     width: 100%;
-    height: 6px; /* 轨道高度 */
-    background: #ddd; /* 轨道颜色 */
+    height: 6px;
+    /* 轨道高度 */
+    background: #ddd;
+    /* 轨道颜色 */
     border-radius: 3px;
     outline: none;
     margin: 10px 0;
-    padding: 0; /* 移除 padding */
-    border: none; /* 移除 border */
+    padding: 0;
+    /* 移除 padding */
+    border: none;
+    /* 移除 border */
     cursor: pointer;
 }
 
@@ -42,10 +112,12 @@ body.admin-page {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #111; /* 滑块头颜色 */
+    background: #111;
+    /* 滑块头颜色 */
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    border: 2px solid #fff; /* 增加白色描边，使其更显眼 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 2px solid #fff;
+    /* 增加白色描边，使其更显眼 */
     /* 垂直居中修复：(18px - 6px) / 2 = 6px，但通常不需要负 margin 如果高度对齐了 */
     /* 在 WebKit 中，thumb 是相对于 track 的 content box 定位的 */
 }
@@ -57,7 +129,7 @@ body.admin-page {
     border-radius: 50%;
     background: #111;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border: 2px solid #fff;
 }
 
@@ -84,11 +156,25 @@ body.admin-page {
     gap: 25px;
     align-items: flex-start;
 }
-.visual-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.range-header {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.75rem; color: #555; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+
+.visual-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
+
+.range-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .range-val {
     font-family: 'Menlo', monospace;
     background: #fff;
@@ -101,39 +187,284 @@ body.admin-page {
 }
 
 /* ... (Rest of layout) ... */
-.login-card { background: #fff; padding: 40px; border-radius: 8px; max-width: 400px; margin: 100px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center; }
-.login-card input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-.actions-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.editor-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; border: 1px solid #eee; transition: all 0.3s ease; }
-.editor-card.hidden { display: none; }
-.card-header { padding: 20px; background: #fff; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-.card-header:hover { background: #fafafa; }
-.header-info { display: flex; align-items: center; gap: 15px; }
-.header-info .id { color: #999; font-family: monospace; }
-.header-info .title { font-size: 1.1rem; }
-.status-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: #eee; color: #666; }
-.status-badge.featured { background: #e0f7fa; color: #006064; }
-.arrow { transition: transform 0.3s; color: #999; }
-.editor-card.collapsed .card-body { display: none; }
-.editor-card.collapsed .arrow { transform: rotate(-90deg); }
-.editor-card.collapsed .card-header { border-bottom: none; }
-.tabs-nav { display: flex; background: #f9f9f9; border-bottom: 1px solid #eee; padding: 0 20px; gap: 20px; }
-.tab-btn { background: transparent; border: none; padding: 15px 0; cursor: pointer; font-weight: 500; color: #666; border-bottom: 2px solid transparent; transition: color 0.2s; }
-.tab-btn:hover { color: #333; }
-.tab-btn.active { color: #111; border-bottom-color: #111; }
-.tab-pane { display: none; padding: 30px; }
-.tab-pane.active { display: block; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.form-group { margin-bottom: 15px; }
-.form-group.full { grid-column: span 2; }
-label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #444; }
-input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
-input:focus, textarea:focus { border-color: #111; outline: none; }
-textarea.code-font { font-family: 'Menlo', 'Monaco', monospace; font-size: 0.85rem; background: #fcfcfc; }
-.hint { display: block; margin-top: 5px; font-size: 0.8rem; color: #999; }
-.checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.checkbox-label input { width: auto; }
-.divider { margin: 30px 0; border-bottom: 1px dashed #ddd; text-align: center; height: 10px; }
-.divider span { background: #fff; padding: 0 10px; color: #999; font-size: 0.8rem; font-weight: 500; }
-.card-actions { padding: 20px 30px; background: #fafafa; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-@media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .form-group.full { grid-column: span 1; } .tabs-nav { flex-wrap: wrap; gap: 10px; } }
+.login-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 100px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.editor-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.editor-card.hidden {
+    display: none;
+}
+
+.card-header {
+    padding: 20px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.card-header:hover {
+    background: #fafafa;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-info .id {
+    color: #999;
+    font-family: monospace;
+}
+
+.header-info .title {
+    font-size: 1.1rem;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #eee;
+    color: #666;
+}
+
+.status-badge.featured {
+    background: #e0f7fa;
+    color: #006064;
+}
+
+.arrow {
+    transition: transform 0.3s;
+    color: #999;
+}
+
+.editor-card.collapsed .card-body {
+    display: none;
+}
+
+.editor-card.collapsed .arrow {
+    transform: rotate(-90deg);
+}
+
+.editor-card.collapsed .card-header {
+    border-bottom: none;
+}
+
+.tabs-nav {
+    display: flex;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    padding: 0 20px;
+    gap: 20px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 15px 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s;
+}
+
+.tab-btn:hover {
+    color: #333;
+}
+
+.tab-btn.active {
+    color: #111;
+    border-bottom-color: #111;
+}
+
+.tab-pane {
+    display: none;
+    padding: 30px;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group.full {
+    grid-column: span 2;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #111;
+    outline: none;
+}
+
+textarea.code-font {
+    font-family: 'Menlo', 'Monaco', monospace;
+    font-size: 0.85rem;
+    background: #fcfcfc;
+}
+
+.hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    width: auto;
+}
+
+.divider {
+    margin: 30px 0;
+    border-bottom: 1px dashed #ddd;
+    text-align: center;
+    height: 10px;
+}
+
+.divider span {
+    background: #fff;
+    padding: 0 10px;
+    color: #999;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.card-actions {
+    padding: 20px 30px;
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Block Builder */
+.content-block-item { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin-bottom: 15px; position: relative; }
+.block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; cursor: grab; }
+.block-type { font-size: 0.7rem; font-weight: bold; background: #eee; padding: 2px 6px; border-radius: 3px; margin-right: auto; margin-left: 10px; }
+.add-block-bar { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd; }
+.add-block-btn { flex: 1; padding: 10px; background: #fff; border: 1px dashed #ccc; color: #666; cursor: pointer; border-radius: 4px; text-align: center; }
+.add-block-btn:hover { border-color: #333; color: #333; }
+
+/* --- 新增：删除按钮样式 --- */
+.block-header button.delete-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+.block-header button.delete-btn:hover {
+    color: #d9534f; /* 鼠标悬停变红色 */
+}
+
+/* --- 新增：后台图片预览样式 --- */
+.block-img-preview {
+    display: block;
+    max-width: 100%;      /* 宽度不超容器 */
+    max-height: 200px;    /* 高度限制在 200px 以内，防止太占地 */
+    width: auto;
+    height: auto;
+    margin: 10px auto;    /* 居中显示 */
+    border-radius: 4px;
+    border: 1px solid #eee;
+    background-color: #fafafa; /* 图片未加载时的背景色 */
+    object-fit: contain;  /* 保证图片完整显示在框内 */
+}
+/* 当没有 src 时隐藏预览图框，避免显示破碎图标 */
+.block-img-preview[src=""], .block-img-preview:not([src]) {
+     opacity: 0;
+     height: 0;
+     margin: 0;
+     border: none;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: span 1;
+    }
+
+    .tabs-nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
