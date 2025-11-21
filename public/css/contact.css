@@ -1,0 +1,190 @@
+/* css/contact.css */
+
+/* --- 1. 全局白底设定 --- */
+.contact-page {
+    background-color: #ffffff !important;
+    color: #111111;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none; /* 保持自定义鼠标 */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 隐藏主页的噪点 */
+.noise-overlay, .vignette {
+    display: none !important;
+}
+
+/* --- 2. 黑色光标适配 --- */
+#cursor-wrapper .cursor-main {
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+}
+#cursor-wrapper .cursor-reflection {
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    opacity: 0.15;
+}
+
+/* --- 3. 悬浮返回栏 --- */
+.fixed-nav {
+    position: fixed;
+    top: 40px; left: 60px;
+    z-index: 100;
+}
+.back-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.3s;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.back-link:hover {
+    transform: translateX(-5px);
+}
+
+/* --- 4. 布局容器 --- */
+.contact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 180px 60px 60px 60px;
+    flex: 1;
+}
+
+/* --- 5. Hero 区域 --- */
+.contact-hero {
+    margin-bottom: 120px;
+}
+
+.contact-hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 6rem; /* 巨大标题 */
+    font-weight: 800;
+    margin: 0 0 30px 0;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    color: #000;
+}
+
+.contact-hero .lead {
+    font-size: 1.5rem;
+    color: #555;
+    max-width: 600px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* --- 6. 联系方式列表 --- */
+.contact-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 两列布局 */
+    gap: 80px;
+}
+
+.link-group {
+    margin-bottom: 60px;
+}
+
+.link-group .label {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* 邮件大链接 */
+.big-link {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    margin-bottom: 15px;
+    cursor: none;
+    transition: color 0.3s;
+}
+.big-link:hover {
+    color: #555;
+}
+.big-link .arrow {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-left: 5px;
+    opacity: 0;
+    transition: all 0.3s;
+    transform: translate(-10px, 10px);
+}
+.big-link:hover .arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* 社交链接 */
+.social-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.social-link {
+    font-size: 1.4rem;
+    color: #000;
+    text-decoration: none;
+    cursor: none;
+    transition: padding-left 0.3s;
+    border-bottom: 1px solid transparent;
+    width: fit-content;
+}
+.social-link:hover {
+    padding-left: 10px;
+    border-bottom: 1px solid #000;
+}
+
+/* 地点文字 */
+.location-text {
+    font-size: 1.4rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #ccc;
+    font-size: 0.8rem;
+    margin-top: auto;
+}
+
+/* --- 响应式适配 --- */
+@media (max-width: 768px) {
+    .contact-container {
+        padding: 120px 20px 40px 20px;
+    }
+    .contact-hero h1 {
+        font-size: 3.5rem;
+    }
+    .contact-hero .lead {
+        font-size: 1.2rem;
+    }
+    .contact-links {
+        grid-template-columns: 1fr; /* 手机端变单列 */
+        gap: 40px;
+    }
+    .big-link {
+        font-size: 1.4rem;
+        word-break: break-all; /* 防止长邮箱撑破屏幕 */
+    }
+}

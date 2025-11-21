@@ -1,0 +1,262 @@
+/* css/about.css */
+
+/* --- 1. 全局白底设定 --- */
+.about-page {
+    background-color: #ffffff !important;
+    color: #111111;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none; /* 保持自定义鼠标 */
+    min-height: 100vh;
+}
+
+/* 隐藏主页的噪点 */
+.noise-overlay, .vignette {
+    display: none !important;
+}
+
+/* --- 2. 黑色光标适配 --- */
+#cursor-wrapper .cursor-main {
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+}
+#cursor-wrapper .cursor-reflection {
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    opacity: 0.15;
+}
+
+/* --- 3. 悬浮返回栏 --- */
+.fixed-nav {
+    position: fixed;
+    top: 40px; left: 60px;
+    z-index: 100;
+}
+.back-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.3s;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.back-link:hover {
+    transform: translateX(-5px);
+}
+
+/* --- 4. 布局容器 --- */
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 60px 60px 60px;
+    display: grid;
+    grid-template-columns: 350px 1fr; /* 左侧固定 350px，右侧自适应 */
+    gap: 80px;
+    position: relative;
+}
+
+/* --- 5. 左侧 Sidebar (Sticky) --- */
+.about-sidebar {
+    position: sticky;
+    top: 120px; /* 吸顶位置 */
+    height: fit-content;
+}
+
+.profile-visual {
+    margin-bottom: 40px;
+}
+
+.avatar {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    /* 柔和阴影 */
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+    display: block;
+}
+
+.caption {
+    margin-top: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bio-text h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.bio-text .lead {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.contact-links {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    color: #000;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+    cursor: none;
+    background: #fff;
+}
+.btn-pill:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+/* --- 6. 右侧内容区 --- */
+.about-content {
+    padding-top: 10px;
+}
+
+.block {
+    margin-bottom: 80px;
+}
+
+.block h3 {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+    margin: 0 0 30px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Tags Cloud */
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.tags-cloud span {
+    padding: 6px 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Resume Items (Education/Experience) */
+.resume-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    margin-bottom: 30px;
+}
+.resume-item .year {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #666;
+}
+.resume-item .details {
+    font-size: 1rem;
+    color: #222;
+}
+.resume-item strong {
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Text List */
+.text-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.text-list li {
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 20px;
+    font-size: 1.05rem;
+    color: #333;
+}
+.text-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: #ccc;
+}
+
+/* Skills Table */
+.skill-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 15px;
+}
+.skill-row .label {
+    font-weight: 600;
+    color: #000;
+}
+.skill-row .value {
+    color: #555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #ccc;
+    font-size: 0.8rem;
+}
+
+/* --- 响应式适配 --- */
+@media (max-width: 900px) {
+    .about-container {
+        grid-template-columns: 1fr; /* 变单列 */
+        padding: 100px 20px 40px 20px;
+        gap: 60px;
+    }
+    
+    .about-sidebar {
+        position: static; /* 取消吸顶 */
+    }
+    
+    .bio-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .resume-item {
+        grid-template-columns: 1fr; /* 年份换行 */
+        gap: 5px;
+    }
+    .resume-item .year {
+        font-size: 0.85rem;
+        opacity: 0.7;
+    }
+    
+    .skill-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+}

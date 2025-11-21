@@ -66,8 +66,8 @@ $projects = get_projects_filtered_joined($filters);
       <header>
         <h1><?= htmlspecialchars($config['site_name']) ?></h1>
         <nav class="nav">
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
+          <a href="/about.php">About</a>
+          <a href="/contact.php">Contact</a>
           <a href="/admin.php">Admin</a>
         </nav>
       </header>
@@ -90,7 +90,7 @@ $projects = get_projects_filtered_joined($filters);
         <span class="highlight">experiences</span> & visual <span class="highlight">narratives</span>.
     </div>
     <div class="hero-sub">
-        Based in Shanghai / Available for freelance
+        Based in Boston / Available for freelance
     </div>
   </div>
 
