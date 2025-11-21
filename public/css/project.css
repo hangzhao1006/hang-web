@@ -61,19 +61,34 @@
     justify-content: flex-end;
     margin-bottom: 100px;
     padding: 0 60px 40px 60px;
+    /* 确保背景颜色不是透明导致看起来像没加载 */
+    background-color: #f9f9f9; 
 }
 
 .hero-bg {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    z-index: -1;
+    z-index: 0; /* 修改为 0，确保在内容 (-1) 之下但在背景之上，或者调整 hero-content z-index */
 }
+
+/* 修正层级问题：让内容浮在图片上 */
+.hero-content {
+    position: relative;
+    z-index: 2; /* 提高层级 */
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
 .hero-bg img, .hero-bg video {
     width: 100%; height: 100%;
     object-fit: cover;
     filter: none; /* 白底不需要压暗图片，原色展示 */
+    display: block; /* 确保是块级元素 */
 }
+
+
 
 /* 底部渐变：从图片过渡到白色背景 */
 .hero-gradient {
@@ -84,13 +99,6 @@
     background: linear-gradient(to top, #ffffff, rgba(255,255,255,0));
 }
 
-.hero-content {
-    position: relative;
-    z-index: 10;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-}
 
 .title {
     font-family: 'Inter', sans-serif;
@@ -214,6 +222,35 @@
     font-size: 0.8rem;
     color: #bbb;
     border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.row-content strong {
+    color: #000; /* 粗体纯黑 */
+    font-weight: 600;
+}
+
+.row-content ul.md-list {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.row-content ul.md-list li {
+    list-style-type: disc;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.text-link {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-color: rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    cursor: pointer !important; /* 确保链接有鼠标手势 */
+    pointer-events: auto;
+}
+.text-link:hover {
+    text-decoration-color: #000;
+    background: rgba(0,0,0,0.05);
 }
 
 /* 响应式 */

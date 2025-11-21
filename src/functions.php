@@ -301,3 +301,46 @@ function norm_month($v) {
   $m = (int)$v;
   return ($m >= 1 && $m <= 12) ? $m : null;
 }
+
+function render_markdown($text) {
+    if (!$text) return '';
+    
+    // 1. 安全转义 (防止 XSS，但允许我们后续替换的标签)
+    $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+    
+    // 2. 替换链接 [text](url) -> <a href="url" target="_blank">text</a>
+    $text = preg_replace('/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2" target="_blank" class="text-link">$1</a>', $text);
+    
+    // 3. 替换粗体 **text** -> <strong>text</strong>
+    $text = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $text);
+    
+    // 4. 替换列表
+    // 将以 "- " 开头的行转换为列表项
+    $lines = explode("\n", $text);
+    $inList = false;
+    $out = [];
+    
+    foreach ($lines as $line) {
+        $trim = trim($line);
+        if (str_starts_with($trim, '- ')) {
+            if (!$inList) {
+                $out[] = '<ul class="md-list">';
+                $inList = true;
+            }
+            $content = substr($trim, 2);
+            $out[] = '<li>' . $content . '</li>';
+        } else {
+            if ($inList) {
+                $out[] = '</ul>';
+                $inList = false;
+            }
+            // 普通段落，非空行加 <p>
+            if ($trim !== '') {
+                $out[] = '<p>' . $line . '</p>';
+            }
+        }
+    }
+    if ($inList) $out[] = '</ul>';
+    
+    return implode("\n", $out);
+}
