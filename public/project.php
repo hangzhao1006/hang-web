@@ -15,6 +15,8 @@ if (!$project) {
 }
 
 $meta = !empty($project['meta_json']) ? (json_decode($project['meta_json'], true) ?: []) : [];
+$gallery = !empty($project['gallery_json']) ? (json_decode($project['gallery_json'], true) ?: []) : [];
+
 function g($key)
 {
     global $meta, $project;
@@ -27,7 +29,6 @@ function h($str)
     return htmlspecialchars((string) $str, ENT_QUOTES, 'UTF-8');
 }
 
-// Visual Params
 $heroHeight = (isset($meta['hero_height']) && $meta['hero_height']) ? $meta['hero_height'] . 'vh' : '85vh';
 $heroScale = $meta['hero_scale'] ?? 1.0;
 $heroPosY = $meta['hero_pos_y'] ?? 50;
@@ -44,7 +45,6 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
 </head>
 
 <body class="project-page">
-
     <div id="cursor-wrapper">
         <div class="cursor-main"></div>
         <div class="cursor-reflection"></div>
@@ -52,6 +52,7 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
     <nav class="project-nav"><a href="index.php" class="back-link"><span class="icon">←</span> Back</a></nav>
 
     <header class="project-hero" style="height: <?= h($heroHeight) ?>;">
+        <!-- Hero Logic (Same as before) -->
         <div class="hero-bg">
             <?php
             $heroMedia = $meta['hero_media'] ?? $project['hero_media'] ?? $project['image_url'];
@@ -106,49 +107,84 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
             </section>
         <?php endif; ?>
 
+
+        <!-- Gallery Slider (自动播放画廊) -->
+        <?php if (!empty($gallery)): ?>
+            <section class="content-row gallery-section mode-center">
+                <div class="row-label">Gallery</div>
+                <div class="row-content" style="width: 100%;">
+
+                    <div class="gallery-slider" id="gallery-slider">
+                        <div class="slider-track">
+                            <?php foreach ($gallery as $index => $item):
+                                $src = is_string($item) ? $item : ($item['src'] ?? '');
+                                $cap = is_array($item) ? ($item['caption'] ?? '') : '';
+                                if (!$src)
+                                    continue;
+                                ?>
+                                <div class="slide">
+                                    <img src="<?= h($src) ?>" alt="Gallery Image">
+                                    <?php if ($cap): ?>
+                                        <div class="slide-caption"><?= h($cap) ?></div><?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="slider-controls">
+                            <button class="prev-btn">←</button>
+                            <span class="slide-counter">1 / <?= count($gallery) ?></span>
+                            <button class="next-btn">→</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        <?php endif; ?>
+
         <?php
         $blocks = $meta['blocks'] ?? [];
         foreach ($blocks as $b):
             ?>
             <?php if ($b['type'] === 'text'): ?>
                 <section class="content-row">
-                    <!-- 左侧主标题 -->
-                    <div class="row-label">
-                        <?= h($b['label']) ?>
-                    </div>
-                    <!-- 右侧内容：循环渲染 Subtitle + Content -->
+                    <div class="row-label"><?= h($b['label']) ?></div>
                     <div class="row-content">
                         <?php
-                        // 兼容旧数据：如果只有 content，没有 sections，构造一个临时 section
                         $sections = $b['sections'] ?? [['subtitle' => $b['subtitle'] ?? '', 'content' => $b['content'] ?? '']];
-
                         foreach ($sections as $sec):
                             ?>
                             <div class="text-section-block" style="margin-bottom: 40px;">
                                 <?php if (!empty($sec['subtitle'])): ?>
                                     <h4 class="content-subtitle"><?= h($sec['subtitle']) ?></h4>
                                 <?php endif; ?>
-                                <div class="content-markdown">
-                                    <?= render_markdown($sec['content']) ?>
-                                </div>
+                                <div class="content-markdown"><?= render_markdown($sec['content']) ?></div>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 </section>
 
-            <?php elseif ($b['type'] === 'image'): ?>
+            <?php elseif ($b['type'] === 'image' || $b['type'] === 'video'): ?>
                 <?php
                 $wVal = $b['width'] ?? 100;
                 $wStyle = $wVal . '%';
                 $layout = $b['layout'] ?? 'center';
                 $rowClass = ($layout === 'center') ? 'content-row image-row mode-center' : 'content-row image-row';
                 $alignStyle = ($layout === 'center') ? '0 auto' : '0';
+                $isVideo = $b['type'] === 'video';
                 ?>
                 <section class="<?= $rowClass ?>">
                     <div class="row-label"><?= h($b['label'] ?? '') ?></div>
                     <div class="row-content">
                         <figure class="large-image" style="width: <?= h($wStyle) ?>; margin: <?= $alignStyle ?>;">
-                            <img src="<?= h($b['src']) ?>" alt="Img">
+                            <?php if ($isVideo):
+                                $attrs = !empty($b['autoplay']) ? 'autoplay loop muted playsinline' : 'controls';
+                                ?>
+                                <video src="<?= h($b['src']) ?>" <?= $attrs ?> style="width:100%; display:block;"></video>
+                            <?php else: ?>
+                                <img src="<?= h($b['src']) ?>" alt="Img">
+                            <?php endif; ?>
+
                             <?php if (!empty($b['caption'])): ?>
                                 <figcaption><?= h($b['caption']) ?></figcaption><?php endif; ?>
                         </figure>
@@ -156,6 +192,8 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
                 </section>
             <?php endif; ?>
         <?php endforeach; ?>
+
+        <!-- Gallery always visible if exists -->
     </main>
 
     <footer class="project-footer">

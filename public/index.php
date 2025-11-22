@@ -130,7 +130,7 @@ $projects = get_projects_filtered_joined($filters);
   </div>
 
   <footer>
-    <p>© <?= date('Y') ?> <?= htmlspecialchars($config['site_name']) ?></p>
+    <p>© <?= date('Y') ?> <?= htmlspecialchars($config['site_name']) ?>, All Rights Reserved.</p>
   </footer>
 
   <script src="script/test.js" defer></script>

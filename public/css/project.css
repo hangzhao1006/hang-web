@@ -1,6 +1,6 @@
-/* css/project.css - Final Visual Polish */
+/* css/project.css */
 
-/* --- 1. 全局基础 --- */
+/* ... (前文省略，保持不变) ... */
 .project-page {
     background-color: #ffffff !important;
     color: #111111;
@@ -16,7 +16,6 @@
     display: none !important;
 }
 
-/* --- 2. 黑色光标 --- */
 #cursor-wrapper .cursor-main {
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
@@ -27,7 +26,6 @@
     opacity: 0.15;
 }
 
-/* --- 3. 导航 --- */
 .project-nav {
     position: fixed;
     top: 40px;
@@ -54,7 +52,7 @@
     transform: translateX(-5px);
 }
 
-/* --- 4. Hero --- */
+/* Hero */
 .project-hero {
     position: relative;
     width: 100%;
@@ -106,21 +104,15 @@
     padding: 0 60px 40px;
 }
 
-/* 【修改点 2】Title 增强 */
 .title {
-    font-family: 'Inter', -apple-system, sans-serif;
     font-size: 6rem;
-    /* 字号加大 */
     font-weight: 900;
-    /* 字重加粗 */
-    text-transform: uppercase;
-    /* 全大写，视觉冲击力更强 */
     line-height: 0.95;
     margin: 0 0 25px 0;
     color: #000;
-    letter-spacing: -0.03em;
-    /* 字母缩进，更紧凑 */
     text-shadow: 0 20px 40px rgba(255, 255, 255, 0.9);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
 }
 
 .subtitle {
@@ -179,24 +171,21 @@
     border-color: #000;
 }
 
-/* --- 5. 正文排版 --- */
+/* Body */
 .project-body {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 60px;
 }
 
-/* 默认布局：左标签 + 右内容 (Sidebar Layout) */
 .content-row {
     display: grid;
     grid-template-columns: 180px 1fr;
-    /* 固定左栏 180px */
     gap: 60px;
     margin-bottom: 100px;
     align-items: start;
 }
 
-/* 标签样式 */
 .row-label {
     font-family: monospace;
     font-size: 0.8rem;
@@ -208,19 +197,26 @@
     text-align: left;
 }
 
-/* Subtitle 样式 */
 .row-sub {
     font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.9rem;
-    color: #444;
-    font-weight: 600;
-    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 6px;
     text-transform: none;
     line-height: 1.4;
     white-space: pre-wrap;
 }
 
-/* 内容区 */
+.content-subtitle {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 10px;
+    margin-top: 0;
+    text-transform: none;
+}
+
 .row-content {
     min-width: 0;
 }
@@ -232,18 +228,14 @@
     color: #222;
 }
 
-/* 【修改点 1】Overview (Lead Text) 调小 */
 .lead-text p {
     font-size: 1.35rem;
-    /* 之前是 1.8rem，改小 */
     line-height: 1.6;
     font-weight: 400;
-    /* 稍微细一点，显得更精致 */
     color: #111;
     letter-spacing: 0;
 }
 
-/* --- 修复 List 渲染问题 --- */
 .row-content ul {
     list-style: disc;
     padding-left: 20px;
@@ -286,30 +278,20 @@
     align-items: center;
 }
 
-/* --- 图片样式 --- */
-.large-image {
+/* Images & Video */
+.large-image,
+.large-media {
     display: block;
 }
 
-.large-image img {
+.large-image img,
+.large-media video {
     max-width: 100%;
     height: auto;
     display: block;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     border-radius: 2px;
-}
-
-/* 画廊 */
-.gallery-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 80px;
-}
-
-.gallery-grid img {
-    width: 100%;
-    display: block;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    background: #f5f5f5;
 }
 
 figcaption {
@@ -318,6 +300,106 @@ figcaption {
     color: #777;
     text-align: center;
     font-family: monospace;
+}
+
+/* --- Gallery Slider Styles (Updated) --- */
+/* --- Gallery Slider Styles (Fixed Shadow Clipping) --- */
+.gallery-slider {
+    width: 100%;
+    position: relative;
+    overflow: hidden; /* 必须保留以隐藏其他幻灯片 */
+    
+    /* 【修复】增加内边距，给阴影留出足够的显示空间 */
+    /* 上: 20px, 左右: 0, 下: 80px (足够容纳大阴影) */
+    padding: 20px 0 80px 0; 
+    
+    /* 调整外边距以抵消内边距带来的视觉偏移 */
+    margin-bottom: -40px; 
+}
+
+.slider-track {
+    display: flex;
+    /* 初始不设 transition，由 JS 动态控制，防止页面加载时闪烁 */
+    transform: translateX(0);
+    gap: 0; 
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    
+    /* 【修复】左右增加 Padding，防止宽图阴影被左右切掉 */
+    padding: 0 30px; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide img {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+    
+    /* 改回精致的 12px 圆角，40px 太大了 */
+    border-radius: 12px; 
+    
+    /* 【高级悬浮阴影】 */
+    /* Y轴偏移 25px，模糊 50px，扩展 -12px (收缩) */
+    /* 这种阴影不仅柔和，而且因为向内收缩，看起来真的是浮起来的 */
+    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15);
+    
+    background: #fafafa;
+    display: block;
+}
+
+.slide-caption {
+    margin-top: 15px;
+    text-align: center;
+    font-family: monospace;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* Slider Controls */
+.slider-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 0 10px;
+    font-family: 'Courier New', monospace;
+    color: #333;
+}
+
+.prev-btn,
+.next-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: none;
+    /* 自定义鼠标 */
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.slide-counter {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
 }
 
 /* Footer */
@@ -330,7 +412,6 @@ figcaption {
     border-top: 1px solid #f0f0f0;
 }
 
-/* 响应式 */
 @media (max-width: 768px) {
     .project-hero {
         height: auto;
@@ -348,7 +429,6 @@ figcaption {
 
     .title {
         font-size: 3.5rem;
-        /* 移动端稍微小一点，但依然要大 */
     }
 
     .info-hud {

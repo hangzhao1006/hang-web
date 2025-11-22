@@ -164,7 +164,7 @@ $config = require __DIR__ . '/../src/config.php';
     </main>
 
     <footer>
-        <p>© <?= date('Y') ?> <?= htmlspecialchars($config['site_name']) ?></p>
+        <p>© <?= date('Y') ?> <?= htmlspecialchars($config['site_name']) ?>, All Rights Reserved.</p>
     </footer>
 
     <!-- 引入 JS -->
