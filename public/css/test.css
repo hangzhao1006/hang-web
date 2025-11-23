@@ -263,36 +263,33 @@ header h1 {
 .grid-item::before {
   content: '';
   position: absolute;
-  top: -5%;
-  left: -5%;
-  width: 110%;
-  height: 110%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
   background-image: var(--project-img);
   background-size: cover;
-  background-position: center;
+  background-position: 50% var(--cover-pos-y, 50%);
+  background-repeat: no-repeat;
 
   /* 默认状态：隐藏，且带有扭曲滤镜 */
   opacity: 0;
-  transform: scale(1.2);
-  filter: grayscale(100%) contrast(120%) brightness(0.7) url(#glass-warp);
+  transform: scale(calc(1.05 * var(--cover-scale, 1)));
+  filter: grayscale(100%) contrast(120%) brightness(0.7);
 
-  /* 【关键修改】Transition Delay 
-     离开时：opacity 立即变0 (耗时0.5s)，但 filter 延迟 0.5s 才变回扭曲。
-     这样就看不到变回去的那个瞬间了。
-  */
+  /* 平滑过渡效果 */
   transition:
-    opacity 0.6s ease 0s,
+    opacity 0.6s ease,
     transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
-    filter 0s linear 0.5s;
-  /* 延迟 0.5s */
+    filter 0.8s ease;
 }
 
 .grid-item:hover::before {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(var(--cover-scale, 1));
   /* 悬停时：变为彩色，去掉扭曲 */
-  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1) url(#glass-warp);
+  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
 
   /* 进入时：立即生效，没有延迟 */
   /* transition:
@@ -405,5 +402,31 @@ footer {
 
   .filters {
     display: none;
+  }
+
+  /* 移动端隐藏自定义鼠标 */
+  #cursor-wrapper {
+    display: none !important;
+  }
+
+  /* 恢复默认鼠标 */
+  body,
+  html,
+  * {
+    cursor: auto !important;
+  }
+
+  /* 移动端直接显示彩色封面，不需要 hover */
+  .grid-item::before {
+    opacity: 1 !important;
+    transform: scale(var(--cover-scale, 1)) !important;
+    filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1) !important;
+  }
+
+  /* 移动端标题和元数据始终可见 */
+  .grid-item .content h2,
+  .grid-item .content p {
+    opacity: 1 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 }

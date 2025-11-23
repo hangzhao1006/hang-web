@@ -70,6 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $meta['hero_scale'] = $_POST["visual_hero_scale"];
       if (isset($_POST["visual_hero_pos_y"]))
         $meta['hero_pos_y'] = $_POST["visual_hero_pos_y"];
+      if (isset($_POST["visual_cover_scale"]))
+        $meta['cover_scale'] = $_POST["visual_cover_scale"];
+      if (isset($_POST["visual_cover_pos_y"]))
+        $meta['cover_pos_y'] = $_POST["visual_cover_pos_y"];
       if (!empty($_POST['meta_links_json']))
         $meta['links'] = json_decode($_POST['meta_links_json'], true);
 
@@ -428,6 +432,8 @@ $projects = $is_logged_in ? get_projects(false) : [];
           $hHeight = $meta['hero_height'] ?? 85;
           $hScale = $meta['hero_scale'] ?? 1.0;
           $hPosY = $meta['hero_pos_y'] ?? 50;
+          $cScale = $meta['cover_scale'] ?? 1.0;
+          $cPosY = $meta['cover_pos_y'] ?? 50;
           ?>
           <div class="editor-card collapsed" id="project-<?= $p['id'] ?>">
             <div class="card-header" onclick="toggleEdit(<?= $p['id'] ?>)">
@@ -488,6 +494,22 @@ $projects = $is_logged_in ? get_projects(false) : [];
                   <div class="form-group"><label>Cover URL (for project card)</label><input name="image_url"
                       value="<?= htmlspecialchars($p['image_url']) ?>"><input type="file" name="cover" accept="image/*"
                       style="margin-top:5px;"></div>
+
+                  <div class="visual-controls">
+                    <div class="visual-col">
+                      <div class="range-header"><span>Cover Scale</span><span class="range-val"
+                          id="cs-<?= $p['id'] ?>"><?= $cScale ?>x</span></div><input type="range" name="visual_cover_scale"
+                        min="1.0" max="3.0" step="0.1" value="<?= $cScale ?>"
+                        oninput="document.getElementById('cs-<?= $p['id'] ?>').innerText=this.value+'x'">
+                    </div>
+                    <div class="visual-col">
+                      <div class="range-header"><span>Cover Focus Y</span><span class="range-val"
+                          id="cp-<?= $p['id'] ?>"><?= $cPosY ?>%</span></div><input type="range" name="visual_cover_pos_y"
+                        min="0" max="100" step="5" value="<?= $cPosY ?>"
+                        oninput="document.getElementById('cp-<?= $p['id'] ?>').innerText=this.value+'%'">
+                    </div>
+                  </div>
+
                   <div class="divider"><span>Hero Visuals</span></div>
                   <div class="form-group"><label>Hero Image/Video URL (leave empty to use Cover URL)</label><input name="meta_hero_media"
                       value="<?= htmlspecialchars($meta['hero_media'] ?? '') ?>" placeholder="/uploads/hero.jpg or .mp4"></div>
