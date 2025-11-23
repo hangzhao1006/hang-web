@@ -50,7 +50,7 @@ $config = require __DIR__ . '/../src/config.php';
                 
                 <div class="contact-links">
                     <a href="mailto:hangzhao1006@gmail.com" class="btn-pill">Email Me ↗</a>
-                    <a href="#" target="_blank" class="btn-pill">LinkedIn ↗</a>
+                    <a href="https://www.linkedin.com/in/hang-zhao-131b43364/" target="_blank" class="btn-pill">LinkedIn ↗</a>
                 </div>
             </div>
         </aside>

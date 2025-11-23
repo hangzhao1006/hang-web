@@ -380,12 +380,9 @@ footer {
   height: 3em;
   /* 字体大小的 3 倍 */
   width: auto;
-  color: rgb(170, 170, 170);
+  color: black;
 }
 
-.footer-logo path {
-  fill: currentColor;
-}
 
 @media (max-width: 1024px) {
   .glass-grid {

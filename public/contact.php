@@ -56,9 +56,9 @@ $config = require __DIR__ . '/../src/config.php';
             <div class="link-group">
                 <div class="label">Social</div>
                 <div class="social-row">
-                    <a href="#" target="_blank" class="social-link">LinkedIn ↗</a>
-                    <a href="#" target="_blank" class="social-link">Instagram ↗</a>
-                    <a href="#" target="_blank" class="social-link">GitHub ↗</a>
+                    <a href="https://www.linkedin.com/in/hang-zhao-131b43364/" target="_blank" class="social-link">LinkedIn ↗</a>
+                    <a href="https://www.instagram.com/hang01060/?next=%2F" target="_blank" class="social-link">Instagram ↗</a>
+                    <a href="https://github.com/hangzhao1006" target="_blank" class="social-link">GitHub ↗</a>
                 </div>
             </div>
 
