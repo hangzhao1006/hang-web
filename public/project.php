@@ -95,9 +95,26 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
             <?php if ($sub = g('subtitle')): ?>
                 <p class="subtitle"><?= h($sub) ?></p><?php endif; ?>
             <div class="info-hud">
-                <div class="hud-item"><label>Year</label><span><?= h($project['year']) ?></span></div>
+                <div class="hud-item year"><label>Year</label><span><?= h($project['year']) ?></span></div>
                 <div class="hud-item"><label>Role</label><span><?= h(g('role')) ?></span></div>
-                <div class="hud-item"><label>Context</label><span><?= h(g('client')) ?></span></div>
+                <div class="hud-item tools">
+                    <label>Tools</label>
+                    <span>
+                        <?php
+                        $tools = g('tool');
+                        if ($tools) {
+                            // 支持逗号分隔的工具列表
+                            $toolList = array_map('trim', explode(',', $tools));
+                            foreach ($toolList as $tool):
+                                if ($tool): ?>
+                                    <span class="tool-tag"><?= h($tool) ?></span>
+                                <?php endif;
+                            endforeach;
+                        }
+                        ?>
+                    </span>
+                </div>
+                <div class="hud-item context"><label>Context</label><span><?= h(g('client')) ?></span></div>
                 <?php
                 $links = g('links');
                 if (is_string($links))

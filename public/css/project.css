@@ -389,7 +389,8 @@ body {
 
 .info-hud {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* grid-template-columns: repeat(5, 1fr); */
+    grid-template-columns: 0.6fr 1fr 1.7fr 1.7fr;
     gap: 40px;
     padding-top: 25px;
     border-top: 1px solid #000;
@@ -410,9 +411,65 @@ body {
 
 .hud-item span {
     font-size: 1rem;
-    font-weight: 600;
+    font-family: monospace, 'Courier New', Courier;
+    font-weight: 500;
     color: #000;
 }
+
+/* Tools 标签样式 - 玻璃形态效果 */
+.hud-item.tools span {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tool-tag {
+    display: inline-block;
+    padding: 6px 10px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-family: monospace, 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    color: #111;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+
+    /* 玻璃形态背景 - 和 header 一致 */
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.4) 100%);
+    backdrop-filter: blur(10px) saturate(170%);
+    -webkit-backdrop-filter: blur(10px) saturate(170%);
+
+    /* border: 1px solid rgba(9, 9, 9, 0.598); */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+                0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.tool-tag:hover {
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 0.88) 100%);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* .hud-item.year {
+    grid-column: span 0.5;
+}
+
+.hud-item.context {
+    grid-column: span 2;
+}
+
+.hud-item.tools {
+    grid-column: span 1;
+} */
+
 
 .link-group {
     display: flex;

@@ -456,9 +456,9 @@ $projects = $is_logged_in ? get_projects(false) : [];
                     </div>
                     <div class="form-group"><label>Role</label><input name="meta_role"
                         value="<?= htmlspecialchars($meta['role'] ?? '') ?>"></div>
-                    <div class="form-group"><label>Tools</label><input name="meta_tool"
-                        value="<?= htmlspecialchars($meta['tool'] ?? '') ?>"></div>
-                    <div class="form-group"><label>Client</label><input name="meta_client"
+                    <div class="form-group full"><label>Tools (comma-separated)</label><input name="meta_tool"
+                        value="<?= htmlspecialchars($meta['tool'] ?? '') ?>" placeholder="e.g. Python, OpenCV, Blender"></div>
+                    <div class="form-group full"><label>Client</label><input name="meta_client"
                         value="<?= htmlspecialchars($meta['client'] ?? '') ?>"></div>
                     <div class="form-group full"><label>Tags</label><input name="tags"
                         value="<?= htmlspecialchars($p['tags']) ?>"></div>
@@ -485,10 +485,12 @@ $projects = $is_logged_in ? get_projects(false) : [];
 
                 <!-- Tab 3 (Gallery Added Here) -->
                 <div class="tab-pane" data-tab="media-<?= $p['id'] ?>">
-                  <div class="form-group"><label>Cover URL</label><input name="image_url"
+                  <div class="form-group"><label>Cover URL (for project card)</label><input name="image_url"
                       value="<?= htmlspecialchars($p['image_url']) ?>"><input type="file" name="cover" accept="image/*"
                       style="margin-top:5px;"></div>
                   <div class="divider"><span>Hero Visuals</span></div>
+                  <div class="form-group"><label>Hero Image/Video URL (leave empty to use Cover URL)</label><input name="meta_hero_media"
+                      value="<?= htmlspecialchars($meta['hero_media'] ?? '') ?>" placeholder="/uploads/hero.jpg or .mp4"></div>
                   <div class="visual-controls">
                     <div class="visual-col">
                       <div class="range-header"><span>Height</span><span class="range-val"
