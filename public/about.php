@@ -103,15 +103,15 @@ $config = require __DIR__ . '/../src/config.php';
                 <div class="resume-item">
                     <div class="year">2023 Summer</div>
                     <div class="details">
-                        <strong>Chery Automobile iCar</strong><br>
-                        Interaction Design Intern · Created promo videos (VFX) & interactive installations for BJDW.
+                        <strong>To Be Updated</strong><br>
+                        XXX
                     </div>
                 </div>
                 <div class="resume-item">
                     <div class="year">2022 Summer</div>
                     <div class="details">
-                        <strong>Suzhou Museum — New Media Center</strong><br>
-                        Creative Technologist · Developed wearable interactive components (Arduino + textiles).
+                        <strong>To Be Updated</strong><br>
+                        XXX
                     </div>
                 </div>
             </div>

@@ -234,7 +234,7 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
     </main>
 
     <footer class="project-footer">
-        <p>© <?= date('Y') ?> <?= h($config['site_name']) ?></p>
+        <p>© <?= date('Y') ?> <?= h($config['site_name']) ?>, All Rights Reserved.</p>
         <img src="/uploads/logo.svg" class="footer-logo">
     </footer>
     <script src="script/test.js"></script>
