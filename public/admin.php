@@ -59,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function collect_meta_data()
     {
       $meta = [];
-      foreach (['subtitle', 'role', 'duration', 'team', 'client', 'hero_media'] as $k) {
+      // include 'tool' so meta_tool from the form is saved into meta_json
+      foreach (['subtitle', 'role', 'duration', 'team', 'client', 'hero_media', 'tool'] as $k) {
         if (!empty($_POST["meta_{$k}"]))
           $meta[$k] = trim($_POST["meta_{$k}"]);
       }
@@ -455,6 +456,8 @@ $projects = $is_logged_in ? get_projects(false) : [];
                     </div>
                     <div class="form-group"><label>Role</label><input name="meta_role"
                         value="<?= htmlspecialchars($meta['role'] ?? '') ?>"></div>
+                    <div class="form-group"><label>Tools</label><input name="meta_tool"
+                        value="<?= htmlspecialchars($meta['tool'] ?? '') ?>"></div>
                     <div class="form-group"><label>Client</label><input name="meta_client"
                         value="<?= htmlspecialchars($meta['client'] ?? '') ?>"></div>
                     <div class="form-group full"><label>Tags</label><input name="tags"
