@@ -1,31 +1,286 @@
-/* css/project.css */
+/* ================================
+   Project Page Global Setup
+   ================================ */
 
-/* ... (前文省略，保持不变) ... */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    cursor: none;
+    overflow-x: hidden;
+}
+
+/* 白底项目页 */
 .project-page {
     background-color: #ffffff !important;
     color: #111111;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.6;
-    overflow-x: hidden;
-    cursor: none;
     min-height: 100vh;
 }
 
+/* 如有其它页面全局噪点/暗角元素，project 页强制隐藏 */
 .noise-overlay,
 .vignette {
     display: none !important;
 }
 
+
+/* ================================
+   Custom Cursor
+   ================================ */
+
+#cursor-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 60px;
+    pointer-events: none;
+    z-index: 999;
+    mix-blend-mode: normal;
+}
+
 #cursor-wrapper .cursor-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat;
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
 }
 
 #cursor-wrapper .cursor-reflection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
     background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19823L11.4818 12.1799L5.65376 12.3673Z' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat;
     opacity: 0.15;
+    transform-origin: 0 0;
+    transform: scaleY(-1) skewX(-10deg) translateY(2px);
+    filter: blur(1px);
 }
 
+
+/* ================================
+   Header: Logo + Name + Nav
+   （对齐 index 页 .ui-layer）
+   ================================ */
+/* .project-header  {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(87, 87, 87, 0.8), transparent);
+} */
+
+/* .project-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+
+  padding: 40px 60px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.10) 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0) 100%
+  );
+
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+} */
+
+.project-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 100;
+    padding: 40px 60px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* 玻璃条放在伪元素里，文字层在上面 */
+.project-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.08) 30%,
+            rgba(255, 255, 255, 0.03) 65%,
+            rgba(255, 255, 255, 0.00) 100%);
+    backdrop-filter: blur(10px) saturate(170%);
+    -webkit-backdrop-filter: blur(10px) saturate(170%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 文本层默认：在 hero 上，用浅色 */
+.project-header h1,
+.project-header .home-link,
+.project-footer,
+.project-header .nav a {
+    position: relative;
+    z-index: 1;
+    color: #ffffff;
+    text-decoration: none;
+    mix-blend-mode: normal;
+    /* 不再用 difference */
+}
+
+/* 布局保持你原来的样式 */
+.project-header h1 {
+    margin: -5px 0 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.project-header .header-logo {
+    height: 1.2rem;
+    width: auto;
+    display: block;
+    filter: invert(0);
+}
+
+.project-footer .footer-logo.dark-mode {
+    filter: invert(0.35);
+}
+
+.project-header .header-logo.dark-mode {
+    filter: invert(0.5);
+}
+
+.project-header .nav a {
+    margin-left: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    cursor: none;
+}
+
+.project-header .nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s;
+}
+
+.project-header .nav a:hover::after {
+    width: 100%;
+}
+
+.project-header * {
+    pointer-events: auto;
+}
+
+/* ⭐ 当 header 进入白底区域时，加上 .on-light：文字全部变深色 */
+.project-header.on-light h1,
+.project-header.on-light .home-link,
+.project-footer.on-light,
+.project-header.on-light .nav a {
+    color: #808080;
+}
+
+
+/* logo 保持正常 */
+.project-header .header-logo {
+    height: 1.2rem;
+    width: auto;
+    display: block;
+    filter: invert(0);
+    mix-blend-mode: difference !important;
+}
+
+】
+
+/* 点击回首页的区域（包着 logo + 文本） */
+.home-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* 顶部导航 */
+.nav a {
+    margin-left: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    /* color: #fff; */
+    text-decoration: none;
+    cursor: none;
+}
+
+.nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    /* background: #fff; */
+    transition: width 0.3s;
+}
+
+.nav a:hover::after {
+    width: 100%;
+}
+
+/* 如果以后启用 “Back” 链接可以用到 */
 .project-nav {
     position: fixed;
     top: 40px;
@@ -52,7 +307,11 @@
     transform: translateX(-5px);
 }
 
-/* Hero */
+
+/* ================================
+   Hero Section
+   ================================ */
+
 .project-hero {
     position: relative;
     width: 100%;
@@ -90,7 +349,10 @@
     left: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 1) 100%);
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 60%,
+            rgba(255, 255, 255, 1) 100%);
     z-index: 1;
     pointer-events: none;
 }
@@ -171,7 +433,11 @@
     border-color: #000;
 }
 
-/* Body */
+
+/* ================================
+   Body & Content Layout
+   ================================ */
+
 .project-body {
     max-width: 1000px;
     margin: 0 auto;
@@ -255,7 +521,7 @@
     display: list-item;
 }
 
-/* Center Mode */
+/* 居中模式（Gallery 用到） */
 .content-row.mode-center {
     display: flex;
     flex-direction: column;
@@ -278,7 +544,7 @@
     align-items: center;
 }
 
-/* Images & Video */
+/* 图片 / 视频 Block */
 .large-image,
 .large-media {
     display: block;
@@ -302,35 +568,29 @@ figcaption {
     font-family: monospace;
 }
 
-/* --- Gallery Slider Styles (Updated) --- */
-/* --- Gallery Slider Styles (Fixed Shadow Clipping) --- */
+
+/* ================================
+   Gallery Slider
+   ================================ */
+
 .gallery-slider {
     width: 100%;
     position: relative;
-    overflow: hidden; /* 必须保留以隐藏其他幻灯片 */
-    
-    /* 【修复】增加内边距，给阴影留出足够的显示空间 */
-    /* 上: 20px, 左右: 0, 下: 80px (足够容纳大阴影) */
-    padding: 20px 0 80px 0; 
-    
-    /* 调整外边距以抵消内边距带来的视觉偏移 */
-    margin-bottom: -40px; 
+    overflow: hidden;
+    padding: 20px 0 80px 0;
+    margin-bottom: -40px;
 }
 
 .slider-track {
     display: flex;
-    /* 初始不设 transition，由 JS 动态控制，防止页面加载时闪烁 */
     transform: translateX(0);
-    gap: 0; 
+    gap: 0;
 }
 
 .slide {
     min-width: 100%;
     box-sizing: border-box;
-    
-    /* 【修复】左右增加 Padding，防止宽图阴影被左右切掉 */
-    padding: 0 30px; 
-    
+    padding: 0 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -342,15 +602,8 @@ figcaption {
     height: auto;
     max-height: 80vh;
     object-fit: contain;
-    
-    /* 改回精致的 12px 圆角，40px 太大了 */
-    border-radius: 12px; 
-    
-    /* 【高级悬浮阴影】 */
-    /* Y轴偏移 25px，模糊 50px，扩展 -12px (收缩) */
-    /* 这种阴影不仅柔和，而且因为向内收缩，看起来真的是浮起来的 */
+    border-radius: 12px;
     box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15);
-    
     background: #fafafa;
     display: block;
 }
@@ -363,7 +616,6 @@ figcaption {
     font-size: 0.85rem;
 }
 
-/* Slider Controls */
 .slider-controls {
     display: flex;
     justify-content: space-between;
@@ -382,7 +634,6 @@ figcaption {
     width: 40px;
     height: 40px;
     cursor: none;
-    /* 自定义鼠标 */
     transition: all 0.3s;
     display: flex;
     align-items: center;
@@ -402,7 +653,11 @@ figcaption {
     letter-spacing: 2px;
 }
 
-/* Footer */
+
+/* ================================
+   Footer
+   ================================ */
+
 .project-footer {
     margin-top: 150px;
     padding: 80px 0;
@@ -411,6 +666,11 @@ figcaption {
     color: #ccc;
     border-top: 1px solid #f0f0f0;
 }
+
+
+/* ================================
+   Responsive
+   ================================ */
 
 @media (max-width: 768px) {
     .project-hero {

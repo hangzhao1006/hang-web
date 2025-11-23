@@ -42,6 +42,7 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/test.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/project.css?v=<?= time() ?>">
+
 </head>
 
 <body class="project-page">
@@ -49,7 +50,26 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
         <div class="cursor-main"></div>
         <div class="cursor-reflection"></div>
     </div>
-    <nav class="project-nav"><a href="index.php" class="back-link"><span class="icon">←</span> Back</a></nav>
+    <!-- <nav class="project-nav"><a href="index.php" class="back-link"><span class="icon">←</span> Back</a></nav> -->
+
+    <header class="project-header is-dark">
+        <!-- h1：和 index.php 一模一样 -->
+        <h1>
+            <img src="/uploads/logo.svg" alt="Hang Zhao Logo" class="header-logo">
+            <span><?= htmlspecialchars($config['site_name']) ?></span>
+        </h1>
+
+        <!-- nav：project 自己的链接 & 样式 -->
+        <nav class="nav">
+            <a href="index.php">Selected Works</a>
+            <a href="about.php">About</a>
+            <a href="contact.php">Contact</a>
+            <a href="admin.php">Admin</a>
+        </nav>
+    </header>
+
+
+
 
     <header class="project-hero" style="height: <?= h($heroHeight) ?>;">
         <!-- Hero Logic (Same as before) -->
@@ -198,8 +218,52 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
 
     <footer class="project-footer">
         <p>© <?= date('Y') ?> <?= h($config['site_name']) ?></p>
+        <img src="/uploads/logo.svg" class="footer-logo">
     </footer>
     <script src="script/test.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const header = document.querySelector('.project-header');
+            const hero = document.querySelector('.project-hero');
+            const footer = document.querySelector('.project-footer');
+
+            if (!header || !hero) return;
+
+            const observer = new IntersectionObserver(([entry]) => {
+                // hero 还占屏幕上方 >40%：认为在 hero 区 → header 用浅色
+                if (entry.intersectionRatio > 0.4) {
+                    header.classList.remove('on-light');
+                    if (footer) footer.classList.remove('on-light');
+
+                    const logoh = header.querySelector('.header-logo');
+                    const logof = footer ? footer.querySelector('.footer-logo') : null;
+                    if (logof) logof.classList.remove('dark-mode');
+                    if (logoh) logoh.classList.remove('dark-mode');
+                    // header.classList.remove('on-light');
+                    // footer.querySelector(".project-footer").classList.remove('on-light');
+                    // header.querySelector('.header-logo').classList.remove('dark-mode');
+                } else {
+                    // hero 基本滚走 → header 在白底上 → 用深色
+                    header.classList.add('on-light');
+                    if (footer) footer.classList.add('on-light');
+
+                    const logoh = header.querySelector('.header-logo');
+                    const logof = footer ? footer.querySelector('.footer-logo') : null;
+                    if (logof) logof.classList.add('dark-mode');
+                    if (logoh) logoh.classList.add('dark-mode');
+                    // header.classList.add('on-light');
+                    // header.querySelector('.header-logo').classList.add('dark-mode');
+                    // footer.querySelector(".project-footer").classList.add('on-light');
+                }
+            }, {
+                threshold: [0.4]
+            });
+
+            observer.observe(hero);
+        });
+    </script>
+
+
 </body>
 
 </html>

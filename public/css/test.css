@@ -65,9 +65,25 @@ header h1 {
   font-size: 1.4rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: bold;
   margin-bottom: 15px;
   color: rgba(255, 255, 255, 0.9);
+
+  /* 新增：让 logo + 文字 横着排在一起 */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* logo 和名字中间的间距，可自己调 */
+}
+
+/* 让 logo 高度 ≈ 文字高度 */
+.header-logo {
+  height: 1.2rem;
+  /* 和 h1 的 font-size 保持一致 */
+  width: auto;
+  display: block;
+  color: #ffffff;
+  mix-blend-mode: difference !important;
 }
 
 .nav a {
@@ -353,6 +369,22 @@ footer {
   padding: 40px;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
+
+
+.footer-logo {
+  display: block;
+  margin: 0 auto;
+  /* 水平居中 */
+  height: 3em;
+  /* 字体大小的 3 倍 */
+  width: auto;
+  color: rgb(170, 170, 170);
+}
+
+.footer-logo path {
+  fill: currentColor;
 }
 
 @media (max-width: 1024px) {

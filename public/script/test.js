@@ -148,3 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   startAutoPlay();
   updateCounter();
 });
+
+document.querySelector('.project-header h1')?.addEventListener('click', () => {
+  window.location.href = 'index.php';
+});
