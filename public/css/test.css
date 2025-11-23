@@ -424,6 +424,11 @@ footer {
   }
 
   /* 移动端标题和元数据始终可见 */
+  .grid-item .content {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
   .grid-item .content h2,
   .grid-item .content p {
     opacity: 1 !important;
