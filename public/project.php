@@ -52,6 +52,20 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
     </div>
     <!-- <nav class="project-nav"><a href="index.php" class="back-link"><span class="icon">←</span> Back</a></nav> -->
 
+    <!-- Mobile Navigation Toggle & Menu -->
+    <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav-menu">
+        <a href="index.php">Selected Works</a>
+        <a href="about.php">About</a>
+        <a href="contact.php">Contact</a>
+        <a href="admin.php">Admin</a>
+    </nav>
+
     <header class="project-header is-dark">
         <!-- h1：和 index.php 一模一样 -->
         <h1>
@@ -277,6 +291,28 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
             });
 
             observer.observe(hero);
+
+            // Mobile navigation toggle
+            const mobileToggle = document.querySelector('.mobile-nav-toggle');
+            const mobileMenu = document.querySelector('.mobile-nav-menu');
+            const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+
+            if (mobileToggle && mobileMenu && mobileOverlay) {
+                function toggleMobileNav() {
+                    mobileToggle.classList.toggle('active');
+                    mobileMenu.classList.toggle('active');
+                    mobileOverlay.classList.toggle('active');
+                    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+                }
+
+                mobileToggle.addEventListener('click', toggleMobileNav);
+                mobileOverlay.addEventListener('click', toggleMobileNav);
+
+                // Close menu when clicking a link
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', toggleMobileNav);
+                });
+            }
         });
     </script>
 
