@@ -70,6 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $meta['hero_scale'] = $_POST["visual_hero_scale"];
       if (isset($_POST["visual_hero_pos_y"]))
         $meta['hero_pos_y'] = $_POST["visual_hero_pos_y"];
+      if (isset($_POST["visual_hero_pos_x"]))
+        $meta['hero_pos_x'] = $_POST["visual_hero_pos_x"];
       if (isset($_POST["visual_cover_scale"]))
         $meta['cover_scale'] = $_POST["visual_cover_scale"];
       if (isset($_POST["visual_cover_pos_y"]))
@@ -138,252 +140,10 @@ $projects = $is_logged_in ? get_projects(false) : [];
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/admin.css?v=<?= time() ?>">
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-  <style>
-    /* Admin Styles */
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      background: transparent;
-      margin: 10px 0;
-      cursor: grab;
-    }
 
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: #333;
-      margin-top: -6px;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    input[type=range]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 4px;
-      cursor: pointer;
-      background: #ddd;
-      border-radius: 2px;
-    }
-
-    .visual-controls {
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 6px;
-      border: 1px solid #eee;
-      display: flex;
-      gap: 20px;
-      margin-top: 5px;
-    }
-
-    .visual-col {
-      flex: 1;
-    }
-
-    .range-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: #666;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .range-val {
-      font-family: monospace;
-      background: #eee;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #333;
-      font-size: 0.8rem;
-    }
-
-    /* Block & Gallery Preview */
-    .preview-container {
-      border: 1px solid #ddd;
-      background: #fff;
-      background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
-      background-size: 10px 10px;
-      padding: 20px;
-      margin-top: 10px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .preview-container.mode-left {
-      justify-content: flex-start;
-    }
-
-    .block-img-preview {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      background: #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      transition: width 0.2s;
-    }
-
-    /* Subsections */
-    .sub-sections-container {
-      border-left: 2px solid #eee;
-      padding-left: 15px;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .sub-section-item {
-      background: #fcfcfc;
-      border: 1px solid #eee;
-      padding: 10px;
-      border-radius: 4px;
-      position: relative;
-    }
-
-    .sub-section-header {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 5px;
-    }
-
-    .delete-section-btn {
-      color: #ff6b6b;
-      cursor: pointer;
-      border: none;
-      background: none;
-      font-size: 1rem;
-      line-height: 1;
-    }
-
-    .add-section-btn {
-      font-size: 0.8rem;
-      color: #007aff;
-      cursor: pointer;
-      background: none;
-      border: 1px dashed #007aff;
-      padding: 8px;
-      border-radius: 4px;
-      width: 100%;
-      margin-top: 10px;
-      transition: all 0.2s;
-    }
-
-    .add-section-btn:hover {
-      background: #f0f8ff;
-    }
-
-    .add-block-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px dashed #ddd;
-    }
-
-    .add-block-btn {
-      flex: 1;
-      padding: 12px;
-      background: #fff;
-      border: 1px dashed #ccc;
-      color: #666;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .add-block-btn:hover {
-      border-color: #333;
-      color: #333;
-      background: #fdfdfd;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .toggle-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #444;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .toggle-label input {
-      width: auto;
-      margin: 0;
-    }
-
-    /* Gallery List */
-    .gallery-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .gallery-item {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 6px;
-      padding: 10px;
-      position: relative;
-      cursor: grab;
-    }
-
-    .gallery-item:active {
-      cursor: grabbing;
-    }
-
-    .gallery-thumb {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 4px;
-      background: #f5f5f5;
-      margin-bottom: 8px;
-      border: 1px solid #eee;
-    }
-
-    .gallery-controls {
-      display: flex;
-      gap: 5px;
-      margin-top: 5px;
-    }
-
-    .gallery-input {
-      width: 100%;
-      font-size: 0.8rem;
-      padding: 4px;
-      margin-bottom: 4px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-    }
-
-    .del-gal-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: rgba(255, 255, 255, 0.9);
-      color: #ff6b6b;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-  </style>
 </head>
 
 <body class="admin-page">
@@ -432,6 +192,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
           $hHeight = $meta['hero_height'] ?? 85;
           $hScale = $meta['hero_scale'] ?? 1.0;
           $hPosY = $meta['hero_pos_y'] ?? 50;
+          $hPosX = $meta['hero_pos_x'] ?? 50;
           $cScale = $meta['cover_scale'] ?? 1.0;
           $cPosY = $meta['cover_pos_y'] ?? 50;
           ?>
@@ -463,7 +224,8 @@ $projects = $is_logged_in ? get_projects(false) : [];
                     <div class="form-group"><label>Role</label><input name="meta_role"
                         value="<?= htmlspecialchars($meta['role'] ?? '') ?>"></div>
                     <div class="form-group full"><label>Tools (comma-separated)</label><input name="meta_tool"
-                        value="<?= htmlspecialchars($meta['tool'] ?? '') ?>" placeholder="e.g. Python, OpenCV, Blender"></div>
+                        value="<?= htmlspecialchars($meta['tool'] ?? '') ?>" placeholder="e.g. Python, OpenCV, Blender">
+                    </div>
                     <div class="form-group full"><label>Client</label><input name="meta_client"
                         value="<?= htmlspecialchars($meta['client'] ?? '') ?>"></div>
                     <div class="form-group full"><label>Tags</label><input name="tags"
@@ -502,17 +264,27 @@ $projects = $is_logged_in ? get_projects(false) : [];
                         min="1.0" max="3.0" step="0.1" value="<?= $cScale ?>"
                         oninput="document.getElementById('cs-<?= $p['id'] ?>').innerText=this.value+'x'">
                     </div>
-                    <div class="visual-col">
-                      <div class="range-header"><span>Cover Focus Y</span><span class="range-val"
-                          id="cp-<?= $p['id'] ?>"><?= $cPosY ?>%</span></div><input type="range" name="visual_cover_pos_y"
-                        min="0" max="100" step="5" value="<?= $cPosY ?>"
-                        oninput="document.getElementById('cp-<?= $p['id'] ?>').innerText=this.value+'%'">
-                    </div>
                   </div>
 
                   <div class="divider"><span>Hero Visuals</span></div>
-                  <div class="form-group"><label>Hero Image/Video URL (leave empty to use Cover URL)</label><input name="meta_hero_media"
-                      value="<?= htmlspecialchars($meta['hero_media'] ?? '') ?>" placeholder="/uploads/hero.jpg or .mp4"></div>
+                  <div class="form-group"><label>Hero Image/Video URL (leave empty to use Cover URL)</label><input
+                      name="meta_hero_media" value="<?= htmlspecialchars($meta['hero_media'] ?? '') ?>"
+                      class="hero-url-input" data-project="<?= $p['id'] ?>" placeholder="/uploads/hero.jpg or .mp4"></div>
+
+                  <!-- Visual Focus Picker for Hero -->
+                  <div class="focus-picker-container">
+                    <label>Adjust Hero Focus & Scale (drag the crosshair)</label>
+                    <div class="focus-picker hero-picker" id="hero-picker-<?= $p['id'] ?>" data-type="hero"
+                      data-project="<?= $p['id'] ?>">
+                      <?php $heroPreviewSrc = ($meta['hero_media'] ?? '') ?: $p['image_url'] ?: '/uploads/placeholder.jpg'; ?>
+                      <img src="<?= htmlspecialchars($heroPreviewSrc) ?>" class="focus-preview-img" alt="Hero preview">
+                      <div class="focus-crosshair" style="left: <?= $hPosX ?>%; top: <?= $hPosY ?>%;">
+                        <div class="crosshair-h"></div>
+                        <div class="crosshair-v"></div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="visual-controls">
                     <div class="visual-col">
                       <div class="range-header"><span>Height</span><span class="range-val"
@@ -529,8 +301,14 @@ $projects = $is_logged_in ? get_projects(false) : [];
                     <div class="visual-col">
                       <div class="range-header"><span>Focus Y</span><span class="range-val"
                           id="pv-<?= $p['id'] ?>"><?= $hPosY ?>%</span></div><input type="range" name="visual_hero_pos_y"
-                        min="0" max="100" step="5" value="<?= $hPosY ?>"
-                        oninput="document.getElementById('pv-<?= $p['id'] ?>').innerText=this.value+'%'">
+                        min="0" max="100" step="1" value="<?= $hPosY ?>" data-project="<?= $p['id'] ?>"
+                        oninput="updateHeroFocusY(<?= $p['id'] ?>, this.value)">
+                    </div>
+                    <div class="visual-col">
+                      <div class="range-header"><span>Focus X</span><span class="range-val"
+                          id="px-<?= $p['id'] ?>"><?= $hPosX ?>%</span></div><input type="range" name="visual_hero_pos_x"
+                        min="0" max="100" step="1" value="<?= $hPosX ?>" data-project="<?= $p['id'] ?>"
+                        oninput="updateHeroFocusX(<?= $p['id'] ?>, this.value)">
                     </div>
                   </div>
 
@@ -561,166 +339,38 @@ $projects = $is_logged_in ? get_projects(false) : [];
     <?php endif; ?>
   </main>
 
+  <div id="crop-modal" class="crop-modal hidden">
+    <div class="crop-modal-backdrop"></div>
+    <div class="crop-modal-dialog">
+      <div class="crop-modal-header">
+        <h3>Crop Image</h3>
+        <button type="button" id="crop-close">×</button>
+      </div>
+      <div class="crop-modal-body">
+        <img id="crop-image" src="" alt="Crop target">
+      </div>
+      <div class="crop-modal-footer">
+        <div class="crop-aspect-toolbar">
+          <button type="button" class="aspect-btn is-active" data-ratio="free">Free</button>
+          <button type="button" class="aspect-btn" data-ratio="1">1 : 1</button>
+          <button type="button" class="aspect-btn" data-ratio="1.7777778">16 : 9</button>
+          <button type="button" class="aspect-btn" data-ratio="1.3333333">4 : 3</button>
+          <button type="button" class="aspect-btn" data-ratio="1.5">3 : 2</button>
+          <button type="button" class="aspect-btn" data-ratio="0.5625">9 : 16</button>
+          <button type="button" class="aspect-btn" data-ratio="2.4">2.4 : 1</button>
+        </div>
+
+        <button type="button" id="crop-save" class="btn-primary">Save Crop</button>
+      </div>
+
+
+    </div>
+  </div>
+
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
-  <script>
-    const projectBlocks = {};
-    const projectGalleries = {}; // New store for galleries
-
-    function toggleEdit(id) {
-      const card = document.getElementById('project-' + id);
-      card.classList.toggle('collapsed');
-      if (!card.classList.contains('collapsed')) {
-        // Load Blocks
-        if (!projectBlocks[id]) {
-          const raw = document.getElementById('blocks-input-' + id).value;
-          try { projectBlocks[id] = raw ? JSON.parse(raw) : []; } catch (e) { projectBlocks[id] = []; }
-          renderBlocks(id);
-        }
-        // Load Gallery
-        if (!projectGalleries[id]) {
-          const rawG = document.getElementById('gallery-input-' + id).value;
-          try {
-            let g = rawG ? JSON.parse(rawG) : [];
-            // Normalize string array to object array
-            projectGalleries[id] = g.map(x => typeof x === 'string' ? { src: x, caption: '' } : x);
-          } catch (e) { projectGalleries[id] = []; }
-          renderGallery(id);
-        }
-      }
-    }
-
-    function switchTab(id, tabName) { const card = document.getElementById('project-' + id); card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); card.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); event.target.classList.add('active'); card.querySelector(`[data-tab="${tabName}-${id}"]`).classList.add('active'); }
-
-    // --- BLOCK LOGIC ---
-    function addBlock(id, type) {
-      const newBlock = { type: type, id: Date.now() };
-      if (type === 'text') { newBlock.label = ''; newBlock.sections = [{ subtitle: '', content: '' }]; }
-      if (type === 'image') { newBlock.src = ''; newBlock.caption = ''; newBlock.width = '100'; newBlock.layout = 'center'; }
-      if (type === 'video') { newBlock.src = ''; newBlock.caption = ''; newBlock.width = '100'; newBlock.layout = 'center'; newBlock.autoplay = false; }
-      projectBlocks[id].push(newBlock);
-      renderBlocks(id);
-    }
-    function addSection(pid, blockIdx) { projectBlocks[pid][blockIdx].sections.push({ subtitle: '', content: '' }); syncJson(pid); renderBlocks(pid); }
-    function removeSection(pid, blockIdx, secIdx) { if (projectBlocks[pid][blockIdx].sections.length <= 1) { alert("Keep at least one section"); return; } projectBlocks[pid][blockIdx].sections.splice(secIdx, 1); syncJson(pid); renderBlocks(pid); }
-    function removeBlock(pid, idx) { if (!confirm('Remove block?')) return; projectBlocks[pid].splice(idx, 1); renderBlocks(pid); }
-    function updateBlockData(pid, idx, field, value) { if (projectBlocks[pid][idx]) { projectBlocks[pid][idx][field] = value; syncJson(pid); } }
-    function updateSectionData(pid, blockIdx, secIdx, field, value) { if (projectBlocks[pid][blockIdx] && projectBlocks[pid][blockIdx].sections[secIdx]) { projectBlocks[pid][blockIdx].sections[secIdx][field] = value; syncJson(pid); } }
-    function syncJson(pid) { document.getElementById('blocks-input-' + pid).value = JSON.stringify(projectBlocks[pid]); }
-
-    // --- GALLERY LOGIC ---
-    function addGalleryItem(id) {
-      projectGalleries[id].push({ src: '', caption: '' });
-      renderGallery(id);
-    }
-    function removeGalleryItem(pid, idx) {
-      if (!confirm('Remove image?')) return;
-      projectGalleries[pid].splice(idx, 1);
-      renderGallery(pid);
-    }
-    function updateGalleryData(pid, idx, field, value) {
-      projectGalleries[pid][idx][field] = value;
-      syncGalleryJson(pid);
-    }
-    function syncGalleryJson(pid) {
-      document.getElementById('gallery-input-' + pid).value = JSON.stringify(projectGalleries[pid]);
-    }
-    function renderGallery(id) {
-      const container = document.getElementById('gallery-list-' + id);
-      container.innerHTML = '';
-      projectGalleries[id].forEach((item, index) => {
-        const el = document.createElement('div');
-        el.className = 'gallery-item';
-        const imgSrc = escapeHtml(item.src);
-
-        el.innerHTML = `
-            <button type="button" class="del-gal-btn" onclick="removeGalleryItem(${id}, ${index})">×</button>
-            <img src="${imgSrc}" class="gallery-thumb" onerror="this.style.background='#eee'">
-            <input class="gallery-input" placeholder="Image URL" value="${imgSrc}" 
-                   onchange="updateGalleryData(${id}, ${index}, 'src', this.value)"
-                   oninput="this.previousElementSibling.src = this.value">
-            <input class="gallery-input" placeholder="Caption" value="${escapeHtml(item.caption || '')}" 
-                   onchange="updateGalleryData(${id}, ${index}, 'caption', this.value)">
-        `;
-        container.appendChild(el);
-      });
-      syncGalleryJson(id);
-      new Sortable(container, {
-        animation: 150, onEnd: function (evt) {
-          const item = projectGalleries[id].splice(evt.oldIndex, 1)[0];
-          projectGalleries[id].splice(evt.newIndex, 0, item);
-          syncGalleryJson(id);
-        }
-      });
-    }
-
-    function renderBlocks(id) {
-      const container = document.getElementById('blocks-container-' + id);
-      container.innerHTML = '';
-      projectBlocks[id].forEach((block, index) => {
-        const el = document.createElement('div');
-        el.className = 'content-block-item';
-        let html = `<div class="block-header"><div><span class="block-handle">☰</span> <span class="block-type">${block.type}</span></div><button type="button" class="delete-btn" onclick="removeBlock(${id}, ${index})">×</button></div>`;
-
-        if (block.type === 'text') {
-          html += `<div class="form-group"><input placeholder="Main Title" value="${escapeHtml(block.label || '')}" onchange="updateBlockData(${id}, ${index}, 'label', this.value)" style="font-weight:bold;"></div>`;
-          html += `<div class="sub-sections-container">`;
-          const sections = block.sections || [{ subtitle: '', content: '' }];
-          sections.forEach((sec, sIdx) => {
-            html += `<div class="sub-section-item"><div class="sub-section-header"><button type="button" class="delete-section-btn" onclick="removeSection(${id}, ${index}, ${sIdx})">×</button></div><div class="form-group"><input placeholder="Subtitle" value="${escapeHtml(sec.subtitle || '')}" onchange="updateSectionData(${id}, ${index}, ${sIdx}, 'subtitle', this.value)" style="font-size:0.9rem; color:#555;"></div><div class="form-group"><textarea class="mde-${id}-${index}-${sIdx}">${escapeHtml(sec.content || '')}</textarea></div></div>`;
-          });
-          html += `</div><button type="button" class="add-section-btn" onclick="addSection(${id}, ${index})">+ Add Paragraph</button>`;
-        } else if (block.type === 'image' || block.type === 'video') {
-          const w = block.width || 100;
-          const src = escapeHtml(block.src || '');
-          const layout = block.layout || 'center';
-          const justifyClass = layout === 'left' ? 'mode-left' : '';
-          const isVideo = block.type === 'video';
-
-          const previewHtml = isVideo
-            ? (src ? `<video src="${src}" class="block-img-preview" controls style="width:${w}%; max-height:200px;"></video>` : '')
-            : `<div class="preview-container ${justifyClass}"><img src="${src}" class="block-img-preview" alt="Preview" style="width:${w}%"></div>`;
-
-          html += `
-                <div class="form-group"><input placeholder="${isVideo ? 'Video URL' : 'Image URL'}" value="${src}" onchange="updateBlockData(${id}, ${index}, 'src', this.value)"></div>
-                ${previewHtml}
-                <div class="form-group"><input placeholder="Caption" value="${escapeHtml(block.caption || '')}" onchange="updateBlockData(${id}, ${index}, 'caption', this.value)"></div>
-                <div class="visual-controls">
-                    <div class="visual-col"><div class="range-header"><span>Width</span><span class="range-val">${w}%</span></div><input type="range" min="20" max="100" step="5" value="${w}" oninput="this.parentElement.querySelector('.range-val').innerText=this.value+'%'; updateBlockData(${id}, ${index}, 'width', this.value);"></div>
-                    <div class="visual-col"><label style="font-size:0.7rem;color:#888;">Align</label><select onchange="updateBlockData(${id}, ${index}, 'layout', this.value);" style="width:100%"><option value="center" ${layout == 'center' ? 'selected' : ''}>Center</option><option value="left" ${layout == 'left' ? 'selected' : ''}>Left</option></select></div>
-                    ${isVideo ? `<div class="visual-col" style="display:flex; align-items:center;"><label class="toggle-label"><input type="checkbox" ${block.autoplay ? 'checked' : ''} onchange="updateBlockData(${id}, ${index}, 'autoplay', this.checked)"> Autoplay</label></div>` : ''}
-                </div>
-            `;
-        }
-        el.innerHTML = html;
-        container.appendChild(el);
-        // Init MDE (omitted for brevity, same as before)
-        if (block.type === 'text') {
-          const sections = block.sections || [{}];
-          sections.forEach((_, sIdx) => {
-            const ta = el.querySelector(`textarea.mde-${id}-${index}-${sIdx}`);
-            if (ta) new EasyMDE({ element: ta, status: false, spellChecker: false, minHeight: "100px", toolbar: ["bold", "italic", "unordered-list", "link", "preview"], forceSync: true }).codemirror.on("change", (cm) => updateSectionData(id, index, sIdx, 'content', cm.getValue()));
-          });
-        }
-      });
-      syncJson(id);
-      new Sortable(container, {
-        handle: '.block-header', onEnd: function (evt) {
-          const item = projectBlocks[id].splice(evt.oldIndex, 1)[0];
-          projectBlocks[id].splice(evt.newIndex, 0, item);
-          syncJson(id);
-          renderBlocks(id);
-        }
-      });
-    }
-
-    function submitProjectForm(id) {
-      syncJson(id);
-      syncGalleryJson(id);
-      document.querySelector(`#project-${id} form`).submit();
-    }
-
-    function escapeHtml(text) { if (!text) return ''; return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
-  </script>
+  <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <script src="script/admin.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

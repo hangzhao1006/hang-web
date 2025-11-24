@@ -106,7 +106,7 @@ $projects = get_projects_filtered_joined($filters);
       $coverScale = $meta['cover_scale'] ?? 1.0;
       $coverPosY = $meta['cover_pos_y'] ?? 50;
       ?>
-      <!-- DEBUG: scale=<?= $coverScale ?> posY=<?= $coverPosY ?>% -->
+      <!-- DEBUG[<?= $p['id'] ?>]: scale=<?= $coverScale ?> posY=<?= $coverPosY ?>% -->
       <div class="grid-item" style="--project-img: url('<?= $imgUrl ?>'); --cover-scale: <?= $coverScale ?>; --cover-pos-y: <?= $coverPosY ?>%;">
         <a href="project.php?slug=<?= urlencode($p['slug'] ?: $p['id']) ?>" class="grid-link"></a>
 

@@ -32,6 +32,7 @@ function h($str)
 $heroHeight = (isset($meta['hero_height']) && $meta['hero_height']) ? $meta['hero_height'] . 'vh' : '85vh';
 $heroScale = $meta['hero_scale'] ?? 1.0;
 $heroPosY = $meta['hero_pos_y'] ?? 50;
+$heroPosX = $meta['hero_pos_x'] ?? 50;
 ?>
 <!doctype html>
 <html lang="en">
@@ -97,10 +98,10 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
             ?>
             <?php if ($isVideo): ?>
                 <video autoplay loop muted playsinline src="<?= h($heroSrc) ?>"
-                    style="object-position: center <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);"></video>
+                    style="object-position: <?= h($heroPosX) ?>% <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);"></video>
             <?php else: ?>
                 <img src="<?= h($heroSrc) ?>" alt="Hero"
-                    style="object-position: center <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);">
+                    style="object-position: <?= h($heroPosX) ?>% <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);">
             <?php endif; ?>
             <div class="hero-gradient"></div>
         </div>
@@ -166,28 +167,31 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
                 <div class="row-content" style="width: 100%;">
 
                     <div class="gallery-slider" id="gallery-slider">
-                        <div class="slider-track">
-                            <?php foreach ($gallery as $index => $item):
-                                $src = is_string($item) ? $item : ($item['src'] ?? '');
-                                $cap = is_array($item) ? ($item['caption'] ?? '') : '';
-                                if (!$src)
-                                    continue;
-                                ?>
-                                <div class="slide">
-                                    <img src="<?= h($src) ?>" alt="Gallery Image">
-                                    <?php if ($cap): ?>
-                                        <div class="slide-caption"><?= h($cap) ?></div><?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
+                        <div class="gallery-viewport">
+                            <div class="slider-track">
+                                <?php foreach ($gallery as $index => $item):
+                                    $src = is_string($item) ? $item : ($item['src'] ?? '');
+                                    $cap = is_array($item) ? ($item['caption'] ?? '') : '';
+                                    if (!$src)
+                                        continue;
+                                    ?>
+                                    <div class="slide">
+                                        <img src="<?= h($src) ?>" alt="Gallery Image">
+                                        <?php if ($cap): ?>
+                                            <div class="slide-caption"><?= h($cap) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
 
-                        <!-- Controls -->
                         <div class="slider-controls">
                             <button class="prev-btn">←</button>
                             <span class="slide-counter">1 / <?= count($gallery) ?></span>
                             <button class="next-btn">→</button>
                         </div>
                     </div>
+
 
                 </div>
             </section>
@@ -248,73 +252,11 @@ $heroPosY = $meta['hero_pos_y'] ?? 50;
     </main>
 
     <footer class="project-footer">
-        <p>© <?= date('Y') ?> <?= h($config['site_name']) ?>, All Rights Reserved.</p>
+        <p>© <?= date(format: 'Y') ?> <?= h($config['site_name']) ?>, All Rights Reserved.</p>
         <img src="/uploads/logo.svg" class="footer-logo">
     </footer>
     <script src="script/test.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const header = document.querySelector('.project-header');
-            const hero = document.querySelector('.project-hero');
-            const footer = document.querySelector('.project-footer');
-
-            if (!header || !hero) return;
-
-            const observer = new IntersectionObserver(([entry]) => {
-                // hero 还占屏幕上方 >40%：认为在 hero 区 → header 用浅色
-                if (entry.intersectionRatio > 0.4) {
-                    header.classList.remove('on-light');
-                    if (footer) footer.classList.remove('on-light');
-
-                    const logoh = header.querySelector('.header-logo');
-                    const logof = footer ? footer.querySelector('.footer-logo') : null;
-                    if (logof) logof.classList.remove('dark-mode');
-                    if (logoh) logoh.classList.remove('dark-mode');
-                    // header.classList.remove('on-light');
-                    // footer.querySelector(".project-footer").classList.remove('on-light');
-                    // header.querySelector('.header-logo').classList.remove('dark-mode');
-                } else {
-                    // hero 基本滚走 → header 在白底上 → 用深色
-                    header.classList.add('on-light');
-                    if (footer) footer.classList.add('on-light');
-
-                    const logoh = header.querySelector('.header-logo');
-                    const logof = footer ? footer.querySelector('.footer-logo') : null;
-                    if (logof) logof.classList.add('dark-mode');
-                    if (logoh) logoh.classList.add('dark-mode');
-                    // header.classList.add('on-light');
-                    // header.querySelector('.header-logo').classList.add('dark-mode');
-                    // footer.querySelector(".project-footer").classList.add('on-light');
-                }
-            }, {
-                threshold: [0.4]
-            });
-
-            observer.observe(hero);
-
-            // Mobile navigation toggle
-            const mobileToggle = document.querySelector('.mobile-nav-toggle');
-            const mobileMenu = document.querySelector('.mobile-nav-menu');
-            const mobileOverlay = document.querySelector('.mobile-nav-overlay');
-
-            if (mobileToggle && mobileMenu && mobileOverlay) {
-                function toggleMobileNav() {
-                    mobileToggle.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                    mobileOverlay.classList.toggle('active');
-                    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-                }
-
-                mobileToggle.addEventListener('click', toggleMobileNav);
-                mobileOverlay.addEventListener('click', toggleMobileNav);
-
-                // Close menu when clicking a link
-                mobileMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', toggleMobileNav);
-                });
-            }
-        });
-    </script>
+    <script src="script/project.js?v=<?= time() ?>"></script>
 
 
 </body>
