@@ -639,7 +639,6 @@ figcaption {
     font-family: monospace;
 }
 
-
 /* ================================
    Gallery Slider
    ================================ */
@@ -652,7 +651,6 @@ figcaption {
     padding: 20px 0 30px 0;
     margin-bottom: 0;
 }
-
 
 /* 新增：真正负责裁剪图片和圆角的容器 */
 .gallery-viewport {
@@ -684,7 +682,7 @@ figcaption {
     width: 100%;
     height: auto;
     max-height: 80vh;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     object-fit: contain;
     border-radius: 20px;      /* 或者改成 0，用 viewport 的圆角也行 */
     box-shadow: 0 25px 30px -12px rgba(0, 0, 0, 0.235);
