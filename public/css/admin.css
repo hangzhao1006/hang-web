@@ -1017,3 +1017,422 @@ input[type=range]::-webkit-slider-runnable-track {
         gap: 10px;
     }
 }
+/* ================================
+   Visual Grid Editor
+   ================================ */
+
+.visual-grid-editor {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.grid-editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.grid-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.grid-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.grid-canvas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 120px;
+  gap: 12px;
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  border: 2px dashed #ddd;
+  min-height: 200px;
+}
+
+.grid-image-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-image-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+}
+
+.grid-item-preview {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  background-color: #f5f5f5;
+  position: relative;
+  min-height: 80px;
+}
+
+.grid-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  opacity: 0.3;
+}
+
+.grid-item-controls {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.grid-input-url {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 6px;
+}
+
+.grid-size-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+}
+
+.grid-size-controls label {
+  font-weight: 600;
+  color: #666;
+}
+
+.grid-input-size {
+  width: 40px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.grid-delete-btn {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.grid-delete-btn:hover {
+  background: #ff3838;
+  transform: scale(1.1);
+}
+
+
+/* Drag Resize Handles (Figma-style) */
+.grid-resize-handles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.grid-image-item:hover .grid-resize-handles,
+.grid-image-item.resizing .grid-resize-handles {
+  opacity: 1;
+}
+
+.resize-handle {
+  position: absolute;
+  pointer-events: all;
+  background: #667eea;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+}
+
+.resize-handle:hover {
+  background: #764ba2;
+  transform: scale(1.2);
+}
+
+/* 右侧拖拽手柄（调整宽度） */
+.resize-w {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 60px;
+  border-radius: 6px;
+  cursor: ew-resize;
+}
+
+/* 底部拖拽手柄（调整高度） */
+.resize-h {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 12px;
+  border-radius: 6px;
+  cursor: ns-resize;
+}
+
+/* 右下角拖拽手柄（同时调整宽高） */
+.resize-wh {
+  right: -6px;
+  bottom: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: nwse-resize;
+}
+
+/* Size badges */
+.size-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+
+/* 拖拽中的视觉反馈 */
+.grid-image-item.resizing {
+  opacity: 0.8;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  z-index: 10;
+}
+
+.grid-image-item.resizing .resize-handle {
+  background: #ff6b6b;
+  transform: scale(1.3);
+}
+
+/* ================================
+   Grid Table Editor (New System)
+   ================================ */
+
+.grid-table-editor {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 12px;
+  border: 2px solid #667eea30;
+}
+
+.grid-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.grid-size-controls label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.grid-size-controls input[type="number"] {
+  padding: 5px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-size: 0.9rem;
+}
+
+.grid-editor-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.grid-cell {
+  position: relative;
+  min-height: 120px;
+  height: 120px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fafafa;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.grid-cell:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+  transform: scale(1.02);
+}
+
+.grid-cell.has-image {
+  border-style: solid;
+  border-color: #667eea;
+  background: white;
+}
+
+.grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+.cell-empty {
+  font-size: 2rem;
+  color: #ccc;
+  display: inline-block;
+  line-height: 120px;
+}
+
+.cell-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  font-size: 0.7rem;
+  border-radius: 0 0 6px 6px;
+}
+
+.cell-size {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.grid-help {
+  margin-top: 15px;
+  padding: 10px;
+  background: #fffbea;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #856404;
+}
+
+/* Modal for Cell Editor */
+.cell-editor-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cell-editor-modal.active {
+  opacity: 1;
+}
+
+.cell-editor-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.cell-editor-modal.active .cell-editor-content {
+  transform: translateY(0);
+}
+
+.cell-editor-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+  justify-content: flex-end;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #555;
+}
+
+.btn-secondary:hover {
+  background: #d0d0d0;
+}
+

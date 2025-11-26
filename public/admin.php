@@ -72,6 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $meta['hero_pos_y'] = $_POST["visual_hero_pos_y"];
       if (isset($_POST["visual_hero_pos_x"]))
         $meta['hero_pos_x'] = $_POST["visual_hero_pos_x"];
+      if (isset($_POST["visual_hero_style"]))
+        $meta['hero_style'] = $_POST["visual_hero_style"];
       if (isset($_POST["visual_cover_scale"]))
         $meta['cover_scale'] = $_POST["visual_cover_scale"];
       if (isset($_POST["visual_cover_pos_y"]))
@@ -193,6 +195,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
           $hScale = $meta['hero_scale'] ?? 1.0;
           $hPosY = $meta['hero_pos_y'] ?? 50;
           $hPosX = $meta['hero_pos_x'] ?? 50;
+          $hStyle = $meta['hero_style'] ?? 'creative';
           $cScale = $meta['cover_scale'] ?? 1.0;
           $cPosY = $meta['cover_pos_y'] ?? 50;
           ?>
@@ -248,6 +251,10 @@ $projects = $is_logged_in ? get_projects(false) : [];
                       Group</button>
                     <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image')">Image</button>
                     <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'video')">Video</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image_grid')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">📸 Image Grid</button>
+                  </div>
+                  <div class="help-text" style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-left: 3px solid #667eea; border-radius: 4px; font-size: 0.85rem;">
+                    <strong>🆕 Image Grid:</strong> Create flexible photo layouts. Use <code>grid_layout</code>: "2x2", "3x1", "custom". For custom grids, set <code>width</code> and <code>height</code> in each image object.
                   </div>
                 </div>
 
@@ -286,6 +293,13 @@ $projects = $is_logged_in ? get_projects(false) : [];
                   </div>
 
                   <div class="visual-controls">
+                    <div class="visual-col">
+                      <div class="range-header"><span>Style</span></div>
+                      <select name="visual_hero_style" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                        <option value="creative" <?= $hStyle === 'creative' ? 'selected' : '' ?>>Creative (Full-width, Artistic)</option>
+                        <option value="professional" <?= $hStyle === 'professional' ? 'selected' : '' ?>>Professional (Centered, Tech)</option>
+                      </select>
+                    </div>
                     <div class="visual-col">
                       <div class="range-header"><span>Height</span><span class="range-val"
                           id="hv-<?= $p['id'] ?>"><?= $hHeight ?>vh</span></div><input type="range"

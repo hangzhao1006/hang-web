@@ -29,10 +29,11 @@ function h($str)
     return htmlspecialchars((string) $str, ENT_QUOTES, 'UTF-8');
 }
 
-$heroHeight = (isset($meta['hero_height']) && $meta['hero_height']) ? $meta['hero_height'] . 'vh' : '85vh';
+$heroHeight = (isset($meta['hero_height']) && $meta['hero_height']) ? $meta['hero_height'] . 'vh' : '50vh';
 $heroScale = $meta['hero_scale'] ?? 1.0;
 $heroPosY = $meta['hero_pos_y'] ?? 50;
 $heroPosX = $meta['hero_pos_x'] ?? 50;
+$heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 ?>
 <!doctype html>
 <html lang="en">
@@ -86,8 +87,7 @@ $heroPosX = $meta['hero_pos_x'] ?? 50;
 
 
 
-    <header class="project-hero" style="height: <?= h($heroHeight) ?>;">
-        <!-- Hero Logic (Same as before) -->
+    <header class="project-hero hero-style-<?= h($heroStyle) ?>" style="height: <?= h($heroHeight) ?>;">
         <div class="hero-bg">
             <?php
             $heroMedia = $meta['hero_media'] ?? $project['hero_media'] ?? $project['image_url'];
@@ -105,51 +105,52 @@ $heroPosX = $meta['hero_pos_x'] ?? 50;
             <?php endif; ?>
             <div class="hero-gradient"></div>
         </div>
-        <div class="hero-content">
-            <h1 class="title"><?= h($project['title']) ?></h1>
-            <?php if ($sub = g('subtitle')): ?>
-                <p class="subtitle"><?= h($sub) ?></p><?php endif; ?>
-            <div class="info-hud">
-                <div class="hud-item year"><label>Year</label><span><?= h($project['year']) ?></span></div>
-                <div class="hud-item"><label>Role</label><span><?= h(g('role')) ?></span></div>
-                <div class="hud-item tools">
-                    <label>Tools</label>
-                    <span>
-                        <?php
-                        $tools = g('tool');
-                        if ($tools) {
-                            // 支持逗号分隔的工具列表
-                            $toolList = array_map('trim', explode(',', $tools));
-                            foreach ($toolList as $tool):
-                                if ($tool): ?>
-                                    <span class="tool-tag"><?= h($tool) ?></span>
-                                <?php endif;
-                            endforeach;
-                        }
-                        ?>
-                    </span>
-                </div>
-                <div class="hud-item context"><label>Context</label><span><?= h(g('client')) ?></span></div>
-                <?php
-                $links = g('links');
-                if (is_string($links))
-                    $links = json_decode($links, true);
-                if (!empty($project['url']))
-                    $links = array_merge(['Demo' => $project['url']], (array) $links);
-                ?>
-                <div class="hud-item link-col">
-                    <div class="link-group">
-                        <?php if ($links)
-                            foreach ($links as $k => $v):
-                                if (!$v)
-                                    continue; ?>
-                                <a href="<?= h($v) ?>" target="_blank" class="hud-link"><?= h(ucfirst($k)) ?> ↗</a>
-                            <?php endforeach; ?>
-                    </div>
+    </header>
+
+    <div class="hero-content hero-content-<?= h($heroStyle) ?>">
+        <h1 class="title"><?= h($project['title']) ?></h1>
+        <?php if ($sub = g('subtitle')): ?>
+            <p class="subtitle"><?= h($sub) ?></p><?php endif; ?>
+        <div class="info-hud">
+            <div class="hud-item year"><label>Year</label><span><?= h($project['year']) ?></span></div>
+            <div class="hud-item"><label>Role</label><span><?= h(g('role')) ?></span></div>
+            <div class="hud-item tools">
+                <label>Tools</label>
+                <span>
+                    <?php
+                    $tools = g('tool');
+                    if ($tools) {
+                        // 支持逗号分隔的工具列表
+                        $toolList = array_map('trim', explode(',', $tools));
+                        foreach ($toolList as $tool):
+                            if ($tool): ?>
+                                <span class="tool-tag"><?= h($tool) ?></span>
+                            <?php endif;
+                        endforeach;
+                    }
+                    ?>
+                </span>
+            </div>
+            <div class="hud-item context"><label>Context</label><span><?= h(g('client')) ?></span></div>
+            <?php
+            $links = g('links');
+            if (is_string($links))
+                $links = json_decode($links, true);
+            if (!empty($project['url']))
+                $links = array_merge(['Demo' => $project['url']], (array) $links);
+            ?>
+            <div class="hud-item link-col">
+                <div class="link-group">
+                    <?php if ($links)
+                        foreach ($links as $k => $v):
+                            if (!$v)
+                                continue; ?>
+                            <a href="<?= h($v) ?>" target="_blank" class="hud-link"><?= h(ucfirst($k)) ?> ↗</a>
+                        <?php endforeach; ?>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
 
     <main class="project-body">
         <?php if ($desc = g('description')): ?>
@@ -243,6 +244,54 @@ $heroPosX = $meta['hero_pos_x'] ?? 50;
                             <?php if (!empty($b['caption'])): ?>
                                 <figcaption><?= h($b['caption']) ?></figcaption><?php endif; ?>
                         </figure>
+                    </div>
+                </section>
+
+            <?php elseif ($b['type'] === 'image_grid'): ?>
+                <?php
+                $layout = $b['layout'] ?? 'center';
+                $rowClass = ($layout === 'center') ? 'content-row image-grid-row mode-center' : 'content-row image-grid-row';
+                $rows = $b['rows'] ?? 2;
+                $cols = $b['cols'] ?? 2;
+                $cells = $b['cells'] ?? [];
+                ?>
+                <section class="<?= $rowClass ?>">
+                    <div class="row-label"><?= h($b['label'] ?? '') ?></div>
+                    <div class="row-content">
+                        <div class="image-grid-table" style="grid-template-columns: repeat(<?= $cols ?>, 1fr); grid-template-rows: repeat(<?= $rows ?>, auto);">
+                            <?php
+                            for ($r = 0; $r < $rows; $r++) {
+                                for ($c = 0; $c < $cols; $c++) {
+                                    $cellKey = "$r-$c";
+                                    $cell = $cells[$cellKey] ?? null;
+
+                                    // 跳过被合并的单元格
+                                    if ($cell && isset($cell['hidden']) && $cell['hidden']) {
+                                        continue;
+                                    }
+
+                                    $rowspan = ($cell && isset($cell['rowspan'])) ? $cell['rowspan'] : 1;
+                                    $colspan = ($cell && isset($cell['colspan'])) ? $cell['colspan'] : 1;
+                                    $imgSrc = ($cell && isset($cell['src'])) ? $cell['src'] : '';
+                                    $caption = ($cell && isset($cell['caption'])) ? $cell['caption'] : '';
+
+                                    if (!$imgSrc) continue; // 不显示空单元格
+
+                                    // 使用精确的grid位置
+                                    $gridStyle = "grid-column: " . ($c + 1) . " / span $colspan; ";
+                                    $gridStyle .= "grid-row: " . ($r + 1) . " / span $rowspan;";
+                                    ?>
+                                    <figure class="grid-cell-item" style="<?= h($gridStyle) ?>">
+                                        <img src="<?= h($imgSrc) ?>" alt="<?= h($caption) ?>">
+                                        <?php if ($caption): ?>
+                                            <figcaption><?= h($caption) ?></figcaption>
+                                        <?php endif; ?>
+                                    </figure>
+                            <?php
+                                }
+                            }
+                            ?>
+                        </div>
                     </div>
                 </section>
             <?php endif; ?>

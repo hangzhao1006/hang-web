@@ -93,6 +93,12 @@ function addBlock(id, type) {
     newBlock.width = '100';
     newBlock.layout = 'center';
     newBlock.autoplay = false;
+  } else if (type === 'image_grid') {
+    newBlock.label = '';
+    newBlock.layout = 'center';
+    newBlock.rows = 2;
+    newBlock.cols = 3;
+    newBlock.cells = {};
   }
 
   projectBlocks[id].push(newBlock);
@@ -369,6 +375,46 @@ function renderBlocks(id) {
           </div>
         `;
       }
+    } else if (block.type === 'image_grid') {
+      const rows = block.rows || 2;
+      const cols = block.cols || 2;
+      const cells = block.cells || {};
+
+      html += `
+        <div class="form-group">
+          <label>Label</label>
+          <input placeholder="Section label" value="${escapeHtml(block.label || '')}"
+                 onchange="updateBlockData(${id}, ${index}, 'label', this.value)">
+        </div>
+
+        <div class="grid-table-editor">
+          <div class="grid-controls">
+            <div class="grid-size-controls">
+              <label>Rows:
+                <input type="number" min="1" max="8" value="${rows}"
+                       onchange="updateGridSize(${id}, ${index}, 'rows', this.value)"
+                       style="width: 60px;">
+              </label>
+              <label style="margin-left: 15px;">Cols:
+                <input type="number" min="1" max="6" value="${cols}"
+                       onchange="updateGridSize(${id}, ${index}, 'cols', this.value)"
+                       style="width: 60px;">
+              </label>
+            </div>
+            <button type="button" class="grid-btn" onclick="clearAllCells(${id}, ${index})">
+              🗑️ Clear All
+            </button>
+          </div>
+
+          <div class="grid-table" data-project="${id}" data-block="${index}">
+            ${generateGridTable(id, index, rows, cols, cells)}
+          </div>
+
+          <div class="grid-help">
+            💡 Click a cell to add/edit image. Click and drag across cells to merge them.
+          </div>
+        </div>
+      `;
     }
 
     el.innerHTML = html;
@@ -622,3 +668,214 @@ function submitProjectForm(id) {
   const form = document.querySelector(`#project-${id} form`);
   if (form) form.submit();
 }
+
+// ====== GRID IMAGE FUNCTIONS ======
+function addGridImage(pid, blockIdx) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.images) block.images = [];
+  
+  block.images.push({
+    src: '',
+    caption: '',
+    width: 1,
+    height: 1
+  });
+  
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+}
+
+// ====== GRID TABLE FUNCTIONS ======
+function generateGridTable(pid, blockIdx, rows, cols, cells) {
+  let html = '<table class="grid-editor-table">';
+
+  for (let r = 0; r < rows; r++) {
+    html += '<tr>';
+    for (let c = 0; c < cols; c++) {
+      const cellKey = `${r}-${c}`;
+      const cell = cells[cellKey];
+
+      // 检查这个单元格是否被合并
+      if (cell && cell.hidden) {
+        continue;
+      }
+
+      const rowspan = cell?.rowspan || 1;
+      const colspan = cell?.colspan || 1;
+      const imgSrc = cell?.src || '';
+      const caption = cell?.caption || '';
+
+      const cellClass = imgSrc ? 'has-image' : '';
+
+      html += `
+        <td class="grid-cell ${cellClass}"
+            data-row="${r}"
+            data-col="${c}"
+            data-project="${pid}"
+            data-block="${blockIdx}"
+            rowspan="${rowspan}"
+            colspan="${colspan}"
+            onclick="openCellEditor(${pid}, ${blockIdx}, ${r}, ${c})">
+          ${imgSrc ? `<img src="${escapeHtml(imgSrc)}" alt="">` : '<span class="cell-empty">+</span>'}
+          ${caption ? `<div class="cell-caption">${escapeHtml(caption)}</div>` : ''}
+          ${rowspan > 1 || colspan > 1 ? `<div class="cell-size">${colspan}×${rowspan}</div>` : ''}
+        </td>
+      `;
+    }
+    html += '</tr>';
+  }
+
+  html += '</table>';
+  return html;
+}
+
+function updateGridSize(pid, blockIdx, field, value) {
+  const block = projectBlocks[pid][blockIdx];
+  const newValue = Math.max(1, Math.min(field === 'rows' ? 8 : 6, parseInt(value) || 2));
+  block[field] = newValue;
+
+  // 清理超出范围的单元格
+  if (block.cells) {
+    const cells = block.cells;
+    Object.keys(cells).forEach(key => {
+      const [r, c] = key.split('-').map(Number);
+      if (r >= block.rows || c >= block.cols) {
+        delete cells[key];
+      }
+    });
+  }
+
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+}
+
+function openCellEditor(pid, blockIdx, row, col) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.cells) block.cells = {};
+
+  const cellKey = `${row}-${col}`;
+  const cell = block.cells[cellKey] || { src: '', caption: '', rowspan: 1, colspan: 1 };
+
+  const modal = document.createElement('div');
+  modal.className = 'cell-editor-modal';
+  modal.innerHTML = `
+    <div class="cell-editor-content">
+      <h3>Edit Cell (${row + 1}, ${col + 1})</h3>
+
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="text" id="cell-src" value="${escapeHtml(cell.src || '')}"
+               placeholder="Paste image URL">
+      </div>
+
+      <div class="form-group">
+        <label>Caption (optional)</label>
+        <input type="text" id="cell-caption" value="${escapeHtml(cell.caption || '')}"
+               placeholder="Image description">
+      </div>
+
+      <div class="form-group">
+        <label>Merge Cells</label>
+        <div style="display: flex; gap: 10px;">
+          <label>Width:
+            <input type="number" id="cell-colspan" min="1" max="${block.cols - col}"
+                   value="${cell.colspan || 1}" style="width: 60px;">
+          </label>
+          <label>Height:
+            <input type="number" id="cell-rowspan" min="1" max="${block.rows - row}"
+                   value="${cell.rowspan || 1}" style="width: 60px;">
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" onclick="saveCellData(${pid}, ${blockIdx}, ${row}, ${col})">
+          Save
+        </button>
+        <button type="button" class="btn-secondary" onclick="deleteCellData(${pid}, ${blockIdx}, ${row}, ${col})">
+          Clear Cell
+        </button>
+        <button type="button" class="btn-secondary" onclick="closeModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('active'), 10);
+}
+
+function saveCellData(pid, blockIdx, row, col) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.cells) block.cells = {};
+
+  const cellKey = `${row}-${col}`;
+  const src = document.getElementById('cell-src').value.trim();
+  const caption = document.getElementById('cell-caption').value.trim();
+  const colspan = parseInt(document.getElementById('cell-colspan').value) || 1;
+  const rowspan = parseInt(document.getElementById('cell-rowspan').value) || 1;
+
+  // 清除之前被这个单元格占用的hidden标记
+  Object.keys(block.cells).forEach(key => {
+    if (block.cells[key].hidden && block.cells[key].parent === cellKey) {
+      delete block.cells[key];
+    }
+  });
+
+  if (src || caption) {
+    block.cells[cellKey] = { src, caption, colspan, rowspan };
+
+    // 标记被合并的单元格
+    for (let r = row; r < row + rowspan; r++) {
+      for (let c = col; c < col + colspan; c++) {
+        if (r === row && c === col) continue;
+        const mergedKey = `${r}-${c}`;
+        block.cells[mergedKey] = { hidden: true, parent: cellKey };
+      }
+    }
+  } else {
+    delete block.cells[cellKey];
+  }
+
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+  closeModal();
+}
+
+function deleteCellData(pid, blockIdx, row, col) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.cells) return;
+
+  const cellKey = `${row}-${col}`;
+
+  // 清除被合并的单元格
+  Object.keys(block.cells).forEach(key => {
+    if (block.cells[key].hidden && block.cells[key].parent === cellKey) {
+      delete block.cells[key];
+    }
+  });
+
+  delete block.cells[cellKey];
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+  closeModal();
+}
+
+function clearAllCells(pid, blockIdx) {
+  if (confirm('Clear all images from this grid?')) {
+    const block = projectBlocks[pid][blockIdx];
+    block.cells = {};
+    syncBlocksJson(pid);
+    renderBlocks(pid);
+  }
+}
+
+function closeModal() {
+  const modal = document.querySelector('.cell-editor-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300);
+  }
+}
+

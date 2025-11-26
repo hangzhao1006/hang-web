@@ -329,19 +329,14 @@ body {
 .project-hero {
     position: relative;
     width: 100%;
-    height: 85vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-bottom: 100px;
-    background-color: #f2f2f2;
+    height: 40vh;
+    margin-bottom: 0;
+    background-color: #ffffff;
     overflow: hidden;
 }
 
 .hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
     height: 100%;
     z-index: 0;
@@ -377,26 +372,103 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 60px 40px;
+    padding: 40px 60px;
+    background-color: #ffffff;
+    min-height: 40vh;
 }
 
 .title {
     font-size: 6rem;
     font-weight: 900;
     line-height: 0.95;
-    margin: 0 0 25px 0;
+    margin: 0 0 20px 0;
     color: #000;
     text-shadow: 0 20px 40px rgba(255, 255, 255, 0.9);
     letter-spacing: -0.03em;
     text-transform: uppercase;
 }
 
+/* ================================
+   Professional Style (Tech/Product)
+   ================================ */
+
+/* Professional页面：导航栏背景透明，文字变黑 */
+body:has(.hero-style-professional) .project-header::before {
+    background: transparent;
+    backdrop-filter: none;
+}
+
+body:has(.hero-style-professional) .project-header h1 span,
+body:has(.hero-style-professional) .project-header .home-link,
+body:has(.hero-style-professional) .project-header .nav a {
+    color: #333;
+}
+
+body:has(.hero-style-professional) .project-header .header-logo {
+    filter: brightness(0);
+}
+
+/* Professional hero: 与顶部导航栏有间距，居中 */
+.hero-style-professional {
+    margin-top: 100px;
+}
+
+.hero-style-professional .hero-bg {
+    max-width: 60%;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+/* Hide gradient for professional style */
+.hero-style-professional .hero-gradient {
+    display: none;
+}
+
+/* Professional content: more compact, cleaner */
+.hero-content-professional {
+    padding: 50px 60px;
+}
+
+.hero-content-professional .title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    text-shadow: none;
+    margin-bottom: 15px;
+}
+
+.hero-content-professional .subtitle {
+    font-size: 1.3rem;
+    color: #666;
+    font-weight: 400;
+    margin-bottom: 40px;
+    text-shadow: none;
+}
+
+.hero-content-professional .info-hud {
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.hero-content-professional .hud-item label {
+    font-size: 0.7rem;
+    color: #999;
+}
+
+.hero-content-professional .hud-item span {
+    font-size: 0.95rem;
+    color: #333;
+}
+
 .subtitle {
     font-size: 1.5rem;
     color: #444;
     font-weight: 400;
-    max-width: 600px;
-    margin-bottom: 60px;
+    max-width: 80%;
+    margin-bottom: 10px;
     line-height: 1.4;
     text-shadow: 0 10px 20px rgba(255, 255, 255, 0.8);
 }
@@ -960,4 +1032,122 @@ figcaption {
         top: 20px;
         left: 20px;
     }
+}
+/* ================================
+   Image Grid (拼图布局)
+   ================================ */
+
+.image-grid {
+    display: grid;
+    gap: 15px;
+    width: 100%;
+}
+
+/* 预设布局 */
+.image-grid.grid-2x2 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(200px, auto);
+}
+
+.image-grid.grid-3x1 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(250px, auto);
+}
+
+.image-grid.grid-1x3 {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(200px, auto);
+}
+
+.image-grid.grid-2x3 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(200px, auto);
+}
+
+.image-grid.grid-3x2 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(200px, auto);
+}
+
+/* 自由布局 - 4列网格系统 */
+.image-grid.grid-custom {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(150px, auto);
+}
+
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+.grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover img {
+    transform: scale(1.05);
+}
+
+.grid-item figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    color: #fff;
+    padding: 15px;
+    margin: 0;
+    text-align: left;
+    font-size: 0.8rem;
+}
+
+/* ================================
+   Image Grid Table (New System)
+   ================================ */
+
+.image-grid-table {
+    display: grid;
+    gap: 15px;
+    width: 100%;
+}
+
+.grid-cell-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+.grid-cell-item img {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.grid-cell-item:hover img {
+    transform: scale(1.05);
+}
+
+.grid-cell-item figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    color: #fff;
+    padding: 15px;
+    margin: 0;
+    text-align: left;
+    font-size: 0.8rem;
 }

@@ -220,6 +220,8 @@ header h1 {
   box-sizing: border-box;
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
+  border: 2px solid #ffffff;
+
 }
 
 .grid-item {
@@ -235,6 +237,8 @@ header h1 {
   align-items: center;
   text-align: center;
   overflow: hidden;
+    border: 2px solid #ffffff;
+
 }
 
 /* .grid-item {
