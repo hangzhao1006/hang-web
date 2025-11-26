@@ -110,6 +110,11 @@ $projects = get_projects_filtered_joined($filters);
       <div class="grid-item" style="--project-img: url('<?= $imgUrl ?>'); --cover-scale: <?= $coverScale ?>; --cover-pos-y: <?= $coverPosY ?>%;">
         <a href="project.php?slug=<?= urlencode($p['slug'] ?: $p['id']) ?>" class="grid-link"></a>
 
+        <?php if ($imgUrl): ?>
+          <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($p['title']) ?>" class="project-cover"
+               style="object-position: center <?= $coverPosY ?>%; transform: scale(<?= $coverScale ?>);">
+        <?php endif; ?>
+
         <div class="content">
           <h2><?= htmlspecialchars($p['title']) ?></h2>
           <p>

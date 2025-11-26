@@ -816,6 +816,8 @@ function saveCellData(pid, blockIdx, row, col) {
   const colspan = parseInt(document.getElementById('cell-colspan').value) || 1;
   const rowspan = parseInt(document.getElementById('cell-rowspan').value) || 1;
 
+  console.log(`Saving cell ${cellKey}: colspan=${colspan}, rowspan=${rowspan}`);
+
   // 清除之前被这个单元格占用的hidden标记
   Object.keys(block.cells).forEach(key => {
     if (block.cells[key].hidden && block.cells[key].parent === cellKey) {

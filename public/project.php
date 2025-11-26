@@ -258,7 +258,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                 <section class="<?= $rowClass ?>">
                     <div class="row-label"><?= h($b['label'] ?? '') ?></div>
                     <div class="row-content">
-                        <div class="image-grid-table" style="grid-template-columns: repeat(<?= $cols ?>, 1fr); grid-template-rows: repeat(<?= $rows ?>, auto);">
+                        <div class="image-grid-table" style="grid-template-columns: repeat(<?= $cols ?>, 1fr); grid-template-rows: repeat(<?= $rows ?>, minmax(200px, auto));">
                             <?php
                             for ($r = 0; $r < $rows; $r++) {
                                 for ($c = 0; $c < $cols; $c++) {
@@ -277,9 +277,14 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
                                     if (!$imgSrc) continue; // 不显示空单元格
 
-                                    // 使用精确的grid位置
-                                    $gridStyle = "grid-column: " . ($c + 1) . " / span $colspan; ";
-                                    $gridStyle .= "grid-row: " . ($r + 1) . " / span $rowspan;";
+                                    // 使用绝对grid位置：起始列/行 到 结束列/行
+                                    $colStart = $c + 1;
+                                    $colEnd = $c + 1 + $colspan;
+                                    $rowStart = $r + 1;
+                                    $rowEnd = $r + 1 + $rowspan;
+
+                                    $gridStyle = "grid-column: $colStart / $colEnd; ";
+                                    $gridStyle .= "grid-row: $rowStart / $rowEnd;";
                                     ?>
                                     <figure class="grid-cell-item" style="<?= h($gridStyle) ?>">
                                         <img src="<?= h($imgSrc) ?>" alt="<?= h($caption) ?>">

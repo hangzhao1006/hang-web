@@ -220,7 +220,6 @@ header h1 {
   box-sizing: border-box;
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
-  border: 2px solid #ffffff;
 
 }
 
@@ -237,7 +236,6 @@ header h1 {
   align-items: center;
   text-align: center;
   overflow: hidden;
-    border: 2px solid #ffffff;
 
 }
 
@@ -264,6 +262,8 @@ header h1 {
 }
 
 /* --- 核心修复：特定作品倒影 --- */
+/* COMMENTED OUT: Background image on grid items */
+/*
 .grid-item::before {
   content: '';
   position: absolute;
@@ -277,12 +277,10 @@ header h1 {
   background-position: center center;
   background-repeat: no-repeat;
 
-  /* 默认状态：隐藏，且带有扭曲滤镜 */
   opacity: 0;
   transform: scale(calc(1.05 * var(--cover-scale, 1)));
   filter: grayscale(100%) contrast(120%) brightness(0.7);
 
-  /* 平滑过渡效果 */
   transition:
     opacity 0.6s ease,
     transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
@@ -292,13 +290,38 @@ header h1 {
 .grid-item:hover::before {
   opacity: 1;
   transform: scale(var(--cover-scale, 1));
-  /* 悬停时：变为彩色，去掉扭曲 */
   filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
+}
+*/
 
-  /* 进入时：立即生效，没有延迟 */
-  /* transition:
-    opacity 0.5s ease 0s,
-    transform 0.6s ease 0s, */
+/* Project cover image - grayscale by default */
+.project-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+
+  /* 默认：黑白 + 半透明 */
+  opacity: 0.6;
+  filter: grayscale(100%) contrast(110%) brightness(0.85);
+
+  /* 平滑过渡 - 使用更快的贝塞尔曲线 */
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* GPU加速优化 */
+  will-change: opacity, filter;
+}
+
+.grid-item:hover .project-cover {
+  /* Hover时：变为彩色 + 完全不透明 */
+  opacity: 1;
+  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
 }
 
 .grid-item:hover::after {
