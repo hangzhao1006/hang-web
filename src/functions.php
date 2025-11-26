@@ -339,3 +339,21 @@ function render_markdown($text)
   return implode("\n", $out);
 }
 
+function get_db(): PDO {
+    static $db = null;
+    if ($db) return $db;
+
+    // 1. 确保 data 目录存在
+    $dbDir = __DIR__ . '/../data';
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0777, true);  // 本地开发直接 0777 最省事
+    }
+
+    $dbPath = $dbDir . '/site.sqlite';
+
+    // 2. 打开 SQLite
+    $db = new PDO('sqlite:' . $dbPath);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    return $db;
+}
