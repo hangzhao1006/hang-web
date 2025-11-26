@@ -304,24 +304,32 @@ header h1 {
   object-fit: cover;
   z-index: -1;
 
-  /* 默认：黑白 + 半透明 */
-  opacity: 0.6;
+  /* 默认：黑白 + 半透明 + admin设置的缩放 */
+  opacity: 0.8;
   filter: grayscale(100%) contrast(110%) brightness(0.85);
+  transform: scale(var(--cover-scale, 1));
 
-  /* 平滑过渡 - 使用更快的贝塞尔曲线 */
+  /* 移开时：慢速过渡 - 0.5秒缓缓退出 */
+  transition:
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* GPU加速优化 */
+  will-change: opacity, filter, transform;
+}
+
+.grid-item:hover .project-cover {
+  /* Hover时：变为彩色 + 完全不透明 + 额外放大 */
+  opacity: 1;
+  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
+  transform: scale(calc(var(--cover-scale, 1) * 1.15));
+
+  /* 进入时：快速过渡 - 0.15秒立即响应 */
   transition:
     opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* GPU加速优化 */
-  will-change: opacity, filter;
-}
-
-.grid-item:hover .project-cover {
-  /* Hover时：变为彩色 + 完全不透明 */
-  opacity: 1;
-  filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
 }
 
 .grid-item:hover::after {

@@ -105,6 +105,7 @@ $projects = get_projects_filtered_joined($filters);
       $meta = !empty($p['meta_json']) ? (json_decode($p['meta_json'], true) ?: []) : [];
       $coverScale = $meta['cover_scale'] ?? 1.0;
       $coverPosY = $meta['cover_pos_y'] ?? 50;
+      $imgStyle = "object-position: center {$coverPosY}%";
       ?>
       <!-- DEBUG[<?= $p['id'] ?>]: scale=<?= $coverScale ?> posY=<?= $coverPosY ?>% -->
       <div class="grid-item" style="--project-img: url('<?= $imgUrl ?>'); --cover-scale: <?= $coverScale ?>; --cover-pos-y: <?= $coverPosY ?>%;">
@@ -112,7 +113,7 @@ $projects = get_projects_filtered_joined($filters);
 
         <?php if ($imgUrl): ?>
           <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($p['title']) ?>" class="project-cover"
-               style="object-position: center <?= $coverPosY ?>%; transform: scale(<?= $coverScale ?>);">
+               style="<?= htmlspecialchars($imgStyle) ?>">
         <?php endif; ?>
 
         <div class="content">
