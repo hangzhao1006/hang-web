@@ -430,6 +430,15 @@ textarea.code-font {
     cursor: grab;
 }
 
+.block-number {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #667eea;
+    padding: 2px 8px;
+    margin-left: 8px;
+    margin-right: 6px;
+}
+
 .block-type {
     font-size: 0.7rem;
     font-weight: bold;

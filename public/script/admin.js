@@ -136,12 +136,13 @@ function showInsertMenu(pid, insertIndex) {
 
 // Toggle block collapse state
 function toggleBlockCollapse(pid, index, event) {
-  // Don't collapse if clicking on input fields or buttons
+  // Don't collapse if clicking on input fields, buttons, or drag handle
   if (event.target.tagName === 'INPUT' ||
       event.target.tagName === 'TEXTAREA' ||
       event.target.tagName === 'BUTTON' ||
       event.target.tagName === 'SELECT' ||
-      event.target.classList.contains('block-handle')) {
+      event.target.classList.contains('block-handle') ||
+      event.target.classList.contains('delete-btn')) {
     return;
   }
 
@@ -326,13 +327,14 @@ function renderBlocks(id) {
     }
 
     const el = document.createElement('div');
-    el.className = 'content-block-item';
+    el.className = 'content-block-item collapsed'; // 默认折叠
     el.setAttribute('data-block-id', `${id}-${index}`);
 
     let html = `
       <div class="block-header" onclick="toggleBlockCollapse(${id}, ${index}, event)">
         <div>
           <span class="block-handle">☰</span>
+          <span class="block-number">#${index + 1}</span>
           <span class="block-type">${block.type}</span>
           <span class="collapse-indicator">▼</span>
         </div>
@@ -703,11 +705,23 @@ function renderBlocks(id) {
 
   if (typeof Sortable !== 'undefined') {
     new Sortable(container, {
-      handle: '.block-header',
+      handle: '.block-handle', // 只在拖拽手柄上可以拖动
       animation: 150,
+      draggable: '.content-block-item', // 只有 content-block-item 可以拖动
       onEnd: function (evt) {
-        const item = projectBlocks[id].splice(evt.oldIndex, 1)[0];
-        projectBlocks[id].splice(evt.newIndex, 0, item);
+        // 直接从DOM中读取新的顺序
+        const blockItems = Array.from(container.children).filter(el =>
+          el.classList.contains('content-block-item')
+        );
+
+        // 根据DOM顺序重新排列projectBlocks数组
+        const newBlocks = blockItems.map(el => {
+          const blockId = el.getAttribute('data-block-id');
+          const idx = parseInt(blockId.split('-')[1]);
+          return projectBlocks[id][idx];
+        });
+
+        projectBlocks[id] = newBlocks;
         syncBlocksJson(id);
         renderBlocks(id);
       }
