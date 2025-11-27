@@ -355,7 +355,8 @@ body {
 
 .hero-bg iframe {
     border: none;
-    pointer-events: none; /* 禁止交互，保持背景视频效果 */
+    pointer-events: none;
+    /* 禁止交互，保持背景视频效果 */
 }
 
 .hero-gradient {
@@ -598,9 +599,10 @@ body:has(.hero-style-professional) .project-header .header-logo {
 .content-row {
     display: grid;
     grid-template-columns: 180px 1fr;
-    gap: 60px;
-    margin-bottom: 100px;
+    gap: 40px;
+    margin-bottom: 80px;
     align-items: start;
+    /* border: 1px solid #111; */
 }
 
 .row-label {
@@ -612,9 +614,10 @@ body:has(.hero-style-professional) .project-header .header-logo {
     top: 40px;
     height: fit-content;
     text-align: left;
+    /* border: 1px solid #da6363; */
 }
 
-.row-sub {
+/* .row-sub {
     font-family: 'Helvetica Neue', sans-serif;
     font-size: 0.85rem;
     color: #666;
@@ -622,7 +625,8 @@ body:has(.hero-style-professional) .project-header .header-logo {
     text-transform: none;
     line-height: 1.4;
     white-space: pre-wrap;
-}
+    border: 1px solid #63da89;
+} */
 
 .content-subtitle {
     font-family: 'Helvetica Neue', sans-serif;
@@ -632,6 +636,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
     margin-bottom: 10px;
     margin-top: 0;
     text-transform: none;
+    /* border: 1px solid #63da89; */
 }
 
 .row-content {
@@ -666,7 +671,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 }
 
 .row-content li {
-    font-size: 1.15rem;
+    font-size: 1.10rem;
     color: #222;
     margin-bottom: 8px;
     display: list-item;
@@ -716,7 +721,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     /* border-radius由inline style控制 */
     overflow: hidden;
-    background: #000;
+    background: #ffffff;
     /* border-radius: 20px; */
 }
 
@@ -728,7 +733,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 .large-image video {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     /* border-radius由inline style控制 */
-    background: #000;
+    background: #ffffff;
 }
 
 figcaption {
@@ -1021,31 +1026,57 @@ figcaption {
 
     .project-hero {
         height: auto;
-        min-height: 70vh;
+        margin-bottom: 0;
+        border: 1px solid #999;
+        
     }
 
     .hero-bg {
-        height: 60vh;
+        height: auto;
+        width: 100%;
+             border: 1px solid #999;
+    }
+
+    .hero-bg img,
+    .hero-bg video,
+    .hero-bg iframe {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
     }
 
     .hero-content {
-        padding: 0 20px;
-        margin-top: -60px;
+        padding: 20px;
+        margin-top: 0;
+        min-height: 0;
     }
 
     .title {
-        font-size: 3.5rem;
+        font-size: 2.8rem;
+        margin: 0 0 12px 0;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        max-width: 100%;
+        margin-bottom: 12px;
     }
 
     .info-hud {
         grid-template-columns: 1fr;
-        gap: 30px;
-        padding-top: 20px;
+        gap: 18px;
+        padding-top: 12px;
+        margin-bottom: 0;
     }
 
     .content-row {
         display: block;
-        margin-bottom: 80px;
+        margin-bottom: 50px;
+    }
+
+    .content-row:first-child {
+        margin-top: 0;
     }
 
     .row-label {
@@ -1058,12 +1089,36 @@ figcaption {
 
     .project-body {
         padding: 0 20px;
-        margin-top: 60px;
+        margin-top: 0;
+        padding-top: 20px;
     }
 
     .project-nav {
         top: 20px;
         left: 20px;
+    }
+
+    /* Professional style adjustments for mobile */
+    .hero-style-professional {
+        margin-top: 80px;
+    }
+
+    .hero-style-professional .hero-bg {
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .hero-content-professional {
+        padding: 30px 20px;
+    }
+
+    .hero-content-professional .title {
+        font-size: 2.5rem;
+    }
+
+    .hero-content-professional .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
     }
 }
 
@@ -1201,7 +1256,8 @@ figcaption {
 
 .two-column-layout .column-left,
 .two-column-layout .column-right {
-    min-width: 0; /* Prevents grid blowout */
+    min-width: 0;
+    /* Prevents grid blowout */
 }
 
 .two-column-layout .column-text {
@@ -1252,7 +1308,8 @@ figcaption {
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .two-column-layout {
-        grid-template-columns: 1fr !important; /* Override inline style */
+        grid-template-columns: 1fr !important;
+        /* Override inline style */
         gap: 30px !important;
     }
 
