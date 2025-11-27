@@ -40,13 +40,13 @@ $projects = get_projects_filtered_joined($filters);
     </defs>
   </svg>
 
-  <!-- 1. 全局背景层 -->
-  <!-- <div class="reflection-layer" id="bg-layer"></div> -->
+  <!-- 1. 全局背景层 (SVG 扭曲版) -->
+  <div class="reflection-layer" id="bg-layer"></div>
 
-    <!-- 1. 全局背景层：里面塞一块 WebGL 画布 -->
-  <div class="reflection-layer" id="bg-layer">
+  <!-- 2. WebGL 水波纹覆盖层 (禁用) -->
+  <!-- <div class="water-overlay-layer">
     <canvas id="glCanvas"></canvas>
-  </div>
+  </div> -->
 
 
   <!-- 2. 自定义鼠标 -->
@@ -147,7 +147,7 @@ $projects = get_projects_filtered_joined($filters);
     </svg> -->
   </footer>
 
-  <script src="script/water.js" defer></script>
+  <!-- <script src="script/water-simple.js" defer></script> -->
   <script src="script/test.js" defer></script>
 
 
