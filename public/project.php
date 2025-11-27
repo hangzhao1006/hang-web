@@ -203,9 +203,9 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                         </div>
 
                         <div class="slider-controls">
-                            <button class="prev-btn">←</button>
+                            <button class="prev-btn" onclick="changeSlide('gallery-slider', -1)">←</button>
                             <span class="slide-counter">1 / <?= count($gallery) ?></span>
-                            <button class="next-btn">→</button>
+                            <button class="next-btn" onclick="changeSlide('gallery-slider', 1)">→</button>
                         </div>
                     </div>
 
@@ -216,7 +216,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
         <?php
         $blocks = $meta['blocks'] ?? [];
-        foreach ($blocks as $b):
+        foreach ($blocks as $index => $b):
             ?>
             <?php if ($b['type'] === 'text'): ?>
                 <section class="content-row">

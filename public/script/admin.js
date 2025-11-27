@@ -498,6 +498,10 @@ function renderBlocks(id) {
     } else if (block.type === 'gallery') {
       const images = block.images || [];
       const label = block.label || 'Gallery';
+      const validImages = images.filter(img => {
+        const src = typeof img === 'string' ? img : (img.src || '');
+        return src.trim() !== '';
+      });
 
       html += `
         <div class="form-group">
@@ -505,6 +509,36 @@ function renderBlocks(id) {
           <input placeholder="Gallery title" value="${escapeHtml(label)}"
                  onchange="updateBlockData(${id}, ${index}, 'label', this.value)">
         </div>
+
+        ${validImages.length > 0 ? `
+        <div class="gallery-preview" style="margin-bottom: 20px; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+          <div class="gallery-slider" id="admin-gallery-slider-${id}-${index}" style="max-width: 600px; margin: 0 auto;">
+            <div class="gallery-viewport" style="overflow: hidden; border-radius: 8px;">
+              <div class="slider-track" style="display: flex; transition: transform 0.3s ease;">
+                ${validImages.map((img, idx) => {
+                  const src = typeof img === 'string' ? img : (img.src || '');
+                  const caption = typeof img === 'object' ? (img.caption || '') : '';
+                  return `
+                    <div class="slide" style="min-width: 100%; position: relative;">
+                      <img src="${escapeHtml(src)}" style="width: 100%; height: auto; display: block;">
+                      ${caption ? `<div style="padding: 10px; background: rgba(0,0,0,0.7); color: white; text-align: center;">${escapeHtml(caption)}</div>` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+            ${validImages.length > 1 ? `
+            <div class="slider-controls" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px;">
+              <button class="prev-btn" onclick="changeSlide('admin-gallery-slider-${id}-${index}', -1)"
+                      style="padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">←</button>
+              <span class="slide-counter" style="font-size: 0.9rem; color: #666;">1 / ${validImages.length}</span>
+              <button class="next-btn" onclick="changeSlide('admin-gallery-slider-${id}-${index}', 1)"
+                      style="padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">→</button>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+        ` : ''}
 
         <div class="gallery-images-list" id="gallery-block-${id}-${index}">
           ${images.map((img, imgIdx) => {
@@ -1222,5 +1256,70 @@ function openGalleryCrop(pid, blockIdx, imgIdx, imgSrc) {
         });
     }, 'image/jpeg', 0.95);
   });
+}
+
+// ====== Gallery Slider Functions (for admin preview) ======
+const adminGalleryStates = {};
+
+function initAdminGallerySlider(sliderId) {
+  const slider = document.getElementById(sliderId);
+  if (!slider) return;
+
+  const slides = slider.querySelectorAll('.slide');
+  if (slides.length === 0) return;
+
+  adminGalleryStates[sliderId] = {
+    currentIndex: 0,
+    totalSlides: slides.length
+  };
+
+  showSlide(sliderId, 0);
+}
+
+function changeSlide(sliderId, direction) {
+  let state = adminGalleryStates[sliderId];
+
+  // Initialize if not exists
+  if (!state) {
+    initAdminGallerySlider(sliderId);
+    state = adminGalleryStates[sliderId];
+    if (!state) return;
+  }
+
+  state.currentIndex += direction;
+
+  // Loop around
+  if (state.currentIndex < 0) {
+    state.currentIndex = state.totalSlides - 1;
+  } else if (state.currentIndex >= state.totalSlides) {
+    state.currentIndex = 0;
+  }
+
+  showSlide(sliderId, state.currentIndex);
+}
+
+function showSlide(sliderId, index) {
+  const slider = document.getElementById(sliderId);
+  if (!slider) return;
+
+  const track = slider.querySelector('.slider-track');
+  const slides = slider.querySelectorAll('.slide');
+  const counter = slider.querySelector('.slide-counter');
+
+  if (!track || slides.length === 0) return;
+
+  // Move track
+  const offset = -index * 100;
+  track.style.transform = `translateX(${offset}%)`;
+
+  // Update counter
+  if (counter) {
+    counter.textContent = `${index + 1} / ${slides.length}`;
+  }
+
+  // Update state
+  if (adminGalleryStates[sliderId]) {
+    adminGalleryStates[sliderId].currentIndex = index;
+  }
 }
 

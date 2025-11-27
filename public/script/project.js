@@ -86,8 +86,22 @@ function initializeGallerySliders() {
 }
 
 function changeSlide(sliderId, direction) {
-    const state = galleryStates[sliderId];
-    if (!state) return;
+    let state = galleryStates[sliderId];
+
+    // 如果state不存在，先初始化
+    if (!state) {
+        const slider = document.getElementById(sliderId);
+        if (!slider) return;
+
+        const slides = slider.querySelectorAll('.slide');
+        if (slides.length === 0) return;
+
+        galleryStates[sliderId] = {
+            currentIndex: 0,
+            totalSlides: slides.length
+        };
+        state = galleryStates[sliderId];
+    }
 
     state.currentIndex += direction;
 
@@ -103,17 +117,26 @@ function changeSlide(sliderId, direction) {
 
 function showSlide(sliderId, index) {
     const slider = document.getElementById(sliderId);
-    if (!slider) return;
+    if (!slider) {
+        console.log('Slider not found:', sliderId);
+        return;
+    }
 
     const track = slider.querySelector('.slider-track');
     const slides = slider.querySelectorAll('.slide');
     const counter = slider.querySelector('.slide-counter');
 
-    if (!track || slides.length === 0) return;
+    if (!track || slides.length === 0) {
+        console.log('Track or slides not found. Track:', track, 'Slides:', slides.length);
+        return;
+    }
 
     // Move track
     const offset = -index * 100;
     track.style.transform = `translateX(${offset}%)`;
+    track.style.transition = 'transform 0.3s ease';
+
+    console.log(`Moving ${sliderId} to slide ${index + 1}/${slides.length}, offset: ${offset}%`);
 
     // Update counter
     if (counter) {
