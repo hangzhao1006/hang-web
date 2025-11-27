@@ -94,9 +94,25 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
             $heroSrc = is_string($heroMedia) ? $heroMedia : ($heroMedia['src'] ?? '');
             if (!$heroSrc)
                 $heroSrc = $project['image_url'];
-            $isVideo = preg_match('/\.(mp4|webm)$/i', $heroSrc);
+
+            // 检测视频类型
+            $isLocalVideo = preg_match('/\.(mp4|webm)$/i', $heroSrc);
+            $isYouTube = preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $heroSrc, $ytMatches);
+
+            // 转换YouTube URL为embed格式
+            $youtubeEmbedUrl = '';
+            if ($isYouTube) {
+                $videoId = $ytMatches[1];
+                $youtubeEmbedUrl = "https://www.youtube.com/embed/{$videoId}?autoplay=1&mute=1&loop=1&playlist={$videoId}&controls=0&showinfo=0&rel=0&modestbranding=1";
+            }
             ?>
-            <?php if ($isVideo): ?>
+            <?php if ($isYouTube): ?>
+                <iframe src="<?= h($youtubeEmbedUrl) ?>"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></iframe>
+            <?php elseif ($isLocalVideo): ?>
                 <video autoplay loop muted playsinline src="<?= h($heroSrc) ?>"
                     style="object-position: <?= h($heroPosX) ?>% <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);"></video>
             <?php else: ?>
@@ -234,9 +250,28 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                     <div class="row-content">
                         <figure class="large-image" style="width: <?= h($wStyle) ?>; margin: <?= $alignStyle ?>;">
                             <?php if ($isVideo):
-                                $attrs = !empty($b['autoplay']) ? 'autoplay loop muted playsinline' : 'controls';
-                                ?>
-                                <video src="<?= h($b['src']) ?>" <?= $attrs ?> style="width:100%; display:block;"></video>
+                                // 检测YouTube视频
+                                $videoSrc = $b['src'] ?? '';
+                                $videoRadius = $b['radius'] ?? 8;
+                                $isYouTubeVideo = preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $videoSrc, $ytVideoMatches);
+
+                                if ($isYouTubeVideo):
+                                    $ytVideoId = $ytVideoMatches[1];
+                                    $autoplayParam = !empty($b['autoplay']) ? '&autoplay=1&mute=1&loop=1&playlist=' . $ytVideoId : '';
+                                    $ytEmbedUrl = "https://www.youtube.com/embed/{$ytVideoId}?rel=0&modestbranding=1{$autoplayParam}";
+                                    ?>
+                                    <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: <?= h($videoRadius) ?>px;">
+                                        <iframe src="<?= h($ytEmbedUrl) ?>"
+                                            frameborder="0"
+                                            allow="autoplay; encrypted-media"
+                                            allowfullscreen
+                                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                                    </div>
+                                <?php else:
+                                    $attrs = !empty($b['autoplay']) ? 'autoplay loop muted playsinline' : 'controls';
+                                    ?>
+                                    <video src="<?= h($videoSrc) ?>" <?= $attrs ?> style="width:100%; display:block; border-radius: <?= h($videoRadius) ?>px;"></video>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <img src="<?= h($b['src']) ?>" alt="Img">
                             <?php endif; ?>
@@ -299,10 +334,89 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                         </div>
                     </div>
                 </section>
+
+            <?php elseif ($b['type'] === 'gallery'): ?>
+                <?php
+                $layout = $b['layout'] ?? 'center';
+                $rowClass = ($layout === 'center') ? 'content-row gallery-section mode-center' : 'content-row gallery-section';
+                $galleryImages = $b['images'] ?? [];
+                ?>
+                <section class="<?= $rowClass ?>">
+                    <div class="row-label"><?= h($b['label'] ?? 'Gallery') ?></div>
+                    <div class="row-content" style="width: 100%;">
+                        <div class="gallery-slider" id="gallery-slider-<?= $index ?>">
+                            <div class="gallery-viewport">
+                                <div class="slider-track">
+                                    <?php foreach ($galleryImages as $gIndex => $item):
+                                        $src = is_string($item) ? $item : ($item['src'] ?? '');
+                                        $cap = is_array($item) ? ($item['caption'] ?? '') : '';
+                                        if (!$src)
+                                            continue;
+                                        ?>
+                                        <div class="slide">
+                                            <img src="<?= h($src) ?>" alt="Gallery Image">
+                                            <?php if ($cap): ?>
+                                                <div class="slide-caption"><?= h($cap) ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <?php if (count(array_filter($galleryImages, fn($item) => is_string($item) ? $item : ($item['src'] ?? ''))) > 0): ?>
+                                <div class="slider-controls">
+                                    <button class="prev-btn" onclick="changeSlide('gallery-slider-<?= $index ?>', -1)">←</button>
+                                    <span class="slide-counter" id="counter-<?= $index ?>">1 / <?= count(array_filter($galleryImages, fn($item) => is_string($item) ? $item : ($item['src'] ?? ''))) ?></span>
+                                    <button class="next-btn" onclick="changeSlide('gallery-slider-<?= $index ?>', 1)">→</button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </section>
+
+            <?php elseif ($b['type'] === 'two_column'): ?>
+                <?php
+                $label = $b['label'] ?? '';
+                $leftType = $b['leftType'] ?? 'text';
+                $rightType = $b['rightType'] ?? 'image';
+                $leftContent = $b['leftContent'] ?? '';
+                $rightContent = $b['rightContent'] ?? '';
+                $columnRatio = $b['columnRatio'] ?? '50-50';
+
+                // Parse ratio
+                list($leftPercent, $rightPercent) = explode('-', $columnRatio);
+                ?>
+                <section class="content-row two-column-row">
+                    <?php if ($label): ?>
+                        <div class="row-label"><?= h($label) ?></div>
+                    <?php endif; ?>
+                    <div class="row-content">
+                        <div class="two-column-layout" style="display: grid; grid-template-columns: <?= h($leftPercent) ?>fr <?= h($rightPercent) ?>fr; gap: 40px; align-items: center;">
+                            <div class="column-left">
+                                <?php if ($leftType === 'text'): ?>
+                                    <div class="column-text"><?= render_markdown($leftContent) ?></div>
+                                <?php else: ?>
+                                    <?php if ($leftContent): ?>
+                                        <img src="<?= h($leftContent) ?>" alt="Column Image" class="column-image">
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="column-right">
+                                <?php if ($rightType === 'text'): ?>
+                                    <div class="column-text"><?= render_markdown($rightContent) ?></div>
+                                <?php else: ?>
+                                    <?php if ($rightContent): ?>
+                                        <img src="<?= h($rightContent) ?>" alt="Column Image" class="column-image">
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             <?php endif; ?>
         <?php endforeach; ?>
 
-        <!-- Gallery always visible if exists -->
+        <!-- Gallery always visible if exists (legacy support) -->
     </main>
 
     <footer class="project-footer">

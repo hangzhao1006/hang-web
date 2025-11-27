@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     observer.observe(hero);
 
+    // Gallery Slider functionality
+    initializeGallerySliders();
+
     // Mobile navigation toggle
     const mobileToggle = document.querySelector('.mobile-nav-toggle');
     const mobileMenu = document.querySelector('.mobile-nav-menu');
@@ -60,3 +63,65 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Gallery Slider Functions
+const galleryStates = {};
+
+function initializeGallerySliders() {
+    const sliders = document.querySelectorAll('[id^="gallery-slider"]');
+    sliders.forEach(slider => {
+        const sliderId = slider.id;
+        const slides = slider.querySelectorAll('.slide');
+
+        if (slides.length === 0) return;
+
+        galleryStates[sliderId] = {
+            currentIndex: 0,
+            totalSlides: slides.length
+        };
+
+        // Show first slide
+        showSlide(sliderId, 0);
+    });
+}
+
+function changeSlide(sliderId, direction) {
+    const state = galleryStates[sliderId];
+    if (!state) return;
+
+    state.currentIndex += direction;
+
+    // Loop around
+    if (state.currentIndex < 0) {
+        state.currentIndex = state.totalSlides - 1;
+    } else if (state.currentIndex >= state.totalSlides) {
+        state.currentIndex = 0;
+    }
+
+    showSlide(sliderId, state.currentIndex);
+}
+
+function showSlide(sliderId, index) {
+    const slider = document.getElementById(sliderId);
+    if (!slider) return;
+
+    const track = slider.querySelector('.slider-track');
+    const slides = slider.querySelectorAll('.slide');
+    const counter = slider.querySelector('.slide-counter');
+
+    if (!track || slides.length === 0) return;
+
+    // Move track
+    const offset = -index * 100;
+    track.style.transform = `translateX(${offset}%)`;
+
+    // Update counter
+    if (counter) {
+        counter.textContent = `${index + 1} / ${slides.length}`;
+    }
+
+    // Update state
+    if (galleryStates[sliderId]) {
+        galleryStates[sliderId].currentIndex = index;
+    }
+}

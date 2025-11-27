@@ -27,12 +27,12 @@ html {
   left: -10%;
   width: 120%;
   height: 120%;
-  background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop');
+  /* background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop'); */
   background-size: cover;
   background-position: center;
 
   /* 默认状态：模糊+扭曲 */
-  filter: grayscale(100%) contrast(120%) brightness(0.6) url(#glass-warp);
+  /* filter: grayscale(100%) contrast(120%) brightness(0.6) url(#glass-warp); */
   z-index: 0;
   pointer-events: none;
   transition: transform 0.1s ease-out;
@@ -304,28 +304,26 @@ header h1 {
   object-fit: cover;
   z-index: -1;
 
-  /* 默认：黑白 + 半透明 + admin设置的缩放 */
   opacity: 0.8;
   filter: grayscale(100%) contrast(110%) brightness(0.85);
   transform: scale(var(--cover-scale, 1));
 
-  /* 移开时：慢速过渡 - 0.5秒缓缓退出 */
   transition:
     opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     filter 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     transform 4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* GPU加速优化 */
   will-change: opacity, filter, transform;
 }
 
+
+
+
 .grid-item:hover .project-cover {
-  /* Hover时：变为彩色 + 完全不透明 + 额外放大 */
   opacity: 1;
   filter: grayscale(0%) contrast(105%) brightness(1) saturate(1.1);
   transform: scale(calc(var(--cover-scale, 1) * 1.15));
 
-  /* 进入时：快速过渡 - 0.15秒立即响应 */
   transition:
     opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -413,6 +411,13 @@ footer {
   /* 字体大小的 3 倍 */
   width: auto;
   color: black;
+}
+
+/* WebGL 水面画布：铺满整个背景层 */
+#glCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 

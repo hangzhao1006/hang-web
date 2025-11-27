@@ -343,13 +343,19 @@ body {
 }
 
 .hero-bg img,
-.hero-bg video {
+.hero-bg video,
+.hero-bg iframe {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center center;
     display: block;
     transition: transform 0.3s ease;
+}
+
+.hero-bg iframe {
+    border: none;
+    pointer-events: none; /* 禁止交互，保持背景视频效果 */
 }
 
 .hero-gradient {
@@ -392,10 +398,10 @@ body {
    Professional Style (Tech/Product)
    ================================ */
 
-/* Professional页面：导航栏背景透明，文字变黑 */
+/* Professional页面：导航栏保留玻璃效果，但用浅色背景，文字变黑 */
 body:has(.hero-style-professional) .project-header::before {
-    background: transparent;
-    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.85);
+    /* backdrop-filter保持不变，继承原有的毛玻璃效果 */
 }
 
 body:has(.hero-style-professional) .project-header h1 span,
@@ -410,15 +416,17 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 /* Professional hero: 与顶部导航栏有间距，居中 */
 .hero-style-professional {
-    margin-top: 100px;
+    margin-top: 120px;
+    /* border: 1px solid #ccc; */
+    overflow: visible;
 }
 
 .hero-style-professional .hero-bg {
     max-width: 60%;
     margin: 0 auto;
-    border-radius: 12px;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
 }
 
 /* Hide gradient for professional style */
@@ -703,6 +711,26 @@ body:has(.hero-style-professional) .project-header .header-logo {
     background: #f5f5f5;
 }
 
+/* YouTube视频容器 - 16:9响应式 */
+.large-image .video-wrapper {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    /* border-radius由inline style控制 */
+    overflow: hidden;
+    background: #000;
+    /* border-radius: 20px; */
+}
+
+.large-image .video-wrapper iframe {
+    border: none;
+}
+
+/* 本地视频样式 */
+.large-image video {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    /* border-radius由inline style控制 */
+    background: #000;
+}
+
 figcaption {
     margin-top: 15px;
     font-size: 0.85rem;
@@ -718,8 +746,10 @@ figcaption {
 .gallery-slider {
     width: 100%;
     position: relative;
-    overflow-x: hidden;    /* 只隐藏水平方向 */
-    overflow-y: visible;   /* 竖直方向让阴影可以超出去 */
+    overflow-x: hidden;
+    /* 只隐藏水平方向 */
+    overflow-y: visible;
+    /* 竖直方向让阴影可以超出去 */
     padding: 20px 0 30px 0;
     margin-bottom: 0;
 }
@@ -729,7 +759,8 @@ figcaption {
     width: 100%;
     overflow-x: hidden;
     overflow-y: visible;
-    border-radius: 20px;      /* 大黑块的圆角 */
+    border-radius: 20px;
+    /* 大黑块的圆角 */
 }
 
 /* track 只负责水平滑动 */
@@ -742,7 +773,8 @@ figcaption {
 .slide {
     min-width: 100%;
     box-sizing: border-box;
-    padding: 0 30px;          /* 想要纯大黑块就把 padding 改成 0 */
+    padding: 0 30px;
+    /* 想要纯大黑块就把 padding 改成 0 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -756,7 +788,8 @@ figcaption {
     max-height: 80vh;
     margin-bottom: 20px;
     object-fit: contain;
-    border-radius: 20px;      /* 或者改成 0，用 viewport 的圆角也行 */
+    border-radius: 20px;
+    /* 或者改成 0，用 viewport 的圆角也行 */
     box-shadow: 0 13px 30px -12px rgba(0, 0, 0, 0.235);
     background: #fafafa;
     display: block;
@@ -1033,6 +1066,7 @@ figcaption {
         left: 20px;
     }
 }
+
 /* ================================
    Image Grid (拼图布局)
    ================================ */
@@ -1151,4 +1185,78 @@ figcaption {
     margin: 0;
     text-align: left;
     font-size: 0.8rem;
+}
+
+/* ================================
+   Two Column Layout
+   ================================ */
+
+.two-column-row {
+    margin-bottom: 80px;
+}
+
+.two-column-layout {
+    width: 100%;
+}
+
+.two-column-layout .column-left,
+.two-column-layout .column-right {
+    min-width: 0; /* Prevents grid blowout */
+}
+
+.two-column-layout .column-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.two-column-layout .column-text p {
+    margin: 0 0 1em 0;
+}
+
+.two-column-layout .column-text h1,
+.two-column-layout .column-text h2,
+.two-column-layout .column-text h3,
+.two-column-layout .column-text h4 {
+    margin: 1.5em 0 0.5em 0;
+    line-height: 1.3;
+}
+
+.two-column-layout .column-text h1:first-child,
+.two-column-layout .column-text h2:first-child,
+.two-column-layout .column-text h3:first-child,
+.two-column-layout .column-text h4:first-child {
+    margin-top: 0;
+}
+
+.two-column-layout .column-text ul,
+.two-column-layout .column-text ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+}
+
+.two-column-layout .column-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.two-column-layout .column-image:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .two-column-layout {
+        grid-template-columns: 1fr !important; /* Override inline style */
+        gap: 30px !important;
+    }
+
+    .two-column-row {
+        margin-bottom: 60px;
+    }
 }

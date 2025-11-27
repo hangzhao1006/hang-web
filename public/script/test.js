@@ -152,3 +152,97 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelector('.project-header h1')?.addEventListener('click', () => {
   window.location.href = 'index.php';
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const turb = document.getElementById("warpNoise");
+  const disp = document.getElementById("warpDisp");
+
+  if (!turb || !disp) return;
+
+  let lastX = null;
+  let lastY = null;
+
+  // 基础水面强度
+  const baseScale = 40;
+  let targetScale = baseScale;
+  let currentScale = baseScale;
+
+  // 脉冲：鼠标划过时激起的一小段“水波”
+  let pulse = 0;
+
+  // 用于让水面自己轻轻流动
+  let t = 0;
+
+  window.addEventListener("mousemove", (e) => {
+    const x = e.clientX;
+    const y = e.clientY;
+
+    if (lastX !== null && lastY !== null) {
+      const dx = x - lastX;
+      const dy = y - lastY;
+
+      // 鼠标速度
+      const speed = Math.sqrt(dx * dx + dy * dy);
+
+      // 把速度映射成力度（上限限制一下）
+      const strength = Math.min(speed * 1.2, 120);
+
+      // 这一笔划造成的“冲击”
+      pulse = Math.max(pulse, strength);
+
+      // 用速度方向来拉长波纹（横着划 -> 横向拉长）
+      const len = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+      const nx = dx / len;
+      const ny = dy / len;
+
+      // baseFrequency 轻微偏向鼠标划动方向
+      const baseFx = 0.003;
+      const baseFy = 0.006;
+      const anisotropy = 0.002; // 越大越夸张
+
+      const fx = baseFx + nx * anisotropy;
+      const fy = baseFy + Math.abs(ny) * anisotropy;
+
+      turb.setAttribute("baseFrequency", `${fx} ${fy}`);
+    }
+
+    lastX = x;
+    lastY = y;
+  });
+
+  window.addEventListener("mousedown", () => {
+    // 按下的时候稍微再激烈一点
+    pulse += 30;
+  });
+
+  function animate() {
+    t += 0.004;
+
+    // 即使不动鼠标，水面也有一点自己的流动
+    const fxBase = 0.003 + Math.sin(t * 0.7) * 0.0008;
+    const fyBase = 0.006 + Math.cos(t * 0.5) * 0.0012;
+
+    // 这里不要覆盖鼠标刚刚写进去的方向，只做一个小幅叠加
+    const currentFreq = turb.getAttribute("baseFrequency").split(" ");
+    let fx = parseFloat(currentFreq[0] || fxBase);
+    let fy = parseFloat(currentFreq[1] || fyBase);
+
+    fx += Math.sin(t * 1.3) * 0.0005;
+    fy += Math.cos(t * 1.1) * 0.0005;
+    turb.setAttribute("baseFrequency", `${fx} ${fy}`);
+
+    // pulse 逐帧衰减：像水面慢慢平静下来
+    pulse *= 0.88;
+
+    // 根据脉冲调节 displacement 的 scale
+    targetScale = baseScale + pulse;
+    currentScale += (targetScale - currentScale) * 0.15;
+
+    disp.setAttribute("scale", currentScale.toFixed(1));
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+});

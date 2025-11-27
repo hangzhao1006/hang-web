@@ -1436,3 +1436,171 @@ input[type=range]::-webkit-slider-runnable-track {
   background: #d0d0d0;
 }
 
+
+/* Gallery Block Crop Button */
+.crop-btn-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.gallery-item-block:hover .crop-btn-overlay {
+  opacity: 1;
+}
+
+.crop-btn-overlay:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 6px 16px rgba(245, 87, 108, 0.5);
+}
+
+.drag-handle {
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.gallery-item-block:hover .drag-handle {
+  opacity: 1;
+}
+
+/* ================================
+   Insert Block Divider
+   ================================ */
+
+.insert-block-divider {
+  position: relative;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.insert-trigger {
+  cursor: pointer;
+  padding: 8px 0;
+  color: #999;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+}
+
+.insert-trigger:hover {
+  opacity: 1;
+  color: #667eea;
+}
+
+.insert-trigger span {
+  position: relative;
+  background: #f4f4f4;
+  padding: 0 15px;
+  z-index: 2;
+}
+
+.insert-trigger::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ddd 20%, #ddd 80%, transparent);
+  z-index: 1;
+}
+
+.insert-menu {
+  display: none;
+  margin-top: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.insert-menu.active {
+  display: flex;
+}
+
+.insert-menu button {
+  padding: 8px 16px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.insert-menu button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+/* ================================
+   Block Collapse/Expand
+   ================================ */
+
+.content-block-item .block-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.content-block-item .block-header:hover {
+  background: #f8f9fa;
+}
+
+.collapse-indicator {
+  margin-left: 8px;
+  font-size: 0.7rem;
+  color: #999;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.content-block-item.collapsed .collapse-indicator {
+  transform: rotate(-90deg);
+}
+
+.content-block-item .block-content {
+  max-height: 5000px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.content-block-item.collapsed .block-content {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+
+/* Show block type label when collapsed */
+.content-block-item.collapsed .block-type {
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Prevent dragging when interacting with header content */
+.content-block-item .block-handle {
+  cursor: grab;
+}
+
+.content-block-item .block-handle:active {
+  cursor: grabbing;
+}

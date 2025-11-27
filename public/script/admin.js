@@ -75,7 +75,7 @@ function switchTab(id, tabName) {
 }
 
 // ====== BLOCK LOGIC ======
-function addBlock(id, type) {
+function addBlock(id, type, insertAtIndex = null) {
   if (!projectBlocks[id]) projectBlocks[id] = [];
   const newBlock = { type, id: Date.now() };
 
@@ -93,16 +93,62 @@ function addBlock(id, type) {
     newBlock.width = '100';
     newBlock.layout = 'center';
     newBlock.autoplay = false;
+    newBlock.radius = 8; // 默认8px圆角
   } else if (type === 'image_grid') {
     newBlock.label = '';
     newBlock.layout = 'center';
     newBlock.rows = 2;
     newBlock.cols = 3;
     newBlock.cells = {};
+  } else if (type === 'gallery') {
+    newBlock.label = 'Gallery';
+    newBlock.layout = 'center';
+    newBlock.images = [
+      { src: '', caption: '' },
+      { src: '', caption: '' }
+    ];
+  } else if (type === 'two_column') {
+    newBlock.label = '';
+    newBlock.leftType = 'text'; // 'text' or 'image'
+    newBlock.rightType = 'image'; // 'text' or 'image'
+    newBlock.leftContent = '';
+    newBlock.rightContent = '';
+    newBlock.columnRatio = '50-50'; // '50-50', '40-60', '60-40', '30-70', '70-30'
   }
 
-  projectBlocks[id].push(newBlock);
+  // Insert at specific index or push to end
+  if (insertAtIndex !== null && insertAtIndex >= 0) {
+    projectBlocks[id].splice(insertAtIndex, 0, newBlock);
+  } else {
+    projectBlocks[id].push(newBlock);
+  }
+
   renderBlocks(id);
+}
+
+// Show insert menu at specific position
+function showInsertMenu(pid, insertIndex) {
+  const menu = document.getElementById(`insert-menu-${pid}-${insertIndex}`);
+  if (menu) {
+    menu.classList.toggle('active');
+  }
+}
+
+// Toggle block collapse state
+function toggleBlockCollapse(pid, index, event) {
+  // Don't collapse if clicking on input fields or buttons
+  if (event.target.tagName === 'INPUT' ||
+      event.target.tagName === 'TEXTAREA' ||
+      event.target.tagName === 'BUTTON' ||
+      event.target.tagName === 'SELECT' ||
+      event.target.classList.contains('block-handle')) {
+    return;
+  }
+
+  const blockEl = document.querySelector(`[data-block-id="${pid}-${index}"]`);
+  if (blockEl) {
+    blockEl.classList.toggle('collapsed');
+  }
 }
 
 function addSection(pid, blockIdx) {
@@ -259,17 +305,40 @@ function renderBlocks(id) {
   container.innerHTML = '';
 
   (projectBlocks[id] || []).forEach((block, index) => {
+    // Add insert button before this block
+    if (index === 0) {
+      const insertBtn = document.createElement('div');
+      insertBtn.className = 'insert-block-divider';
+      insertBtn.innerHTML = `
+        <div class="insert-trigger" onclick="showInsertMenu(${id}, ${index})">
+          <span>+ Insert Block Here</span>
+        </div>
+        <div class="insert-menu" id="insert-menu-${id}-${index}">
+          <button onclick="addBlock(${id}, 'text', ${index}); showInsertMenu(${id}, ${index});">Text Group</button>
+          <button onclick="addBlock(${id}, 'image', ${index}); showInsertMenu(${id}, ${index});">Image</button>
+          <button onclick="addBlock(${id}, 'video', ${index}); showInsertMenu(${id}, ${index});">Video</button>
+          <button onclick="addBlock(${id}, 'image_grid', ${index}); showInsertMenu(${id}, ${index});">Image Grid</button>
+          <button onclick="addBlock(${id}, 'gallery', ${index}); showInsertMenu(${id}, ${index});">Gallery</button>
+          <button onclick="addBlock(${id}, 'two_column', ${index}); showInsertMenu(${id}, ${index});">Two Column</button>
+        </div>
+      `;
+      container.appendChild(insertBtn);
+    }
+
     const el = document.createElement('div');
     el.className = 'content-block-item';
+    el.setAttribute('data-block-id', `${id}-${index}`);
 
     let html = `
-      <div class="block-header">
+      <div class="block-header" onclick="toggleBlockCollapse(${id}, ${index}, event)">
         <div>
           <span class="block-handle">☰</span>
           <span class="block-type">${block.type}</span>
+          <span class="collapse-indicator">▼</span>
         </div>
-        <button type="button" class="delete-btn" onclick="removeBlock(${id}, ${index})">×</button>
+        <button type="button" class="delete-btn" onclick="event.stopPropagation(); removeBlock(${id}, ${index})">×</button>
       </div>
+      <div class="block-content">
     `;
 
     if (block.type === 'text') {
@@ -360,6 +429,15 @@ function renderBlocks(id) {
                 Autoplay
               </label>
             </div>
+            <div class="visual-col">
+              <div class="range-header">
+                <span>Radius</span>
+                <span class="range-val">${block.radius || 8}px</span>
+              </div>
+              <input type="range" min="0" max="50" step="1" value="${block.radius || 8}"
+                     oninput="this.parentElement.querySelector('.range-val').innerText=this.value+'px';
+                              updateBlockData(${id}, ${index}, 'radius', this.value);">
+            </div>
           ` : ''}
         </div>
       `;
@@ -415,10 +493,153 @@ function renderBlocks(id) {
           </div>
         </div>
       `;
+    } else if (block.type === 'gallery') {
+      const images = block.images || [];
+      const label = block.label || 'Gallery';
+
+      html += `
+        <div class="form-group">
+          <label>Label</label>
+          <input placeholder="Gallery title" value="${escapeHtml(label)}"
+                 onchange="updateBlockData(${id}, ${index}, 'label', this.value)">
+        </div>
+
+        <div class="gallery-images-list" id="gallery-block-${id}-${index}">
+          ${images.map((img, imgIdx) => {
+            const imgSrc = typeof img === 'string' ? img : (img.src || '');
+            const caption = typeof img === 'object' ? (img.caption || '') : '';
+            const cropData = (typeof img === 'object' && img.crop) ? img.crop : null;
+
+            return `
+              <div class="gallery-item-block" data-index="${imgIdx}" style="margin-bottom: 15px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: white;">
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                  <span class="drag-handle" style="cursor: move; font-size: 1.2rem;">⋮⋮</span>
+                  <span style="font-weight: 600; color: #f093fb;">Image ${imgIdx + 1}</span>
+                  ${cropData ? '<span style="font-size: 0.7rem; color: #28a745; margin-left: 5px;">✓ Cropped</span>' : ''}
+                  <button type="button" class="grid-delete-btn"
+                          onclick="deleteGalleryImage(${id}, ${index}, ${imgIdx})"
+                          style="margin-left: auto;">🗑️</button>
+                </div>
+                <input type="text" placeholder="Image URL or paste to upload" value="${escapeHtml(imgSrc)}"
+                       onchange="updateGalleryImage(${id}, ${index}, ${imgIdx}, 'src', this.value)"
+                       style="width: 100%; margin-bottom: 8px;">
+                <input type="text" placeholder="Caption (optional)" value="${escapeHtml(caption)}"
+                       onchange="updateGalleryImage(${id}, ${index}, ${imgIdx}, 'caption', this.value)"
+                       style="width: 100%; margin-bottom: 8px;">
+                ${imgSrc ? `
+                  <div style="position: relative;">
+                    <img src="${escapeHtml(imgSrc)}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; display: block;">
+                    <button type="button" class="crop-btn-overlay"
+                            onclick="openGalleryCrop(${id}, ${index}, ${imgIdx}, '${escapeHtml(imgSrc).replace(/'/g, "\\'")}')">
+                      ✂️ Crop
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <button type="button" class="grid-btn" onclick="addGalleryImage(${id}, ${index})"
+                style="width: 100%; margin-top: 10px;">
+          ➕ Add Image
+        </button>
+      `;
+    } else if (block.type === 'two_column') {
+      const label = block.label || '';
+      const leftType = block.leftType || 'text';
+      const rightType = block.rightType || 'image';
+      const leftContent = block.leftContent || '';
+      const rightContent = block.rightContent || '';
+      const columnRatio = block.columnRatio || '50-50';
+
+      html += `
+        <div class="form-group">
+          <label>Label (optional)</label>
+          <input placeholder="Section title" value="${escapeHtml(label)}"
+                 onchange="updateBlockData(${id}, ${index}, 'label', this.value)">
+        </div>
+
+        <div class="two-column-editor">
+          <div class="column-settings" style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+              <label style="font-size: 0.75rem; color: #888;">Left Column</label>
+              <select onchange="updateBlockData(${id}, ${index}, 'leftType', this.value); renderBlocks(${id});" style="width: 100%;">
+                <option value="text" ${leftType === 'text' ? 'selected' : ''}>Text</option>
+                <option value="image" ${leftType === 'image' ? 'selected' : ''}>Image</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 0.75rem; color: #888;">Right Column</label>
+              <select onchange="updateBlockData(${id}, ${index}, 'rightType', this.value); renderBlocks(${id});" style="width: 100%;">
+                <option value="text" ${rightType === 'text' ? 'selected' : ''}>Text</option>
+                <option value="image" ${rightType === 'image' ? 'selected' : ''}>Image</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 0.75rem; color: #888;">Column Ratio</label>
+              <select onchange="updateBlockData(${id}, ${index}, 'columnRatio', this.value);" style="width: 100%;">
+                <option value="30-70" ${columnRatio === '30-70' ? 'selected' : ''}>30% - 70%</option>
+                <option value="40-60" ${columnRatio === '40-60' ? 'selected' : ''}>40% - 60%</option>
+                <option value="50-50" ${columnRatio === '50-50' ? 'selected' : ''}>50% - 50%</option>
+                <option value="60-40" ${columnRatio === '60-40' ? 'selected' : ''}>60% - 40%</option>
+                <option value="70-30" ${columnRatio === '70-30' ? 'selected' : ''}>70% - 30%</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="two-column-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="column-left">
+              <label style="font-weight: 600; margin-bottom: 8px; display: block;">Left: ${leftType === 'text' ? 'Text' : 'Image'}</label>
+              ${leftType === 'text' ? `
+                <textarea class="mde-two-col-left-${id}-${index}"
+                          style="width: 100%; min-height: 200px;">${escapeHtml(leftContent)}</textarea>
+              ` : `
+                <input type="text" placeholder="Image URL" value="${escapeHtml(leftContent)}"
+                       onchange="updateBlockData(${id}, ${index}, 'leftContent', this.value); renderBlocks(${id});"
+                       style="width: 100%; margin-bottom: 8px;">
+                ${leftContent ? `<img src="${escapeHtml(leftContent)}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px;">` : ''}
+              `}
+            </div>
+            <div class="column-right">
+              <label style="font-weight: 600; margin-bottom: 8px; display: block;">Right: ${rightType === 'text' ? 'Text' : 'Image'}</label>
+              ${rightType === 'text' ? `
+                <textarea class="mde-two-col-right-${id}-${index}"
+                          style="width: 100%; min-height: 200px;">${escapeHtml(rightContent)}</textarea>
+              ` : `
+                <input type="text" placeholder="Image URL" value="${escapeHtml(rightContent)}"
+                       onchange="updateBlockData(${id}, ${index}, 'rightContent', this.value); renderBlocks(${id});"
+                       style="width: 100%; margin-bottom: 8px;">
+                ${rightContent ? `<img src="${escapeHtml(rightContent)}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px;">` : ''}
+              `}
+            </div>
+          </div>
+        </div>
+      `;
     }
+
+    html += `</div>`; // Close block-content
 
     el.innerHTML = html;
     container.appendChild(el);
+
+    // Add insert button after this block
+    const insertBtnAfter = document.createElement('div');
+    insertBtnAfter.className = 'insert-block-divider';
+    insertBtnAfter.innerHTML = `
+      <div class="insert-trigger" onclick="showInsertMenu(${id}, ${index + 1})">
+        <span>+ Insert Block Here</span>
+      </div>
+      <div class="insert-menu" id="insert-menu-${id}-${index + 1}">
+        <button onclick="addBlock(${id}, 'text', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Text Group</button>
+        <button onclick="addBlock(${id}, 'image', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Image</button>
+        <button onclick="addBlock(${id}, 'video', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Video</button>
+        <button onclick="addBlock(${id}, 'image_grid', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Image Grid</button>
+        <button onclick="addBlock(${id}, 'gallery', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Gallery</button>
+        <button onclick="addBlock(${id}, 'two_column', ${index + 1}); showInsertMenu(${id}, ${index + 1});">Two Column</button>
+      </div>
+    `;
+    container.appendChild(insertBtnAfter);
 
     // init EasyMDE for text sections
     if (block.type === 'text') {
@@ -439,6 +660,42 @@ function renderBlocks(id) {
           });
         }
       });
+    }
+
+    // init EasyMDE for two_column text areas
+    if (block.type === 'two_column') {
+      if (block.leftType === 'text') {
+        const taLeft = el.querySelector(`textarea.mde-two-col-left-${id}-${index}`);
+        if (taLeft && typeof EasyMDE !== 'undefined') {
+          const mdeLeft = new EasyMDE({
+            element: taLeft,
+            status: false,
+            spellChecker: false,
+            minHeight: "150px",
+            toolbar: ["bold", "italic", "unordered-list", "link", "preview"],
+            forceSync: true
+          });
+          mdeLeft.codemirror.on("change", (cm) => {
+            updateBlockData(id, index, 'leftContent', cm.getValue());
+          });
+        }
+      }
+      if (block.rightType === 'text') {
+        const taRight = el.querySelector(`textarea.mde-two-col-right-${id}-${index}`);
+        if (taRight && typeof EasyMDE !== 'undefined') {
+          const mdeRight = new EasyMDE({
+            element: taRight,
+            status: false,
+            spellChecker: false,
+            minHeight: "150px",
+            toolbar: ["bold", "italic", "unordered-list", "link", "preview"],
+            forceSync: true
+          });
+          mdeRight.codemirror.on("change", (cm) => {
+            updateBlockData(id, index, 'rightContent', cm.getValue());
+          });
+        }
+      }
     }
   });
 
@@ -879,5 +1136,77 @@ function closeModal() {
     modal.classList.remove('active');
     setTimeout(() => modal.remove(), 300);
   }
+}
+
+// ====== GALLERY FUNCTIONS ======
+function addGalleryImage(pid, blockIdx) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.images) block.images = [];
+  block.images.push({ src: '', caption: '' });
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+}
+
+function updateGalleryImage(pid, blockIdx, imgIdx, field, value) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.images || !block.images[imgIdx]) return;
+
+  if (typeof block.images[imgIdx] === 'string') {
+    block.images[imgIdx] = { src: block.images[imgIdx], caption: '' };
+  }
+
+  block.images[imgIdx][field] = value;
+  syncBlocksJson(pid);
+  renderBlocks(pid);
+}
+
+function deleteGalleryImage(pid, blockIdx, imgIdx) {
+  const block = projectBlocks[pid][blockIdx];
+  if (!block.images) return;
+
+  if (confirm('Delete this image?')) {
+    block.images.splice(imgIdx, 1);
+    syncBlocksJson(pid);
+    renderBlocks(pid);
+  }
+}
+
+function openGalleryCrop(pid, blockIdx, imgIdx, imgSrc) {
+  if (!imgSrc) {
+    alert('Please add an image URL first');
+    return;
+  }
+
+  openCropperWithUrl(imgSrc, (croppedCanvas) => {
+    croppedCanvas.toBlob((blob) => {
+      const formData = new FormData();
+      formData.append('image', blob, 'cropped.jpg');
+
+      fetch('upload_image.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.url) {
+            const block = projectBlocks[pid][blockIdx];
+            if (typeof block.images[imgIdx] === 'string') {
+              block.images[imgIdx] = { src: data.url, caption: '', crop: true };
+            } else {
+              block.images[imgIdx].src = data.url;
+              block.images[imgIdx].crop = true;
+            }
+            syncBlocksJson(pid);
+            renderBlocks(pid);
+          } else {
+            alert('Upload failed: ' + (data.error || 'unknown'));
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Upload error');
+        });
+    }, 'image/jpeg', 0.95);
+  });
 }
 

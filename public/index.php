@@ -41,7 +41,13 @@ $projects = get_projects_filtered_joined($filters);
   </svg>
 
   <!-- 1. 全局背景层 -->
-  <div class="reflection-layer" id="bg-layer"></div>
+  <!-- <div class="reflection-layer" id="bg-layer"></div> -->
+
+    <!-- 1. 全局背景层：里面塞一块 WebGL 画布 -->
+  <div class="reflection-layer" id="bg-layer">
+    <canvas id="glCanvas"></canvas>
+  </div>
+
 
   <!-- 2. 自定义鼠标 -->
   <div id="cursor-wrapper">
@@ -141,7 +147,9 @@ $projects = get_projects_filtered_joined($filters);
     </svg> -->
   </footer>
 
+  <script src="script/water.js" defer></script>
   <script src="script/test.js" defer></script>
+
 
 </body>
 
