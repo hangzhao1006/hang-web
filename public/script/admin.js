@@ -970,6 +970,7 @@ function escapeHtml(text) {
 function submitProjectForm(id) {
   syncBlocksJson(id);
   syncGalleryJson(id);
+  syncHeroFieldsJson(id);
   const form = document.querySelector(`#project-${id} form`);
   if (form) form.submit();
 }
@@ -1322,4 +1323,121 @@ function showSlide(sliderId, index) {
     adminGalleryStates[sliderId].currentIndex = index;
   }
 }
+
+// ====== HERO FIELDS MANAGEMENT ======
+const projectHeroFields = {};
+
+function addHeroField(pid) {
+  if (!projectHeroFields[pid]) {
+    const raw = document.getElementById('hero-fields-input-' + pid)?.value || '[]';
+    try {
+      projectHeroFields[pid] = JSON.parse(raw);
+    } catch (e) {
+      projectHeroFields[pid] = [];
+    }
+  }
+
+  projectHeroFields[pid].push({
+    label: '',
+    value: '',
+    type: 'text'
+  });
+
+  renderHeroFields(pid);
+}
+
+function removeHeroField(pid, idx) {
+  if (!confirm('Remove this hero field?')) return;
+  projectHeroFields[pid].splice(idx, 1);
+  syncHeroFieldsJson(pid);
+  renderHeroFields(pid);
+}
+
+function updateHeroFieldData(pid, idx, field, value) {
+  if (!projectHeroFields[pid][idx]) return;
+  projectHeroFields[pid][idx][field] = value;
+  syncHeroFieldsJson(pid);
+}
+
+function syncHeroFieldsJson(pid) {
+  const input = document.getElementById('hero-fields-input-' + pid);
+  if (!input) return;
+  input.value = JSON.stringify(projectHeroFields[pid] || []);
+}
+
+function renderHeroFields(pid) {
+  const container = document.getElementById('hero-fields-container-' + pid);
+  if (!container) return;
+
+  // Initialize if not exists
+  if (!projectHeroFields[pid]) {
+    const raw = document.getElementById('hero-fields-input-' + pid)?.value || '[]';
+    try {
+      projectHeroFields[pid] = JSON.parse(raw);
+    } catch (e) {
+      projectHeroFields[pid] = [];
+    }
+  }
+
+  container.innerHTML = '';
+
+  (projectHeroFields[pid] || []).forEach((field, index) => {
+    const el = document.createElement('div');
+    el.className = 'hero-field-item';
+    el.style.cssText = 'margin-bottom: 15px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: white;';
+
+    const label = escapeHtml(field.label || '');
+    const value = escapeHtml(field.value || '');
+    const type = field.type || 'text';
+
+    el.innerHTML = `
+      <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+        <span style="font-weight: 600; color: #667eea;">Field ${index + 1}</span>
+        <button type="button" class="delete-btn"
+                onclick="removeHeroField(${pid}, ${index})"
+                style="margin-left: auto; padding: 4px 8px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">×</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px;">
+        <input type="text" placeholder="Label (e.g., Team)" value="${label}"
+               onchange="updateHeroFieldData(${pid}, ${index}, 'label', this.value)"
+               style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        <input type="text" placeholder="Value (e.g., John, Mary)" value="${value}"
+               onchange="updateHeroFieldData(${pid}, ${index}, 'value', this.value)"
+               style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        <select onchange="updateHeroFieldData(${pid}, ${index}, 'type', this.value)"
+                style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-width: 100px;">
+          <option value="text" ${type === 'text' ? 'selected' : ''}>Text</option>
+          <option value="tags" ${type === 'tags' ? 'selected' : ''}>Tags</option>
+        </select>
+      </div>
+    `;
+
+    container.appendChild(el);
+  });
+
+  syncHeroFieldsJson(pid);
+}
+
+// Initialize hero fields when card is expanded
+document.addEventListener('DOMContentLoaded', function() {
+  // Override the original toggleEdit to also initialize hero fields
+  const originalToggleEdit = window.toggleEdit;
+  window.toggleEdit = function(id) {
+    originalToggleEdit(id);
+
+    const card = document.getElementById('project-' + id);
+    if (card && !card.classList.contains('collapsed')) {
+      // Initialize hero fields
+      if (!projectHeroFields[id]) {
+        const raw = document.getElementById('hero-fields-input-' + id)?.value || '[]';
+        try {
+          projectHeroFields[id] = JSON.parse(raw);
+        } catch (e) {
+          projectHeroFields[id] = [];
+        }
+        renderHeroFields(id);
+      }
+    }
+  };
+});
 

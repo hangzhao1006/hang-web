@@ -59,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function collect_meta_data()
     {
       $meta = [];
-      // include 'tool' so meta_tool from the form is saved into meta_json
-      foreach (['subtitle', 'role', 'duration', 'team', 'client', 'hero_media', 'tool'] as $k) {
+      // include 'tool' and 'month' so meta_tool and meta_month from the form are saved into meta_json
+      foreach (['subtitle', 'role', 'duration', 'team', 'client', 'hero_media', 'tool', 'month'] as $k) {
         if (!empty($_POST["meta_{$k}"]))
           $meta[$k] = trim($_POST["meta_{$k}"]);
       }
@@ -80,6 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $meta['cover_pos_y'] = $_POST["visual_cover_pos_y"];
       if (!empty($_POST['meta_links_json']))
         $meta['links'] = json_decode($_POST['meta_links_json'], true);
+
+      // Custom Hero Fields (动态字段)
+      if (!empty($_POST['hero_fields_json'])) {
+        $heroFields = json_decode($_POST['hero_fields_json'], true);
+        if (is_array($heroFields)) {
+          $meta['hero_fields'] = $heroFields;
+        }
+      }
 
       // Content Blocks
       if (!empty($_POST['content_blocks_json'])) {
@@ -191,6 +199,8 @@ $projects = $is_logged_in ? get_projects(false) : [];
           unset($b);
 
           $blocksJson = htmlspecialchars(json_encode($blocks), ENT_QUOTES, 'UTF-8');
+          $heroFields = $meta['hero_fields'] ?? [];
+          $heroFieldsJson = htmlspecialchars(json_encode($heroFields), ENT_QUOTES, 'UTF-8');
           $hHeight = $meta['hero_height'] ?? 85;
           $hScale = $meta['hero_scale'] ?? 1.0;
           $hPosY = $meta['hero_pos_y'] ?? 50;
@@ -224,6 +234,9 @@ $projects = $is_logged_in ? get_projects(false) : [];
                         value="<?= htmlspecialchars($p['slug']) ?>"></div>
                     <div class="form-group"><label>Year</label><input name="year" type="number" value="<?= $p['year'] ?>">
                     </div>
+                    <div class="form-group"><label>Month</label><input name="meta_month" type="text"
+                        value="<?= htmlspecialchars($meta['month'] ?? '') ?>" placeholder="e.g. Jan, 01, Spring">
+                    </div>
                     <div class="form-group"><label>Role</label><input name="meta_role"
                         value="<?= htmlspecialchars($meta['role'] ?? '') ?>"></div>
                     <div class="form-group full"><label>Tools (comma-separated)</label><input name="meta_tool"
@@ -235,6 +248,14 @@ $projects = $is_logged_in ? get_projects(false) : [];
                         value="<?= htmlspecialchars($p['tags']) ?>"></div>
                     <div class="form-group full"><label class="checkbox-label"><input type="checkbox" name="featured"
                           value="1" <?= $p['featured'] ? 'checked' : '' ?>> Featured</label></div>
+                  </div>
+
+                  <div class="divider"><span>Custom Hero Fields</span></div>
+                  <div class="hero-fields-container" id="hero-fields-container-<?= $p['id'] ?>"></div>
+                  <input type="hidden" name="hero_fields_json" id="hero-fields-input-<?= $p['id'] ?>"
+                    value="<?= $heroFieldsJson ?>">
+                  <div class="add-block-bar">
+                    <button type="button" class="add-block-btn" onclick="addHeroField(<?= $p['id'] ?>)">+ Add Hero Field</button>
                   </div>
                 </div>
 

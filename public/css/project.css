@@ -453,8 +453,10 @@ body:has(.hero-style-professional) .project-header .header-logo {
     font-size: 1.3rem;
     color: #666;
     font-weight: 400;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
+    /* height: 1.4rem; */
     text-shadow: none;
+    /* border: 1px solid #111; */
 }
 
 .hero-content-professional .info-hud {
@@ -480,12 +482,12 @@ body:has(.hero-style-professional) .project-header .header-logo {
     margin-bottom: 10px;
     line-height: 1.4;
     text-shadow: 0 10px 20px rgba(255, 255, 255, 0.8);
+    
 }
 
 .info-hud {
-    display: grid;
-    /* grid-template-columns: repeat(5, 1fr); */
-    grid-template-columns: 0.6fr 1fr 1.7fr 1.7fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 40px;
     padding-top: 25px;
     border-top: 1px solid #000;
@@ -494,6 +496,39 @@ body:has(.hero-style-professional) .project-header .header-logo {
 .hud-item {
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 100px;
+}
+
+/* Year 列最小 */
+.hud-item.year {
+    flex: 0 0 80px;
+    min-width: 80px;
+}
+
+/* Role 列中等宽度 */
+.hud-item:nth-child(2):not(.link-col) {
+    flex: 1 1 120px;
+}
+
+/* Tools 列更宽 */
+.hud-item.tools {
+    flex: 1.8 1 180px;
+}
+
+/* Context 列更宽 */
+.hud-item.context {
+    flex: 1.8 1 180px;
+}
+
+/* 其他动态字段 */
+.hud-item:not(.year):not(.tools):not(.context):not(.link-col) {
+    flex: 1 1 120px;
+}
+
+/* Links 列占据整行 */
+.hud-item.link-col {
+    flex: 1 0 100%;
 }
 
 .hud-item label {
@@ -591,9 +626,9 @@ body:has(.hero-style-professional) .project-header .header-logo {
    ================================ */
 
 .project-body {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 60px;
+    padding: 0 30px;
 }
 
 .content-row {
@@ -603,6 +638,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
     margin-bottom: 80px;
     align-items: start;
     /* border: 1px solid #111; */
+        border: 1PX SOLID #111;
 }
 
 .row-label {
@@ -614,7 +650,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
     top: 40px;
     height: fit-content;
     text-align: left;
-    /* border: 1px solid #da6363; */
+    border: 1px solid #da6363;
 }
 
 /* .row-sub {
@@ -641,17 +677,20 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 .row-content {
     min-width: 0;
+            border: 1PX SOLID #ff2525;
 }
 
 .row-content p {
-    font-size: 1.15rem;
+    font-size: 1rem;
     margin-bottom: 25px;
     font-weight: 400;
     color: #222;
+    margin-top: 0;
+        border: 1PX SOLID #ff2525;
 }
 
 .lead-text p {
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     line-height: 1.6;
     font-weight: 400;
     color: #111;
@@ -1028,13 +1067,13 @@ figcaption {
         height: auto;
         margin-bottom: 0;
         border: 1px solid #999;
-        
+
     }
 
     .hero-bg {
         height: auto;
         width: 100%;
-             border: 1px solid #999;
+        border: 1px solid #999;
     }
 
     .hero-bg img,

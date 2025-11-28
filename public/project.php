@@ -128,7 +128,15 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
         <?php if ($sub = g('subtitle')): ?>
             <p class="subtitle"><?= h($sub) ?></p><?php endif; ?>
         <div class="info-hud">
-            <div class="hud-item year"><label>Year</label><span><?= h($project['year']) ?></span></div>
+            <div class="hud-item year">
+                <label>Year</label>
+                <span>
+                    <?= h($project['year']) ?>
+                    <?php if ($month = g('month')): ?>
+                        <span style="font-size: 0.85em; color: #666;"> / <?= h($month) ?></span>
+                    <?php endif; ?>
+                </span>
+            </div>
             <div class="hud-item"><label>Role</label><span><?= h(g('role')) ?></span></div>
             <div class="hud-item tools">
                 <label>Tools</label>
@@ -148,6 +156,34 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                 </span>
             </div>
             <div class="hud-item context"><label>Context</label><span><?= h(g('client')) ?></span></div>
+
+            <?php
+            // 动态渲染自定义 hero 字段
+            $heroFields = $meta['hero_fields'] ?? [];
+            foreach ($heroFields as $field):
+                $label = $field['label'] ?? '';
+                $value = $field['value'] ?? '';
+                $type = $field['type'] ?? 'text';
+                if (!$label || !$value) continue;
+                ?>
+                <div class="hud-item">
+                    <label><?= h($label) ?></label>
+                    <?php if ($type === 'tags'):
+                        $tagList = array_map('trim', explode(',', $value));
+                        ?>
+                        <span>
+                            <?php foreach ($tagList as $tag):
+                                if ($tag): ?>
+                                    <span class="tool-tag"><?= h($tag) ?></span>
+                                <?php endif;
+                            endforeach; ?>
+                        </span>
+                    <?php else: ?>
+                        <span><?= h($value) ?></span>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+
             <?php
             $links = g('links');
             if (is_string($links))
