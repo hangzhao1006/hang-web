@@ -139,12 +139,12 @@ body {
     position: absolute;
     inset: 0;
     background: linear-gradient(to bottom,
-            rgba(255, 255, 255, 0.14) 0%,
-            rgba(255, 255, 255, 0.08) 30%,
-            rgba(255, 255, 255, 0.03) 65%,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.18) 30%,
+            rgba(255, 255, 255, 0.08) 65%,
             rgba(255, 255, 255, 0.00) 100%);
-    backdrop-filter: blur(10px) saturate(170%);
-    -webkit-backdrop-filter: blur(10px) saturate(170%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     pointer-events: none;
     z-index: 0;
 }
@@ -438,6 +438,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 /* Professional content: more compact, cleaner */
 .hero-content-professional {
     padding: 50px 60px;
+    /* border: 1px solid #111; */
 }
 
 .hero-content-professional .title {
@@ -482,15 +483,15 @@ body:has(.hero-style-professional) .project-header .header-logo {
     margin-bottom: 10px;
     line-height: 1.4;
     text-shadow: 0 10px 20px rgba(255, 255, 255, 0.8);
-    
+
 }
 
 .info-hud {
     display: flex;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 30px;
     padding-top: 25px;
-    border-top: 1px solid #000;
+    border-top: 1px solid #e0e0e0;
 }
 
 .hud-item {
@@ -502,8 +503,8 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 /* Year 列最小 */
 .hud-item.year {
-    flex: 0 0 80px;
-    min-width: 80px;
+    flex: 0 0 70px;
+    min-width: 70px;
 }
 
 /* Role 列中等宽度 */
@@ -629,6 +630,8 @@ body:has(.hero-style-professional) .project-header .header-logo {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 30px;
+    margin-top: 0;
+    /* border: 1px solid #111; */
 }
 
 .content-row {
@@ -638,19 +641,19 @@ body:has(.hero-style-professional) .project-header .header-logo {
     margin-bottom: 80px;
     align-items: start;
     /* border: 1px solid #111; */
- 
+
 }
 
 .row-label {
     font-family: monospace;
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-transform: uppercase;
     color: #999;
     position: sticky;
     top: 40px;
     height: fit-content;
     text-align: left;
-    border: 1px solid #da6363;
+    /* border: 1px solid #da6363; */
 }
 
 /* .row-sub {
@@ -677,16 +680,16 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 .row-content {
     min-width: 0;
-            border: 1PX SOLID #ff2525;
+    /* border: 1PX SOLID #ff2525; */
 }
 
 .row-content p {
-    font-size: 1rem;
+    font-size: 1.15rem;
     margin-bottom: 25px;
     font-weight: 400;
     color: #222;
     margin-top: 0;
-        border: 1PX SOLID #ff2525;
+    /* border: 1PX SOLID #ff2525; */
 }
 
 .lead-text p {
@@ -701,19 +704,22 @@ body:has(.hero-style-professional) .project-header .header-logo {
     list-style: disc;
     padding-left: 20px;
     margin-bottom: 25px;
+        color: #bababa;
 }
 
 .row-content ol {
-    list-style: decimal;
+    list-style: circle;
     padding-left: 20px;
     margin-bottom: 25px;
+    color: #bababa;
 }
 
 .row-content li {
     font-size: 1.10rem;
-    color: #222;
+    color: #555555;
+    font-family: 'Helvetica Neue', sans-serif;
     margin-bottom: 8px;
-    display: list-item;
+    display:list-item;
 }
 
 /* 居中模式（Gallery 用到） */
@@ -937,7 +943,7 @@ figcaption {
         display: none;
     }
 
-    /* Mobile hamburger menu button - 玻璃态设计 */
+    /* Mobile hamburger menu button - 只有三条横杠 */
     .mobile-nav-toggle {
         display: block;
         position: fixed;
@@ -946,13 +952,8 @@ figcaption {
         z-index: 1000;
         width: 46px;
         height: 46px;
-        background: linear-gradient(to bottom,
-                rgba(255, 255, 255, 0.6) 0%,
-                rgba(255, 255, 255, 0.4) 100%);
-        backdrop-filter: blur(10px) saturate(170%);
-        -webkit-backdrop-filter: blur(10px) saturate(170%);
+        background: none;
         border: none;
-        border-radius: 12px;
         cursor: pointer;
         pointer-events: all;
         display: flex;
@@ -963,17 +964,10 @@ figcaption {
         padding: 0;
         transition: all 0.3s ease;
         outline: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
-            0 1px 2px rgba(0, 0, 0, 0.06);
     }
 
     .mobile-nav-toggle:hover {
-        background: linear-gradient(to bottom,
-                rgba(255, 255, 255, 0.95) 0%,
-                rgba(255, 255, 255, 0.88) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
-            0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: scale(1.1);
     }
 
     .mobile-nav-toggle span {
@@ -1004,9 +998,9 @@ figcaption {
         right: -100%;
         width: 280px;
         height: 100vh;
-        background: linear-gradient(to bottom,
+        /* background: linear-gradient(to bottom,
                 rgba(255, 255, 255, 0.95) 0%,
-                rgba(255, 255, 255, 0.9) 100%);
+                rgba(255, 255, 255, 0.9) 100%); */
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         border-left: 1px solid rgba(0, 0, 0, 0.08);
