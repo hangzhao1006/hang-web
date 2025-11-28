@@ -503,8 +503,8 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 /* Year 列最小 */
 .hud-item.year {
-    flex: 0 0 70px;
-    min-width: 70px;
+    flex: 0 0 80px;
+    min-width: 80px;
 }
 
 /* Role 列中等宽度 */
