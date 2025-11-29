@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Particle Morphing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="overlay">
+        <div id="loading-text">正在分析圖片粒子...<br><span>(首次載入可能需要幾秒鐘)</span></div>
+        <div id="error-text" style="display: none;">
+            ⚠️ <strong>無法讀取圖片像素</strong><br><br>
+            請不要直接雙擊開啟 index.html。<br>
+            瀏覽器安全機制要求此特效必須在<strong>本地伺服器 (Local Server)</strong> 環境下執行。<br><br>
+            <span style="font-size: 0.8em; color: #aaa;">推薦使用 VS Code 的 "Live Server" 插件開啟。</span>
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="instruction">滑鼠滑動撥開 · 點擊切換圖片</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

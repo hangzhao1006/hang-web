@@ -9,6 +9,8 @@ $filters = [
   'sort' => $_GET['sort'] ?? 'recent'
 ];
 $projects = get_projects_filtered_joined($filters);
+$bgStyle = $config['background_style'] ?? 'full';
+$bodyClass = 'bg-' . $bgStyle;
 ?>
 <!doctype html>
 <html lang="en">
@@ -20,7 +22,7 @@ $projects = get_projects_filtered_joined($filters);
   <link rel="stylesheet" href="css/test.css">
 </head>
 
-<body>
+<body class="<?= htmlspecialchars($bodyClass) ?>">
 
   <!-- 
     SVG 滤镜升级版：
@@ -41,7 +43,14 @@ $projects = get_projects_filtered_joined($filters);
   </svg>
 
   <!-- 1. 全局背景层 (SVG 扭曲版) -->
-  <div class="reflection-layer" id="bg-layer"></div>
+  <div class="reflection-layer" id="bg-layer">
+    <?php if ($bgStyle === 'compact'): ?>
+      <!-- 動態背景容器（預留給未來的 JS 動畫） -->
+      <div class="dynamic-bg-container" id="dynamic-bg">
+        <!-- TODO: 在這裡添加動態背景效果，例如粒子、波浪、漸變動畫等 -->
+      </div>
+    <?php endif; ?>
+  </div>
 
   <!-- 2. WebGL 水波纹覆盖层 (禁用) -->
   <!-- <div class="water-overlay-layer">
@@ -90,7 +99,7 @@ $projects = get_projects_filtered_joined($filters);
       <span class="highlight">experiences</span> & visual <span class="highlight">narratives</span>.
     </div>
     <div class="hero-sub">
-      Based in Boston / Available for freelance
+      Creating across interaction, visual systems, and computational art
     </div>
   </div>
 
@@ -150,6 +159,10 @@ $projects = get_projects_filtered_joined($filters);
   <!-- <script src="script/water-simple.js" defer></script> -->
   <script src="script/test.js" defer></script>
 
+  <?php if ($bgStyle === 'compact'): ?>
+    <!-- 動態背景 JS (只在 compact 模式載入) -->
+    <script src="script/dynamic-bg.js" defer></script>
+  <?php endif; ?>
 
 </body>
 

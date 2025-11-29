@@ -160,8 +160,12 @@ $projects = $is_logged_in ? get_projects(false) : [];
   <header class="admin-header">
     <div class="header-inner">
       <h1>CMS / <?= htmlspecialchars($config['site_name']) ?></h1>
-      <nav><a href="index.php" target="_blank" class="btn-text">View Site ↗</a><?php if ($is_logged_in): ?><a
-            href="admin.php?action=logout" class="btn-text danger">Logout</a><?php endif; ?></nav>
+      <nav>
+        <a href="index.php" target="_blank" class="btn-text">View Site ↗</a>
+        <?php if ($is_logged_in): ?>
+          <a href="admin.php?action=logout" class="btn-text danger">Logout</a>
+        <?php endif; ?>
+      </nav>
     </div>
   </header>
   <main class="admin-container">
@@ -170,8 +174,21 @@ $projects = $is_logged_in ? get_projects(false) : [];
         <form method="post"><input type="hidden" name="action" value="login"><input type="password" name="password"
             placeholder="Password" required autofocus><button class="btn-primary" type="submit">Login</button></form>
       </div><?php else: ?>
-      <div class="actions-bar"><button class="btn-primary"
-          onclick="document.getElementById('create-form').classList.toggle('hidden')">+ New Project</button></div>
+      <div class="actions-bar">
+        <button class="btn-primary"
+          onclick="document.getElementById('create-form').classList.toggle('hidden')">+ New Project</button>
+
+        <!-- 背景切換器 -->
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+          <label style="font-size: 0.9rem; color: #666;">背景樣式：</label>
+          <select id="bg-style-selector" onchange="updateBackgroundStyle(this.value)"
+                  style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+            <option value="full" <?= ($config['background_style'] ?? 'full') === 'full' ? 'selected' : '' ?>>全屏背景 (BG.JPG)</option>
+            <option value="compact" <?= ($config['background_style'] ?? 'full') === 'compact' ? 'selected' : '' ?>>縮短背景 (動態 JS)</option>
+          </select>
+          <span id="bg-status" style="font-size: 0.8rem; color: #28a745;"></span>
+        </div>
+      </div>
       <div id="create-form" class="editor-card hidden">
         <div class="card-body">
           <form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf"

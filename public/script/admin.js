@@ -2,6 +2,41 @@
 const projectBlocks = {};
 const projectGalleries = {};
 
+// ====== Background Style Switcher ======
+async function updateBackgroundStyle(style) {
+  const statusEl = document.getElementById('bg-status');
+
+  try {
+    statusEl.textContent = '更新中...';
+    statusEl.style.color = '#ffc107';
+
+    const response = await fetch('update_config.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ background_style: style })
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      statusEl.textContent = '✓ 已保存';
+      statusEl.style.color = '#28a745';
+
+      setTimeout(() => {
+        statusEl.textContent = '';
+      }, 2000);
+    } else {
+      throw new Error(data.error || 'Update failed');
+    }
+  } catch (error) {
+    console.error('Failed to update background style:', error);
+    statusEl.textContent = '✗ 保存失敗';
+    statusEl.style.color = '#dc3545';
+  }
+}
+
 // ====== Project card expand / collapse ======
 function toggleEdit(id) {
   const card = document.getElementById('project-' + id);
