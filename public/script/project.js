@@ -77,11 +77,19 @@ function initializeGallerySliders() {
 
         galleryStates[sliderId] = {
             currentIndex: 0,
-            totalSlides: slides.length
+            totalSlides: slides.length,
+            autoplayTimer: null,
+            restartTimeout: null,
+            isManualControl: false
         };
 
         // Show first slide
         showSlide(sliderId, 0);
+
+        // 啟動自動播放（5秒間隔）
+        if (slides.length > 1) {
+            startAutoplay(sliderId);
+        }
     });
 }
 
@@ -98,10 +106,16 @@ function changeSlide(sliderId, direction) {
 
         galleryStates[sliderId] = {
             currentIndex: 0,
-            totalSlides: slides.length
+            totalSlides: slides.length,
+            autoplayTimer: null,
+            restartTimeout: null,
+            isManualControl: false
         };
         state = galleryStates[sliderId];
     }
+
+    // 標記為手動控制
+    state.isManualControl = true;
 
     state.currentIndex += direction;
 
@@ -113,6 +127,9 @@ function changeSlide(sliderId, direction) {
     }
 
     showSlide(sliderId, state.currentIndex);
+
+    // 重新啟動自動播放（從當前位置繼續）
+    restartAutoplay(sliderId);
 }
 
 function showSlide(sliderId, index) {
@@ -146,5 +163,60 @@ function showSlide(sliderId, index) {
     // Update state
     if (galleryStates[sliderId]) {
         galleryStates[sliderId].currentIndex = index;
+    }
+}
+
+// 自動播放功能
+function startAutoplay(sliderId) {
+    const state = galleryStates[sliderId];
+    if (!state) return;
+
+    // 清除現有定時器
+    if (state.autoplayTimer) {
+        clearInterval(state.autoplayTimer);
+    }
+
+    // 設置新定時器（5秒切換一次）
+    state.autoplayTimer = setInterval(() => {
+        const nextIndex = (state.currentIndex + 1) % state.totalSlides;
+        showSlide(sliderId, nextIndex);
+    }, 5000);
+}
+
+function restartAutoplay(sliderId) {
+    const state = galleryStates[sliderId];
+    if (!state) return;
+
+    // 清除現有的自動播放間隔定時器
+    if (state.autoplayTimer) {
+        clearInterval(state.autoplayTimer);
+        state.autoplayTimer = null;
+    }
+
+    // 清除現有的重啟延遲定時器
+    if (state.restartTimeout) {
+        clearTimeout(state.restartTimeout);
+        state.restartTimeout = null;
+    }
+
+    // 3秒後重新啟動（給用戶一點時間觀看手動選擇的圖片）
+    state.restartTimeout = setTimeout(() => {
+        state.restartTimeout = null;
+        startAutoplay(sliderId);
+    }, 3000);
+}
+
+function stopAutoplay(sliderId) {
+    const state = galleryStates[sliderId];
+    if (!state) return;
+
+    if (state.autoplayTimer) {
+        clearInterval(state.autoplayTimer);
+        state.autoplayTimer = null;
+    }
+
+    if (state.restartTimeout) {
+        clearTimeout(state.restartTimeout);
+        state.restartTimeout = null;
     }
 }
