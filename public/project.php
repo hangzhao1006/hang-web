@@ -111,7 +111,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                     frameborder="0"
                     allow="autoplay; encrypted-media"
                     allowfullscreen
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></iframe>
+                    style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%) scale(<?= h($heroScale) ?>);"></iframe>
             <?php elseif ($isLocalVideo): ?>
                 <video autoplay loop muted playsinline src="<?= h($heroSrc) ?>"
                     style="object-position: <?= h($heroPosX) ?>% <?= h($heroPosY) ?>%; transform: scale(<?= h($heroScale) ?>);"></video>

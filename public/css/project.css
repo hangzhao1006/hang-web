@@ -343,8 +343,7 @@ body {
 }
 
 .hero-bg img,
-.hero-bg video,
-.hero-bg iframe {
+.hero-bg video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -357,6 +356,7 @@ body {
     border: none;
     pointer-events: none;
     /* 禁止交互，保持背景视频效果 */
+    display: block;
 }
 
 .hero-gradient {
