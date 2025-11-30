@@ -20,26 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-
-  // Background image loading for bg-full style
-  const bgLayer = document.getElementById('bg-layer');
-  if (bgLayer && document.body.classList.contains('bg-full')) {
-    const bgImage = new Image();
-    bgImage.src = '/uploads/BG.JPG';
-
-    bgImage.onload = () => {
-      bgLayer.classList.add('loaded');
-    };
-
-    bgImage.onerror = () => {
-      bgLayer.classList.add('loaded'); // Show even on error
-    };
-
-    // If already cached
-    if (bgImage.complete) {
-      bgLayer.classList.add('loaded');
-    }
-  }
 });
 
 // 1. 鼠标移动与视差 (保持不变)
