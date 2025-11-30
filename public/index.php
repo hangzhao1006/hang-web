@@ -160,6 +160,21 @@ $bodyClass = 'bg-' . $bgStyle;
   <script src="script/test.js" defer></script>
 
   <?php if ($bgStyle === 'compact'): ?>
+    <!-- 將作品封面圖片傳遞給 JavaScript -->
+    <script>
+      window.PROJECT_COVER_IMAGES = [
+        <?php
+        $imageUrls = array_filter(array_map(function($p) {
+          return !empty($p['image_url']) ? $p['image_url'] : null;
+        }, $projects));
+        echo implode(",\n        ", array_map(function($url) {
+          return "'" . addslashes($url) . "'";
+        }, $imageUrls));
+        ?>
+      ];
+    </script>
+    <!-- Three.js 庫 (動態背景需要) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- 動態背景 JS (只在 compact 模式載入) -->
     <script src="script/dynamic-bg.js" defer></script>
   <?php endif; ?>

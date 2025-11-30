@@ -45,13 +45,16 @@ body.bg-compact .reflection-layer {
   top: 0;
   left: 0;
   width: 100%;
-  height: 50vh;
-  /* 只佔 40% 螢幕高度 */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 70vh;
+  /* 70% 螢幕高度，讓粒子效果更明顯 */
+  background: transparent;
   pointer-events: none;
+  /* 保持 none，讓點擊穿透 */
   transition: all 0.3s ease;
   overflow: hidden;
-  z-index: 0;
+  z-index: 5;
+  /* 提高 z-index 讓粒子在 hero 文字之下但在背景之上 */
+  border: 1px solid #000;
 }
 
 /* 動態背景容器（預留給 JS） */
@@ -64,15 +67,28 @@ body.bg-compact .dynamic-bg-container {
   transition: background 0.5s ease;
 }
 
+/* Canvas 元素可以接收點擊 */
+body.bg-compact .dynamic-bg-container canvas {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 /* Compact 模式下調整 hero 高度 */
 body.bg-compact .hero-section {
-  height: 50vh;
+  height: 70vh;
+  /* 配合背景高度調整 */
   padding-left: 60px;
 }
 
 /* Compact 模式下調整 hero 文字 */
 body.bg-compact .hero-text {
   font-size: 4vw;
+  color: #333;
+  mix-blend-mode: normal;
+}
+
+body.bg-compact .hero-sub {
+  color: #666;
 }
 
 /* --- 2. UI Layer --- */
