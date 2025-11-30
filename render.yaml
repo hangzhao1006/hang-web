@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: hangzhao
+    env: docker
+    dockerfilePath: ./Dockerfile
+    disk:
+      name: uploads
+      mountPath: /opt/render/project/src/public/uploads
+      sizeGB: 1
