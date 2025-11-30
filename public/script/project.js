@@ -83,6 +83,11 @@ function initializeGallerySliders() {
             isManualControl: false
         };
 
+        // Add active class to first slide
+        if (slides[0]) {
+            slides[0].classList.add('active');
+        }
+
         // Show first slide
         showSlide(sliderId, 0);
 
@@ -117,16 +122,18 @@ function changeSlide(sliderId, direction) {
     // 標記為手動控制
     state.isManualControl = true;
 
-    state.currentIndex += direction;
+    // 计算新的 index，但不修改 state
+    let newIndex = state.currentIndex + direction;
 
     // Loop around
-    if (state.currentIndex < 0) {
-        state.currentIndex = state.totalSlides - 1;
-    } else if (state.currentIndex >= state.totalSlides) {
-        state.currentIndex = 0;
+    if (newIndex < 0) {
+        newIndex = state.totalSlides - 1;
+    } else if (newIndex >= state.totalSlides) {
+        newIndex = 0;
     }
 
-    showSlide(sliderId, state.currentIndex);
+    // showSlide 会更新 state.currentIndex
+    showSlide(sliderId, newIndex);
 
     // 重新啟動自動播放（從當前位置繼續）
     restartAutoplay(sliderId);
@@ -149,13 +156,20 @@ function showSlide(sliderId, index) {
     const state = galleryStates[sliderId];
     if (!state) return;
 
-    // 防止重复更新相同的 slide
-    if (state.currentIndex === index) {
-        return;
-    }
-
-    // Update state first
+    // Update state
+    const previousIndex = state.currentIndex;
     state.currentIndex = index;
+
+    // Only update DOM if index actually changed
+    if (previousIndex !== index) {
+        // Remove active class from all slides
+        slides.forEach(slide => slide.classList.remove('active'));
+
+        // Add active class to current slide
+        if (slides[index]) {
+            slides[index].classList.add('active');
+        }
+    }
 
     // Move track
     const offset = -index * 100;
