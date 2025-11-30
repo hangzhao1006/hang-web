@@ -7,8 +7,9 @@ function get_pdo(): PDO {
   $dsn = 'sqlite:' . $config['db_path'];
 
   // 确保 data 目录存在
-  if (!file_exists(dirname($config['db_path']))) {
-    mkdir(dirname($config['db_path']), 0775, true);
+  $dataDir = dirname($config['db_path']);
+  if (!is_dir($dataDir)) {
+    @mkdir($dataDir, 0775, true);
   }
 
   $pdo = new PDO($dsn, null, null, [
