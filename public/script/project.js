@@ -135,7 +135,6 @@ function changeSlide(sliderId, direction) {
 function showSlide(sliderId, index) {
     const slider = document.getElementById(sliderId);
     if (!slider) {
-        console.log('Slider not found:', sliderId);
         return;
     }
 
@@ -144,25 +143,28 @@ function showSlide(sliderId, index) {
     const counter = slider.querySelector('.slide-counter');
 
     if (!track || slides.length === 0) {
-        console.log('Track or slides not found. Track:', track, 'Slides:', slides.length);
         return;
     }
+
+    const state = galleryStates[sliderId];
+    if (!state) return;
+
+    // 防止重复更新相同的 slide
+    if (state.currentIndex === index) {
+        return;
+    }
+
+    // Update state first
+    state.currentIndex = index;
 
     // Move track
     const offset = -index * 100;
     track.style.transform = `translateX(${offset}%)`;
     track.style.transition = 'transform 0.3s ease';
 
-    console.log(`Moving ${sliderId} to slide ${index + 1}/${slides.length}, offset: ${offset}%`);
-
     // Update counter
     if (counter) {
         counter.textContent = `${index + 1} / ${slides.length}`;
-    }
-
-    // Update state
-    if (galleryStates[sliderId]) {
-        galleryStates[sliderId].currentIndex = index;
     }
 }
 
@@ -174,11 +176,19 @@ function startAutoplay(sliderId) {
     // 清除現有定時器
     if (state.autoplayTimer) {
         clearInterval(state.autoplayTimer);
+        state.autoplayTimer = null;
     }
 
     // 設置新定時器（5秒切換一次）
     state.autoplayTimer = setInterval(() => {
-        const nextIndex = (state.currentIndex + 1) % state.totalSlides;
+        // 確保 state 還存在
+        if (!galleryStates[sliderId]) {
+            clearInterval(state.autoplayTimer);
+            return;
+        }
+
+        const currentState = galleryStates[sliderId];
+        const nextIndex = (currentState.currentIndex + 1) % currentState.totalSlides;
         showSlide(sliderId, nextIndex);
     }, 5000);
 }
