@@ -1,2 +1,4 @@
 test
 /.test
+public/uploads/*.sqlite
+public/uploads/*.db
