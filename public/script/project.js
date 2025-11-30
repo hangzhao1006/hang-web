@@ -6,6 +6,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!header || !hero) return;
 
+    // Hero image loading
+    const heroBg = hero.querySelector('.hero-bg');
+    const heroMedia = heroBg ? heroBg.querySelector('img, video') : null;
+
+    if (heroMedia && heroBg) {
+        const handleMediaLoad = () => {
+            heroMedia.classList.add('loaded');
+            heroBg.classList.add('loaded');
+        };
+
+        if (heroMedia.tagName === 'IMG') {
+            if (heroMedia.complete) {
+                handleMediaLoad();
+            } else {
+                heroMedia.addEventListener('load', handleMediaLoad);
+                heroMedia.addEventListener('error', handleMediaLoad); // Still remove loader on error
+            }
+        } else if (heroMedia.tagName === 'VIDEO') {
+            heroMedia.addEventListener('loadeddata', handleMediaLoad);
+            heroMedia.addEventListener('error', handleMediaLoad);
+        }
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
         // hero 还占屏幕上方 >40%：认为在 hero 区 → header 用浅色
         if (entry.intersectionRatio > 0.4) {
@@ -74,6 +97,23 @@ function initializeGallerySliders() {
         const slides = slider.querySelectorAll('.slide');
 
         if (slides.length === 0) return;
+
+        // Setup image loading for all slides
+        slides.forEach(slide => {
+            const img = slide.querySelector('img');
+            if (img) {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    img.addEventListener('error', () => {
+                        img.classList.add('loaded'); // Show even on error
+                    });
+                }
+            }
+        });
 
         galleryStates[sliderId] = {
             currentIndex: 0,

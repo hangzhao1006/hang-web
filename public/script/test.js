@@ -4,6 +4,24 @@ const bg = document.getElementById('bg-layer');
 const cursorWrapper = document.getElementById('cursor-wrapper');
 const cursorMain = document.querySelector('.cursor-main');
 
+// Image loading handler for project covers
+document.addEventListener('DOMContentLoaded', () => {
+  const projectCovers = document.querySelectorAll('.project-cover');
+
+  projectCovers.forEach(img => {
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => {
+        img.classList.add('loaded');
+      });
+      img.addEventListener('error', () => {
+        img.classList.add('loaded'); // Show even on error
+      });
+    }
+  });
+});
+
 // 1. 鼠标移动与视差 (保持不变)
 document.addEventListener('mousemove', (e) => {
   const x = e.clientX;
