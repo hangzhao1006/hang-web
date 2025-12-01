@@ -56,10 +56,10 @@
     // --- 【關鍵修改：XY 軸佈局設定】 ---
 
     // 水平位置：0.0=置中, 0.15=往右移 15%, -0.15=往左移
-    layoutShiftX: 0.3,
+    layoutShiftX: 0.25,
 
     // 垂直位置：0.0=置中, 0.1=往上移 10%, -0.1=往下移
-    layoutShiftY: 0.1,
+    layoutShiftY: 0.15,
 
     // --- 粒子設定 ---
     particleCount: 100000,
@@ -99,31 +99,54 @@
 
   function createInteractionHint() {
     interactionHint = document.createElement('div');
+
+    // 根据 layoutShiftX 和 layoutShiftY 计算位置
+    // layoutShiftX: 0.25 = 右移 25%，所以显示位置是 50% + 25% = 75%
+    // layoutShiftY: 0.15 = 上移 15%，所以显示位置是 50% - 15% = 35%
+    const hintLeft = 50 + (CONFIG.layoutShiftX * 100);
+    const hintTop = 50 - (CONFIG.layoutShiftY * 100);
+
     interactionHint.style.cssText = `
       position: fixed;
-      left: 50%;
-      top: 50%;
+      left: ${hintLeft}%;
+      top: ${hintTop}%;
       transform: translate(-50%, -50%);
-      font-size: 48px;
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
       z-index: 15;
       pointer-events: none;
-      animation: pulse 2s ease-in-out infinite;
-      opacity: 0.8;
+      animation: clickHint 2s ease-in-out infinite;
     `;
-    interactionHint.innerHTML = '👆';
+
+    // 添加内部小圆点
+    interactionHint.innerHTML = `
+      <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+      "></div>
+    `;
+
     document.body.appendChild(interactionHint);
 
-    // 添加脉冲动画
+    // 添加闪烁动画
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes pulse {
+      @keyframes clickHint {
         0%, 100% {
-          opacity: 0.4;
-          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.3;
+          transform: translate(-50%, -50%) scale(0.9);
         }
         50% {
-          opacity: 0.8;
-          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.1);
         }
       }
     `;

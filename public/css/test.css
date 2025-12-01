@@ -277,6 +277,18 @@ header h1 {
   /* border: 1px solid #fff; */
 }
 
+/* 粒子交互提示的闪烁动画 */
+@keyframes clickHint {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
 .particle-project-title h2 {
   font-family: 'Times New Roman', serif;
   font-style: italic;
