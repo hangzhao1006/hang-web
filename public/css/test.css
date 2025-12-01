@@ -332,6 +332,8 @@ header h1 {
   position: relative;
   z-index: 8;
   /* 降低到 hero section 之下，避免遮挡粒子效果区域 */
+  margin-top: 70vh;
+  /* 从 hero section 之后开始，避免遮挡上方区域 */
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100vw;
@@ -379,6 +381,7 @@ header h1 {
   box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.05);
   /* border-color: rgba(143, 143, 143, 0.6); */
   z-index: 2;
+  opacity: 1;
 }
 
 /* --- 核心修复：特定作品倒影 --- */
