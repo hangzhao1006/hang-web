@@ -56,7 +56,7 @@
     // --- 【關鍵修改：XY 軸佈局設定】 ---
 
     // 水平位置：0.0=置中, 0.15=往右移 15%, -0.15=往左移
-    layoutShiftX: 0.25,
+    layoutShiftX: 0.3,
 
     // 垂直位置：0.0=置中, 0.1=往上移 10%, -0.1=往下移
     layoutShiftY: 0.1,
@@ -74,7 +74,7 @@
 
     // --- 極限慢速背景 ---
     noiseSpeed: 0.001,
-    noiseStrength: 1.0,
+    noiseStrength: 0.2,
 
     // --- 透鏡設定 ---
     lensRadius: 220,
@@ -82,7 +82,7 @@
     lensSnap: 0.08,
 
     // --- 物理設定 ---
-    friction: 0.96
+    friction: 0.98
   };
 
   let scene, camera, renderer, pointCloud;
@@ -240,10 +240,10 @@
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      
+
       // Resize 時更新移軸
       updateCameraOffset();
-      
+
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
@@ -390,10 +390,10 @@
       -(e.clientY / innerHeight) * 2 + 1,
       0.5
     );
-    
+
     // unproject 會自動考慮 setViewOffset 的偏移
     v.unproject(camera);
-    
+
     const dir = v.sub(camera.position).normalize();
     const dist = -camera.position.z / dir.z;
     const pos = camera.position.clone().add(dir.multiplyScalar(dist));
