@@ -47,8 +47,9 @@
     { image: '/uploads/2.1.JPG', title: 'Ehoura', slug: 'ehoura' },
     { image: '/uploads/3.10.PNG', title: 'SerenEcho', slug: 'serenecho' },
     { image: '/uploads/4.2.JPG', title: 'Symbiophony', slug: 'symbiophony' },
-    { image: '/uploads/6.1.png', title: 'SeePal', slug: 'seepal' },
-    { image: '/uploads/7.1.jpg', title: 'TideEcho', slug: 'tideecho' },
+    { image: '/uploads/shadow.png', title: 'ShadowPlay', slug: 'shadowplay' },
+    { image: '/uploads/5.2.jpg', title: 'SeePal', slug: 'seepal' },
+    { image: '/uploads/7.1.png', title: 'TideEcho', slug: 'tideecho' },
     { image: '/uploads/model/1.png', title: 'Model', slug: 'model' }
   ];
 
@@ -64,7 +65,7 @@
     // --- 粒子設定 ---
     particleCount: 100000,
     sampleStep: 1,
-    particleSize: 2.8,
+    particleSize: 3.5,
     renderScale: 1.5,
     brightnessBoost: 1.3,
 
@@ -77,8 +78,8 @@
     noiseStrength: 0.2,
 
     // --- 透鏡設定 ---
-    lensRadius: 220,
-    lensMag: 0.15,
+    lensRadius: 240,
+    lensMag: 0.03,
     lensSnap: 0.08,
 
     // --- 物理設定 ---
