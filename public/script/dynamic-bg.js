@@ -104,16 +104,10 @@
   function createInteractionHint() {
     interactionHint = document.createElement('div');
 
-    // 根据 layoutShiftX 和 layoutShiftY 计算位置
-    // layoutShiftX: 0.25 = 右移 25%，所以显示位置是 50% + 25% = 75%
-    // layoutShiftY: 0.15 = 上移 15%，所以显示位置是 50% - 15% = 35%
-    const hintLeft = 50 + (CONFIG.layoutShiftX * 100);
-    const hintTop = 50 - (CONFIG.layoutShiftY * 100);
-
     interactionHint.style.cssText = `
-      position: fixed;
-      left: ${hintLeft}%;
-      top: ${hintTop}%;
+      position: absolute;
+      left: 75%;
+      top: 35%;
       transform: translate(-50%, -50%);
       width: 60px;
       height: 60px;
@@ -122,7 +116,7 @@
       z-index: 15;
       pointer-events: none;
       animation: clickHint 2s ease-in-out infinite;
-      transition: opacity 0.3s ease;
+      transition: left 0.5s ease, top 0.5s ease;
       opacity: 0.8;
     `;
 
@@ -140,7 +134,7 @@
       "></div>
     `;
 
-    document.body.appendChild(interactionHint);
+    container.appendChild(interactionHint);
 
     // 添加闪烁动画
     const style = document.createElement('style');
