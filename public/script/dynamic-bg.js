@@ -454,9 +454,9 @@
 
       // 如果鼠标在提示圈附近（150px范围内），隐藏提示
       if (distToHint < 150 && lastMouseX !== -9999) {
-        interactionHint.style.opacity = '0';
+        interactionHint.style.display = 'none';
       } else {
-        interactionHint.style.opacity = '0.8';
+        interactionHint.style.display = 'block';
       }
     }
   }
