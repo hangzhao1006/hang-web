@@ -117,7 +117,7 @@
       transform: translate(-50%, -50%);
       width: 60px;
       height: 60px;
-      border: 3px solid rgba(255, 255, 255, 0.8);
+      border: 2.5px solid rgba(169, 169, 169, 0.8);
       border-radius: 50%;
       z-index: 15;
       pointer-events: none;
@@ -135,7 +135,7 @@
         transform: translate(-50%, -50%);
         width: 8px;
         height: 8px;
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(169, 169, 169, 0.8);
         border-radius: 50%;
       "></div>
     `;
