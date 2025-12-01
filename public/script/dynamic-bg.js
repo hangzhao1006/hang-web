@@ -118,6 +118,8 @@
       z-index: 15;
       pointer-events: none;
       animation: clickHint 2s ease-in-out infinite;
+      transition: opacity 0.3s ease;
+      opacity: 0.8;
     `;
 
     // 添加内部小圆点
@@ -305,8 +307,10 @@
     });
 
     // 綁定事件到 canvas 元素
-    renderer.domElement.addEventListener('mousemove', onMouseMove);
     renderer.domElement.addEventListener('click', onClick);
+
+    // 鼠标移动事件绑定到整个文档，以便追踪提示圈的显示/隐藏
+    document.addEventListener('mousemove', onMouseMove);
   }
 
   function createParticleSystem() {
