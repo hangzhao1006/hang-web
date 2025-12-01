@@ -12,7 +12,7 @@ html {
   padding: 0;
   width: 100%;
   min-height: 100%;
-  background-color: #ffffff;
+  background-color: #000000;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #fff;
   cursor: none;
@@ -47,7 +47,7 @@ body.bg-compact .reflection-layer {
   width: 100%;
   height: 70vh;
   /* 70% 螢幕高度，讓粒子效果更明顯 */
-  background: transparent;
+  background: #000000;
   pointer-events: none;
   /* 保持 none，讓點擊穿透 */
   transition: all 0.3s ease;
@@ -83,12 +83,12 @@ body.bg-compact .hero-section {
 /* Compact 模式下調整 hero 文字 */
 body.bg-compact .hero-text {
   font-size: 4vw;
-  color: #333;
+  color: #ffffff;
   mix-blend-mode: normal;
 }
 
 body.bg-compact .hero-sub {
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* --- 2. UI Layer --- */
@@ -108,7 +108,7 @@ body.bg-compact .hero-sub {
 }
 
 .ui-layer header,
-.ui-layer form {
+.ui-layer nav {
   pointer-events: auto;
 }
 
@@ -119,7 +119,6 @@ header h1 {
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: bold;
-  margin-bottom: 15px;
   color: rgba(255, 255, 255, 0.9);
 
   /* 新增：让 logo + 文字 横着排在一起 */
@@ -139,18 +138,43 @@ header h1 {
   mix-blend-mode: difference !important;
 }
 
+/* 导航栏移到右边 */
+.nav {
+  display: flex;
+  gap: 30px;
+}
+
 .nav a {
   display: inline-block;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  font-size: 0.85rem;
-  margin-right: 20px;
-  transition: color 0.3s;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 0;
+  position: relative;
   cursor: none;
+  transition: color 0.3s;
+}
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease;
 }
 
 .nav a:hover {
   color: #fff;
+}
+
+.nav a:hover::after {
+  width: 100%;
 }
 
 .filters {
@@ -273,6 +297,7 @@ header h1 {
   box-sizing: border-box;
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
+  background-color: #000000;
 }
 
 .grid-item {
@@ -468,7 +493,12 @@ footer {
   height: 3em;
   /* 字体大小的 3 倍 */
   width: auto;
-  color: black;
+  /* 對於 <img> 標籤的 SVG，用 filter 調整顏色 */
+  /* opacity: 1; */
+  /* 調整透明度 */
+  /* filter: brightness(0.3) contrast(1.2); */
+  /* color: rgba(255, 255, 255, 0.4); */
+  /* brightness 越小越暗，contrast 調整對比度 */
 }
 
 /* WebGL 水面画布：铺满整个背景层 */

@@ -72,16 +72,17 @@ $bodyClass = 'bg-' . $bgStyle;
         <img src="/uploads/logo.svg" alt="Hang Zhao Logo" class="header-logo">
         <span><?= htmlspecialchars($config['site_name']) ?></span>
       </h1>
-
-      <nav class="nav">
-        <a href="/about.php">About</a>
-        <a href="/contact.php">Contact</a>
-        <a href="/admin.php">Admin</a>
-        <a href="/demo.php">Demo</a>
-      </nav>
     </header>
 
-    <form class="filters" method="get">
+    <nav class="nav">
+      <a href="/about.php">About</a>
+      <a href="/contact.php">Contact</a>
+      <a href="/admin.php">Admin</a>
+      <a href="/demo.php">Demo</a>
+    </nav>
+
+    <!-- Filters removed -->
+    <!-- <form class="filters" method="get">
       <input name="tag" placeholder="Tag" value="<?= htmlspecialchars($filters['tag'] ?? '') ?>">
       <input name="year" type="number" placeholder="Year" value="<?= htmlspecialchars($filters['year'] ?? '') ?>">
       <select name="sort">
@@ -89,7 +90,7 @@ $bodyClass = 'bg-' . $bgStyle;
         <option value="alpha" <?= $filters['sort'] === 'alpha' ? 'selected' : ''; ?>>A–Z</option>
       </select>
       <button type="submit">Apply</button>
-    </form>
+    </form> -->
   </div>
 
   <!-- 4. Hero 区域 -->
@@ -150,10 +151,10 @@ $bodyClass = 'bg-' . $bgStyle;
   <footer>
     <p>© <?= date('Y') ?> <?= htmlspecialchars($config['site_name']) ?>, All Rights Reserved.</p>
     <img src="/uploads/logo.svg" class="footer-logo">
-    <!-- <svg class="footer-logo" viewBox="0 0 723.61 479.65">
+    <!-- <svg class="footer-logo" viewBox="0 0 723.61 479.65"> -->
       <path class="cls-1"
         d="M615.48,139.48c14.63,0,26.48,11.86,26.48,26.48s-11.86,26.48-26.48,26.48-26.48-11.86-26.48-26.48,11.86-26.48,26.48-26.48ZM564.84,0l-18.75,159.88-121.39,32.57-10.86-89.81L564.84,0ZM20.93,395.67c-11.56,0-20.93-9.37-20.93-20.93s9.37-20.93,20.93-20.93,20.93,9.37,20.93,20.93-9.37,20.93-20.93,20.93Zm133.39,83.98H73.82l-41.45-162.84,115.47-56.1,5.7,42.12c-9.53,4.02-16.23,13.46-16.23,24.46,0,13.48,10.07,24.59,23.09,26.29l1.51,11.19c-23.52,9.42-40.15,32.38-40.15,59.27,0,23.89,13.13,44.67,32.55,55.63Zm65.57,0l-.45-1.52c18.03-11.29,30.06-31.27,30.06-54.11,0-35.27-28.59-63.87-63.87-63.87-.41,0-.8,.05-1.21,.06l-3.7-12.45c5.9-4.87,9.66-12.23,9.66-20.48,0-13.65-10.32-24.89-23.58-26.36l-24.89-83.79L319.57,73.03l8.56,135.57c-12.92,1.59-22.93,12.59-22.93,25.94,0,14.45,11.71,26.16,26.16,26.16,.02,0,.04,0,.06,0l2.63,41.63c-5.27,3.59-8.74,9.63-8.74,16.49,0,7.74,4.45,14.37,10.9,17.67l9.03,143.16h-125.34Zm445.71,0h-41.73l12.69-67.51c-13.21,5.31-26.43,10.61-39.64,15.92l-37.63,13.94,9.97,37.65h-51.32l25.66-218.94-98.69,54.13,25.66,164.82h-88.82l12.83-238.84,193.44-48.36,8.91,235.6c7.76-52.87,15.52-105.75,23.28-158.62l103.41-41.45-58.01,251.67Z" />
-    </svg> -->
+    </svg>
   </footer>
 
   <!-- <script src="script/water-simple.js" defer></script> -->
