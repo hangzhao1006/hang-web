@@ -97,6 +97,10 @@
   let projectTitleEl = null;
   let interactionHint = null;
 
+  // 独立的鼠标位置追踪（不使用 window 全局变量）
+  let lastMouseX = -9999;
+  let lastMouseY = -9999;
+
   function createInteractionHint() {
     interactionHint = document.createElement('div');
 
@@ -443,11 +447,6 @@
       const hintScreenX = window.innerWidth * (50 + CONFIG.layoutShiftX * 100) / 100;
       const hintScreenY = window.innerHeight * (50 - CONFIG.layoutShiftY * 100) / 100;
 
-      // 将鼠标的世界坐标转换回屏幕坐标进行距离判断
-      // 使用原始鼠标位置而不是 Three.js 坐标
-      const lastMouseX = window.lastMouseX || -9999;
-      const lastMouseY = window.lastMouseY || -9999;
-
       // 计算鼠标到提示圈中心的距离
       const dx = lastMouseX - hintScreenX;
       const dy = lastMouseY - hintScreenY;
@@ -469,9 +468,9 @@
   }
 
   function onMouseMove(e) {
-    // 保存原始鼠标屏幕坐标，用于提示圈的显示/隐藏判断
-    window.lastMouseX = e.clientX;
-    window.lastMouseY = e.clientY;
+    // 保存原始鼠标屏幕坐标到局部变量，用于提示圈的显示/隐藏判断
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
 
     // 使用整個視窗座標（和 main.js 一樣）
     const v = new THREE.Vector3(
