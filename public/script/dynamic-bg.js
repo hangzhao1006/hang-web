@@ -45,12 +45,12 @@
     // --- 粒子設定 ---
     particleCount: 80000,
     sampleStep: 1,
-    particleSize: 3.0,
+    particleSize: 2.8,
     renderScale: 1.5,
     brightnessBoost: 1.3,
 
     // --- 3D 設定 ---
-    zDepthStrength: 140,
+    zDepthStrength: 100,
     zRandomness: 10,
 
     // --- 【關鍵修改 1：極限慢速背景】 ---
@@ -60,7 +60,7 @@
     // --- 透鏡設定 ---
     lensRadius: 220,
     lensMag: 0.15,
-    lensSnap: 0.09,         // 放大鏡抓取的速度 (這可以稍微快一點點，才有互動感)
+    lensSnap: 0.08,         // 放大鏡抓取的速度 (這可以稍微快一點點，才有互動感)
 
     // --- 物理設定 ---
     friction: 0.95          // 高阻力，防止任何抖動
@@ -191,9 +191,9 @@
         const visibleHeight = 2 * Math.tan(vFOV / 2) * camera.position.z;
         const visibleWidth = visibleHeight * (window.innerWidth / window.innerHeight);
 
-        // 圖片偏移到右側（可調整百分比）
-        const xOffset = visibleWidth * 0.20;  // 向右偏移 20%
-        const yOffset = visibleHeight * 0.10;  // 垂直居中
+        // 圖片居中顯示（與 main.js 一致）
+        const xOffset = 0;  // 不偏移
+        const yOffset = 0;  // 垂直居中
 
         for (let y = 0; y < h; y += CONFIG.sampleStep) {
           for (let x = 0; x < w; x += CONFIG.sampleStep) {
