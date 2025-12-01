@@ -45,7 +45,7 @@
     // --- 粒子設定 ---
     particleCount: 80000,
     sampleStep: 1,
-    particleSize: 3.0 ,
+    particleSize: 3.0,
     renderScale: 1.5,
     brightnessBoost: 1.3,
 
@@ -98,13 +98,23 @@
       <h2 style="
         font-family: 'Times New Roman', serif;
         font-style: italic;
-        font-size: 3vw;
-        font-weight: 400;
+        font-size: 2vw;
+        font-weight: 300;
         color: #fff;
         margin: 0;
         letter-spacing: 1px;
         mix-blend-mode: difference;
       "></h2>
+      <p style="
+        font-family: 'Times New Roman', serif;
+        font-size: 1vw;
+        font-style: italic;
+        color: #fff;
+        margin: 8px 0 0 0;
+        opacity: 0.8;
+        letter-spacing: 0.5px;
+        mix-blend-mode: difference;
+      ">click to start</p>
     `;
 
     heroSection.appendChild(projectTitleEl);

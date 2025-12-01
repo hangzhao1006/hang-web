@@ -1,2 +1,14 @@
 RewriteEngine On
+
+# 隐藏 index.php - 将 /index.php 重定向到根目录
+RewriteCond %{THE_REQUEST} /index\.php[\s?] [NC]
+RewriteRule ^index\.php$ / [R=301,L]
+
+# 如果请求的不是文件也不是目录，且不是以 /p/ 开头，则重写到 index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/p/
+RewriteRule ^.*$ index.php [L]
+
+# 项目页面美化URL
 RewriteRule ^p/([A-Za-z0-9-]+)/?$ project.php?slug=$1 [L,QSA]

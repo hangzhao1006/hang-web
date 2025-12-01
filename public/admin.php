@@ -161,7 +161,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
     <div class="header-inner">
       <h1>CMS / <?= htmlspecialchars($config['site_name']) ?></h1>
       <nav>
-        <a href="index.php" target="_blank" class="btn-text">View Site ↗</a>
+        <a href="/" target="_blank" class="btn-text">View Site ↗</a>
         <?php if ($is_logged_in): ?>
           <a href="admin.php?action=logout" class="btn-text danger">Logout</a>
         <?php endif; ?>

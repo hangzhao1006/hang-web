@@ -62,7 +62,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     </button>
     <div class="mobile-nav-overlay"></div>
     <nav class="mobile-nav-menu">
-        <a href="index.php">Selected Works</a>
+        <a href="/">Selected Works</a>
         <a href="about.php">About</a>
         <a href="contact.php">Contact</a>
         <a href="admin.php">Admin</a>
@@ -77,7 +77,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
         <!-- nav：project 自己的链接 & 样式 -->
         <nav class="nav">
-            <a href="index.php">Selected Works</a>
+            <a href="/">Selected Works</a>
             <a href="about.php">About</a>
             <a href="contact.php">Contact</a>
             <a href="admin.php">Admin</a>
