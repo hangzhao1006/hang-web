@@ -339,8 +339,8 @@ header h1 {
 /* --- 5. Grid System --- */
 .glass-grid {
   position: relative;
-  z-index: 3;
-  /* 降低到动态背景之下 (bg: 5)，避免遮挡粒子效果 */
+  z-index: 10;
+  /* 恢复到 hero section 同级，黑色背景遮住粒子效果 */
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100vw;
