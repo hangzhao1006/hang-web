@@ -65,6 +65,8 @@ body.bg-compact .dynamic-bg-container {
   width: 100%;
   height: 100%;
   transition: background 0.5s ease;
+  /* 移除 transform，使用相機 setViewOffset 實現偏移 */
+  overflow: visible;
 }
 
 /* Canvas 元素可以接收點擊 */
@@ -102,7 +104,7 @@ body.bg-compact .hero-sub {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
 }
@@ -142,6 +144,7 @@ header h1 {
 .nav {
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
 .nav a {
@@ -151,6 +154,7 @@ header h1 {
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
+  line-height: 1.4rem;
   letter-spacing: 1px;
   margin-right: 0;
   position: relative;
@@ -249,6 +253,43 @@ header h1 {
   font-family: 'Courier New', monospace;
   opacity: 0.6;
   max-width: 400px;
+}
+
+/* --- 3.5. Particle Project Title (独立层，不受 canvas 影响) --- */
+.particle-project-title {
+  position: fixed;
+  top: 50%;
+  left: 60px;
+  transform: translateY(-50%);
+  z-index: 60;
+  /* 高于 canvas，低于 UI layer */
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  margin-top: 40px;
+}
+
+.particle-project-title h2 {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 2vw;
+  font-weight: 300;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 1px;
+  mix-blend-mode: difference;
+}
+
+.particle-project-title p {
+  font-family: 'Times New Roman', serif;
+  font-size: 1vw;
+  font-style: italic;
+  color: #fff;
+  margin: 8px 0 0 0;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+  mix-blend-mode: difference;
 }
 
 /* --- 4. Cursor --- */
@@ -512,6 +553,16 @@ footer {
 }
 
 
+/* ================================
+   Mobile Navigation (hidden on desktop)
+   ================================ */
+
+.mobile-nav-toggle,
+.mobile-nav-menu,
+.mobile-nav-overlay {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .glass-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -526,7 +577,124 @@ footer {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  /* Hide desktop navigation */
+  .ui-layer .nav {
+    display: none;
+  }
+
+  /* Mobile hamburger menu button */
+  .mobile-nav-toggle {
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    z-index: 1000;
+    width: 46px;
+    height: 46px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .mobile-nav-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  .mobile-nav-toggle span {
+    width: 20px;
+    height: 2.5px;
+    background: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-nav-toggle.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .mobile-nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-nav-toggle.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Mobile navigation menu */
+  .mobile-nav-menu {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(0, 0, 0, 0.85);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 999;
+    padding: 80px 30px 30px;
+    transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    pointer-events: all;
+  }
+
+  .mobile-nav-menu.active {
+    right: 0;
+  }
+
+  .mobile-nav-menu a {
+    display: block;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-nav-menu a:hover,
+  .mobile-nav-menu a:active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
+  }
+
+  /* Overlay */
+  .mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: all;
+  }
+
+  .mobile-nav-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+
+
   .glass-grid {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -547,6 +715,27 @@ footer {
     cursor: auto !important;
   }
 
+  /* 移动端 bg-compact 模式显示静态背景 */
+  body.bg-compact #bg-layer {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: calc(70vh + 20%);
+    background-image: url('/uploads/BG2.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) contrast(120%) brightness(0.6) url(#glass-warp);
+    z-index: 5;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* 移动端隐藏动态背景容器 */
+  body.bg-compact .dynamic-bg-container {
+    display: none;
+  }
+
   /* 移动端直接显示彩色封面，不需要 hover */
   .grid-item::before {
     opacity: 1 !important;
@@ -559,6 +748,7 @@ footer {
     opacity: 1 !important;
     transform: translateY(0) !important;
   }
+
 
   .grid-item .content h2,
   .grid-item .content p {

@@ -24,15 +24,7 @@ $bodyClass = 'bg-' . $bgStyle;
 
 <body class="<?= htmlspecialchars($bodyClass) ?>">
 
-  <!-- 
-    SVG 滤镜升级版：
-    1. type="turbulence": 更像液体，而不是烟雾 (fractalNoise)
-    2. baseFrequency="0.003 0.006": 
-       - 第一个数(x)极小，让横向拉伸很长，像宽阔的水波
-       - 第二个数(y)稍大，保留垂直方向的流动感
-       这样就不会有"格子重复"的感觉了
-    3. numOctaves="3": 增加细节层次
-  -->
+  <!-- SVG 滤镜：玻璃扭曲效果 -->
   <svg style="display: none;">
     <defs>
       <filter id="glass-warp">
@@ -42,27 +34,29 @@ $bodyClass = 'bg-' . $bgStyle;
     </defs>
   </svg>
 
-  <!-- 1. 全局背景层 (SVG 扭曲版) -->
-  <div class="reflection-layer" id="bg-layer">
+  <!-- 1. 全局背景层 -->
+  <div id="bg-layer">
     <?php if ($bgStyle === 'compact'): ?>
-      <!-- 動態背景容器（預留給未來的 JS 動畫） -->
+      <!-- 動態背景容器 -->
       <div class="dynamic-bg-container" id="dynamic-bg">
-        <!-- TODO: 在這裡添加動態背景效果，例如粒子、波浪、漸變動畫等 -->
+        <!-- Three.js 粒子效果将在这里渲染 -->
       </div>
     <?php endif; ?>
   </div>
 
-  <!-- 2. WebGL 水波纹覆盖层 (禁用) -->
-  <!-- <div class="water-overlay-layer">
-    <canvas id="glCanvas"></canvas>
-  </div> -->
-
-
-  <!-- 2. 自定义鼠标 -->
-  <div id="cursor-wrapper">
-    <div class="cursor-main"></div>
-    <div class="cursor-reflection"></div>
-  </div>
+  <!-- 2. 移动端导航 -->
+  <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav-menu">
+    <a href="/">Selected Works</a>
+    <a href="/about.php">About</a>
+    <a href="/contact.php">Contact</a>
+    <a href="/admin.php">Admin</a>
+  </nav>
 
   <!-- 3. 顶部固定 UI 层 -->
   <div class="ui-layer">
@@ -103,6 +97,14 @@ $bodyClass = 'bg-' . $bgStyle;
       Creating across interaction, visual systems, and computational art
     </div>
   </div>
+
+  <!-- 5. Particle Project Title (只在 compact 模式显示) -->
+  <?php if ($bgStyle === 'compact'): ?>
+    <div id="particle-project-title" class="particle-project-title">
+      <h2></h2>
+      <p>click to start</p>
+    </div>
+  <?php endif; ?>
 
   <!-- 5. 网格系统 -->
   <div class="glass-grid">

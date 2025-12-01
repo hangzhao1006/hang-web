@@ -1,9 +1,12 @@
 /**
- * dynamic-bg.js - 微重力懸浮版 (Zero Gravity)
- * 專注解決「閒置時粒子跳動/移動太快」的問題。
- * 讓粒子在沒有滑鼠時，呈現極致的寧靜與懸浮感。
+ * dynamic-bg.js - 移軸佈局版 (XY 雙向偏移)
+ * 特色：
+ * 1. 支援水平 (X) 與垂直 (Y) 的無變形平移。
+ * 2. 閒置時：粒子極致寧靜懸浮。
+ * 3. 聚焦時：快速組成清晰圖像。
+ * 4. 只在 compact 模式下執行
  *
- * 改編自 test/main.js，只在 compact 模式下執行
+ * 完全套用自 test/main.js
  */
 
 (function () {
@@ -14,6 +17,14 @@
 
   if (!isCompactMode) {
     return; // 只在 compact 模式下執行
+  }
+
+  // 檢測是否為移動設備
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+  if (isMobile) {
+    console.log('Mobile device detected - skipping particle background');
+    return; // 移動端不執行粒子效果
   }
 
   // 檢查 Three.js 是否載入
@@ -42,8 +53,16 @@
   ];
 
   const CONFIG = {
+    // --- 【關鍵修改：XY 軸佈局設定】 ---
+
+    // 水平位置：0.0=置中, 0.15=往右移 15%, -0.15=往左移
+    layoutShiftX: 0.25,
+
+    // 垂直位置：0.0=置中, 0.1=往上移 10%, -0.1=往下移
+    layoutShiftY: 0.1,
+
     // --- 粒子設定 ---
-    particleCount: 80000,
+    particleCount: 100000,
     sampleStep: 1,
     particleSize: 2.8,
     renderScale: 1.5,
@@ -53,17 +72,17 @@
     zDepthStrength: 100,
     zRandomness: 10,
 
-    // --- 【關鍵修改 1：極限慢速背景】 ---
-    noiseSpeed: 0.005,      // (原 0.03) 幾乎像時間停止一樣慢
-    noiseStrength: 1.5,     // 輕微的浮動幅度
+    // --- 極限慢速背景 ---
+    noiseSpeed: 0.001,
+    noiseStrength: 1.0,
 
     // --- 透鏡設定 ---
     lensRadius: 220,
     lensMag: 0.15,
-    lensSnap: 0.08,         // 放大鏡抓取的速度 (這可以稍微快一點點，才有互動感)
+    lensSnap: 0.08,
 
     // --- 物理設定 ---
-    friction: 0.95          // 高阻力，防止任何抖動
+    friction: 0.96
   };
 
   let scene, camera, renderer, pointCloud;
@@ -74,60 +93,25 @@
   const mouse = new THREE.Vector2(-9999, -9999);
   const clock = new THREE.Clock();
 
-  // 創建項目標題 UI
+  // 使用 HTML 中已有的項目標題元素
   let projectTitleEl = null;
 
-  function createProjectTitleUI() {
-    // 將標題添加到 hero section 中，而不是 body
-    const heroSection = document.querySelector('.hero-section');
-    if (!heroSection) {
-      console.error('Hero section not found');
-      return;
+  function updateProjectTitle(index) {
+    // 查找 HTML 中的标题元素
+    if (!projectTitleEl) {
+      projectTitleEl = document.getElementById('particle-project-title');
     }
 
-    projectTitleEl = document.createElement('div');
-    projectTitleEl.style.cssText = `
-      pointer-events: auto;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-      margin-top: 40px;
-    `;
-
-    projectTitleEl.innerHTML = `
-      <h2 style="
-        font-family: 'Times New Roman', serif;
-        font-style: italic;
-        font-size: 2vw;
-        font-weight: 300;
-        color: #fff;
-        margin: 0;
-        letter-spacing: 1px;
-        mix-blend-mode: difference;
-      "></h2>
-      <p style="
-        font-family: 'Times New Roman', serif;
-        font-size: 1vw;
-        font-style: italic;
-        color: #fff;
-        margin: 8px 0 0 0;
-        opacity: 0.8;
-        letter-spacing: 0.5px;
-        mix-blend-mode: difference;
-      ">click to start</p>
-    `;
-
-    heroSection.appendChild(projectTitleEl);
-  }
-
-  function updateProjectTitle(index) {
     if (!projectTitleEl || index < 0 || index >= PROJECTS.length) return;
 
     const project = PROJECTS[index];
     const titleElement = projectTitleEl.querySelector('h2');
-    titleElement.textContent = project.title;
+    const hintElement = projectTitleEl.querySelector('p');
 
-    // 更新點擊事件
+    if (titleElement) titleElement.textContent = project.title;
+    if (hintElement) hintElement.textContent = 'click here to view project';
+
+    // 更新點擊事件 - 跳转到项目页面
     projectTitleEl.onclick = () => {
       window.location.href = `/project.php?slug=${project.slug}`;
     };
@@ -186,15 +170,6 @@
         const imgData = ctx.getImageData(0, 0, w, h).data;
         const points = [];
 
-        // 計算視窗在 3D 世界中的可視範圍（使用整個視窗）
-        const vFOV = camera.fov * Math.PI / 180;
-        const visibleHeight = 2 * Math.tan(vFOV / 2) * camera.position.z;
-        const visibleWidth = visibleHeight * (window.innerWidth / window.innerHeight);
-
-        // 圖片居中顯示（與 main.js 一致）
-        const xOffset = 0;  // 不偏移
-        const yOffset = 0;  // 垂直居中
-
         for (let y = 0; y < h; y += CONFIG.sampleStep) {
           for (let x = 0; x < w; x += CONFIG.sampleStep) {
             const i = (y * w + x) * 4;
@@ -209,8 +184,9 @@
               const zRandom = (Math.random() - 0.5) * CONFIG.zRandomness;
 
               points.push({
-                x: (x - w / 2) * CONFIG.renderScale + xOffset,
-                y: -(y - h / 2) * CONFIG.renderScale + yOffset,
+                // 這裡保持原始座標，不要手動加 offset，全部交給 camera 處理
+                x: (x - w / 2) * CONFIG.renderScale,
+                y: -(y - h / 2) * CONFIG.renderScale,
                 z: zDepth + zRandom,
                 r: Math.min(1, (r / 255) * CONFIG.brightnessBoost),
                 g: Math.min(1, (g / 255) * CONFIG.brightnessBoost),
@@ -226,6 +202,22 @@
     });
   }
 
+  // 【核心功能：計算 XY 偏移量】
+  function updateCameraOffset() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // X 軸邏輯：往右移 -> 視窗往左偏 (負數)
+    const xOffset = width * CONFIG.layoutShiftX * -1;
+
+    // Y 軸邏輯：往上移 -> 視窗往下偏 (正數)
+    // 因為 Three.js 的 setViewOffset 中，Y 增加代表視窗向下移動，
+    // 視窗向下，原本在 (0,0) 的物體就會相對出現在畫面的「上方」。
+    const yOffset = height * CONFIG.layoutShiftY;
+
+    camera.setViewOffset(width, height, xOffset, yOffset, width, height);
+  }
+
   // =========================================
   // 2. 場景
   // =========================================
@@ -237,6 +229,9 @@
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
     camera.position.z = 600;
 
+    // 套用初始移軸
+    updateCameraOffset();
+
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -245,6 +240,10 @@
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
+      
+      // Resize 時更新移軸
+      updateCameraOffset();
+      
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
@@ -344,9 +343,7 @@
 
       // --- 狀態 B: 透鏡外 (極慢速懸浮) ---
       else {
-        // 【關鍵修改】: 閒置時的彈簧力極小 (0.005)
-        // 這讓粒子不會因為急著回原位而產生抖動，只會懶懶地飄
-        const idleSpring = 0.005;
+        const idleSpring = 0.001;
         p.vx += (p.targetX - p.x) * idleSpring;
         p.vy += (p.targetY - p.y) * idleSpring;
         p.vz += (p.targetZ - p.z) * idleSpring;
@@ -393,7 +390,10 @@
       -(e.clientY / innerHeight) * 2 + 1,
       0.5
     );
+    
+    // unproject 會自動考慮 setViewOffset 的偏移
     v.unproject(camera);
+    
     const dir = v.sub(camera.position).normalize();
     const dist = -camera.position.z / dir.z;
     const pos = camera.position.clone().add(dir.multiplyScalar(dist));
@@ -404,10 +404,14 @@
 
   function onClick() {
     if (allImageTargets.length === 0) return;
+
+    // 切换到下一张图片
     currentImageIndex = (currentImageIndex + 1) % allImageTargets.length;
     log(`切換到圖片 ${currentImageIndex + 1}/${allImageTargets.length}`);
     applyTargetImage(currentImageIndex);
     updateProjectTitle(currentImageIndex);
+
+    // 添加一些粒子扰动效果
     physicsData.forEach(p => {
       p.vx += (Math.random() - 0.5) * 40;
       p.vy += (Math.random() - 0.5) * 40;
@@ -418,7 +422,6 @@
   async function start() {
     initScene();
     createParticleSystem();
-    createProjectTitleUI();
     animate();
 
     log("初始化...");
