@@ -95,6 +95,40 @@
 
   // 使用 HTML 中已有的項目標題元素
   let projectTitleEl = null;
+  let interactionHint = null;
+
+  function createInteractionHint() {
+    interactionHint = document.createElement('div');
+    interactionHint.style.cssText = `
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      z-index: 15;
+      pointer-events: none;
+      animation: pulse 2s ease-in-out infinite;
+      opacity: 0.8;
+    `;
+    interactionHint.innerHTML = '👆';
+    document.body.appendChild(interactionHint);
+
+    // 添加脉冲动画
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 0.4;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   function updateProjectTitle(index) {
     // 查找 HTML 中的标题元素
@@ -375,6 +409,20 @@
       pointCloud.rotation.y = Math.sin(time * 0.5) * 0.02;
       pointCloud.rotation.x = Math.cos(time * 0.3) * 0.01;
     }
+
+    // 控制交互提示的显示/隐藏
+    if (interactionHint) {
+      // 检查鼠标是否靠近粒子中心（距离阈值）
+      const centerDistSq = mouse.x * mouse.x + mouse.y * mouse.y;
+      const isNearCenter = centerDistSq < (CONFIG.lensRadius * 3) ** 2;
+
+      // 如果鼠标靠近或移动，隐藏提示；否则显示
+      if (isNearCenter || mouse.x !== -9999) {
+        interactionHint.style.opacity = '0';
+      } else {
+        interactionHint.style.opacity = '0.8';
+      }
+    }
   }
 
   function animate() {
@@ -422,6 +470,7 @@
   async function start() {
     initScene();
     createParticleSystem();
+    createInteractionHint();
     animate();
 
     log("初始化...");
