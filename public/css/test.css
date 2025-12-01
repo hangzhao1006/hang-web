@@ -260,7 +260,7 @@ header h1 {
   font-size: 0.9rem;
   font-family: 'Courier New', monospace;
   opacity: 0.6;
-  max-width: 400px;
+  max-width: 1000px;
 }
 
 /* --- 3.5. Particle Project Title (独立层，不受 canvas 影响) --- */
@@ -280,11 +280,11 @@ header h1 {
 /* 粒子交互提示的闪烁动画 */
 @keyframes clickHint {
   0%, 100% {
-    opacity: 0.3;
+    opacity: 0.2;
     transform: translate(-50%, -50%) scale(0.9);
   }
   50% {
-    opacity: 1;
+    opacity: 0.6;
     transform: translate(-50%, -50%) scale(1.1);
   }
 }
