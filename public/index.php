@@ -96,15 +96,15 @@ $bodyClass = 'bg-' . $bgStyle;
     <div class="hero-sub">
       Creating across interaction, visual systems, and computational art
     </div>
-  </div>
 
-  <!-- 5. Particle Project Title (只在 compact 模式显示) -->
-  <?php if ($bgStyle === 'compact'): ?>
-    <div id="particle-project-title" class="particle-project-title">
-      <h2></h2>
-      <p>click to start</p>
-    </div>
-  <?php endif; ?>
+    <!-- Particle Project Title (只在 compact 模式显示) -->
+    <?php if ($bgStyle === 'compact'): ?>
+      <div id="particle-project-title" class="particle-project-title">
+        <h2></h2>
+        <p>click to start</p>
+      </div>
+    <?php endif; ?>
+  </div>
 
   <!-- 5. 网格系统 -->
   <div class="glass-grid">

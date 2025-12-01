@@ -257,17 +257,15 @@ header h1 {
 
 /* --- 3.5. Particle Project Title (独立层，不受 canvas 影响) --- */
 .particle-project-title {
-  position: fixed;
-  top: 50%;
+  position: absolute;
+  bottom: 80px;
   left: 60px;
-  transform: translateY(-50%);
   z-index: 60;
   /* 高于 canvas，低于 UI layer */
   pointer-events: auto;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.6s ease;
-  margin-top: 40px;
 }
 
 .particle-project-title h2 {
@@ -340,6 +338,7 @@ header h1 {
   border-top: 1px solid var(--border-color);
   border-left: 1px solid var(--border-color);
   background-color: #000000;
+  pointer-events: none; /* 让点击穿透到下层的 canvas */
 }
 
 .grid-item {
@@ -355,7 +354,8 @@ header h1 {
   align-items: center;
   text-align: center;
   overflow: hidden;
-
+  opacity: 0.3;
+  pointer-events: auto; /* grid-item 本身恢复点击 */
 }
 
 /* .grid-item {
