@@ -54,7 +54,7 @@ body.bg-compact .reflection-layer {
   overflow: hidden;
   z-index: 5;
   /* 提高 z-index 讓粒子在 hero 文字之下但在背景之上 */
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
 }
 
 /* 動態背景容器（預留給 JS） */
@@ -225,7 +225,7 @@ header h1 {
   padding-left: 60px;
   z-index: 10;
   pointer-events: none;
-  border: 1px solid #f5f5f5;
+  /* border: 1px solid #f5f5f5; */
 }
 
 .hero-text {

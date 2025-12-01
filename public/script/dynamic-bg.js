@@ -50,7 +50,7 @@
     brightnessBoost: 1.3,
 
     // --- 3D 設定 ---
-    zDepthStrength: 100,
+    zDepthStrength: 140,
     zRandomness: 10,
 
     // --- 【關鍵修改 1：極限慢速背景】 ---
@@ -60,7 +60,7 @@
     // --- 透鏡設定 ---
     lensRadius: 220,
     lensMag: 0.15,
-    lensSnap: 0.08,         // 放大鏡抓取的速度 (這可以稍微快一點點，才有互動感)
+    lensSnap: 0.09,         // 放大鏡抓取的速度 (這可以稍微快一點點，才有互動感)
 
     // --- 物理設定 ---
     friction: 0.95          // 高阻力，防止任何抖動
