@@ -19,6 +19,14 @@ html {
   overflow-x: hidden;
 }
 
+/* Index 页面使用系统默认鼠标 */
+body.bg-compact,
+body.bg-compact *,
+body.bg-full,
+body.bg-full * {
+  cursor: default !important;
+}
+
 /* --- 1. 全局背景层 (SVG 扭曲版) --- */
 /* Full background style - 原有的全屏背景 */
 body.bg-full .reflection-layer {
@@ -332,8 +340,6 @@ header h1 {
   position: relative;
   z-index: 8;
   /* 降低到 hero section 之下，避免遮挡粒子效果区域 */
-  margin-top: 70vh;
-  /* 从 hero section 之后开始，避免遮挡上方区域 */
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100vw;
