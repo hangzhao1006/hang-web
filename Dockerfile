@@ -15,13 +15,17 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_sqlite gd
 
 # 4. 设置工作目录
-WORKDIR /app
+WORKDIR /opt/render/project/src
 
 # 5. 拷贝项目全部文件到容器
-COPY . /app
+COPY . /opt/render/project/src
 
-# 6. 暴露 Render 默认端口（可选）
+# 6. 确保 uploads 目录存在并有正确权限
+RUN mkdir -p /opt/render/project/src/public/uploads \
+    && chmod -R 755 /opt/render/project/src/public/uploads
+
+# 7. 暴露 Render 默认端口
 EXPOSE 10000
 
-# 7. 启动 PHP 内置服务器，public 为站点根目录
+# 8. 启动 PHP 内置服务器，public 为站点根目录
 CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-10000} -t public"]
