@@ -4,6 +4,15 @@ const bg = document.getElementById('bg-layer');
 const cursorWrapper = document.getElementById('cursor-wrapper');
 const cursorMain = document.querySelector('.cursor-main');
 
+// 检测是否为 index 页面（通过 body class 中是否包含 bg-compact 或 bg-full）
+const isIndexPage = document.body.classList.contains('bg-compact') || document.body.classList.contains('bg-full');
+
+// 在 index 页面隐藏自定义鼠标，使用系统默认鼠标
+if (isIndexPage && cursorWrapper) {
+  cursorWrapper.style.display = 'none';
+  document.body.style.cursor = 'default';
+}
+
 // Image loading handler for project covers
 document.addEventListener('DOMContentLoaded', () => {
   const projectCovers = document.querySelectorAll('.project-cover');
@@ -22,14 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 1. 鼠标移动与视差 (保持不变)
+// 1. 鼠标移动与视差
 document.addEventListener('mousemove', (e) => {
   const x = e.clientX;
   const y = e.clientY;
 
-  if (cursorWrapper) {
+  // 只在非 index 页面显示自定义鼠标
+  if (!isIndexPage && cursorWrapper) {
     cursorWrapper.style.transform = `translate(${x}px, ${y}px)`;
   }
+
   if (bg) {
     const bgX = (x / window.innerWidth) * -20;
     const bgY = (y / window.innerHeight) * -20;
@@ -37,13 +48,15 @@ document.addEventListener('mousemove', (e) => {
   }
 });
 
-// 点击反馈
-document.addEventListener('mousedown', () => {
-  if (cursorMain) cursorMain.style.transform = 'scale(0.9)';
-});
-document.addEventListener('mouseup', () => {
-  if (cursorMain) cursorMain.style.transform = 'scale(1)';
-});
+// 点击反馈 - 只在非 index 页面
+if (!isIndexPage) {
+  document.addEventListener('mousedown', () => {
+    if (cursorMain) cursorMain.style.transform = 'scale(0.9)';
+  });
+  document.addEventListener('mouseup', () => {
+    if (cursorMain) cursorMain.style.transform = 'scale(1)';
+  });
+}
 
 // --- 2. 无缝循环画廊 (Infinite Gallery Slider) ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -263,4 +276,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   animate();
+});
+
+// --- 3. Mobile Navigation Toggle ---
+document.addEventListener('DOMContentLoaded', () => {
+  const mobileToggle = document.querySelector('.mobile-nav-toggle');
+  const mobileMenu = document.querySelector('.mobile-nav-menu');
+  const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+
+  if (mobileToggle && mobileMenu && mobileOverlay) {
+    function toggleMobileNav() {
+      mobileToggle.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      mobileOverlay.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    }
+
+    mobileToggle.addEventListener('click', toggleMobileNav);
+    mobileOverlay.addEventListener('click', toggleMobileNav);
+
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', toggleMobileNav);
+    });
+  }
 });
