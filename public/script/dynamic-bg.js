@@ -433,14 +433,24 @@
       pointCloud.rotation.x = Math.cos(time * 0.3) * 0.01;
     }
 
-    // 控制交互提示的显示/隐藏
+    // 控制交互提示的显示/隐藏 - 基于鼠标与提示圈的距离
     if (interactionHint) {
-      // 检查鼠标是否靠近粒子中心（距离阈值）
-      const centerDistSq = mouse.x * mouse.x + mouse.y * mouse.y;
-      const isNearCenter = centerDistSq < (CONFIG.lensRadius * 3) ** 2;
+      // 计算提示圈在屏幕上的实际位置
+      const hintScreenX = window.innerWidth * (50 + CONFIG.layoutShiftX * 100) / 100;
+      const hintScreenY = window.innerHeight * (50 - CONFIG.layoutShiftY * 100) / 100;
 
-      // 如果鼠标靠近或移动，隐藏提示；否则显示
-      if (isNearCenter || mouse.x !== -9999) {
+      // 将鼠标的世界坐标转换回屏幕坐标进行距离判断
+      // 使用原始鼠标位置而不是 Three.js 坐标
+      const lastMouseX = window.lastMouseX || -9999;
+      const lastMouseY = window.lastMouseY || -9999;
+
+      // 计算鼠标到提示圈中心的距离
+      const dx = lastMouseX - hintScreenX;
+      const dy = lastMouseY - hintScreenY;
+      const distToHint = Math.sqrt(dx * dx + dy * dy);
+
+      // 如果鼠标在提示圈附近（150px范围内），隐藏提示
+      if (distToHint < 150 && lastMouseX !== -9999) {
         interactionHint.style.opacity = '0';
       } else {
         interactionHint.style.opacity = '0.8';
@@ -455,6 +465,10 @@
   }
 
   function onMouseMove(e) {
+    // 保存原始鼠标屏幕坐标，用于提示圈的显示/隐藏判断
+    window.lastMouseX = e.clientX;
+    window.lastMouseY = e.clientY;
+
     // 使用整個視窗座標（和 main.js 一樣）
     const v = new THREE.Vector3(
       (e.clientX / innerWidth) * 2 - 1,
