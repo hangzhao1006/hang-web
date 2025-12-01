@@ -82,7 +82,7 @@
     lensSnap: 0.08,
 
     // --- 物理設定 ---
-    friction: 0.98
+    friction: 0.94
   };
 
   let scene, camera, renderer, pointCloud;
