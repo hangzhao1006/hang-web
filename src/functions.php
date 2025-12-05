@@ -142,9 +142,16 @@ function create_project(array $data): int
 
 function update_project(int $id, array $data): void {
   $pdo = get_pdo();
+
+  // 如果没有提供 order_index，保持原有值
+  if (!isset($data['order_index'])) {
+    $current = find_project_by_id_or_slug($id);
+    $data['order_index'] = $current['order_index'] ?? 0;
+  }
+
   $stmt = $pdo->prepare("UPDATE projects SET title=:title, slug=:slug, description=:description, tags=:tags, image_url=:image_url, gallery_json=:gallery_json, url=:url, meta_json=:meta_json, year=:year, month=:month, featured=:featured, order_index=:order_index, updated_at=:updated_at WHERE id=:id");
   $stmt->execute([
-    ':title' => $data['title'], ':slug' => $data['slug'] ?: slugify($data['title']), ':description' => $data['description'] ?? '', ':tags' => $data['tags'] ?? '', ':image_url' => $data['image_url'] ?? '', ':gallery_json' => isset($data['gallery']) ? json_encode($data['gallery']) : '[]', ':meta_json' => isset($data['meta']) ? json_encode($data['meta']) : '{}', ':url' => $data['url'] ?? '', ':year' => norm_year($data['year'] ?? null), ':month' => norm_month($data['month'] ?? null), ':featured' => !empty($data['featured']) ? 1 : 0, ':order_index' => (int)($data['order_index'] ?? 0), ':updated_at' => now(), ':id' => $id
+    ':title' => $data['title'], ':slug' => $data['slug'] ?: slugify($data['title']), ':description' => $data['description'] ?? '', ':tags' => $data['tags'] ?? '', ':image_url' => $data['image_url'] ?? '', ':gallery_json' => isset($data['gallery']) ? json_encode($data['gallery']) : '[]', ':meta_json' => isset($data['meta']) ? json_encode($data['meta']) : '{}', ':url' => $data['url'] ?? '', ':year' => norm_year($data['year'] ?? null), ':month' => norm_month($data['month'] ?? null), ':featured' => !empty($data['featured']) ? 1 : 0, ':order_index' => (int)($data['order_index']), ':updated_at' => now(), ':id' => $id
   ]);
 }
 

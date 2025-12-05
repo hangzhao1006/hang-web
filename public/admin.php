@@ -295,7 +295,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
                   <input type="hidden" name="hero_fields_json" id="hero-fields-input-<?= $p['id'] ?>"
                     value="<?= $heroFieldsJson ?>">
                   <div class="add-block-bar">
-                    <button type="button" class="add-block-btn" onclick="addHeroField(<?= $p['id'] ?>)">+ Add Hero Field</button>
+                    <button type="button" class="add-block-btn" onclick="addHeroField(<?= $p['id'] ?>, event)">+ Add Hero Field</button>
                   </div>
                 </div>
 
@@ -308,13 +308,13 @@ $projects = $is_logged_in ? get_projects(false) : [];
                   <input type="hidden" name="content_blocks_json" id="blocks-input-<?= $p['id'] ?>"
                     value="<?= $blocksJson ?>">
                   <div class="add-block-bar">
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'text')">Text
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'text', null, event)">Text
                       Group</button>
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image')">Image</button>
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'video')">Video</button>
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image_grid')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">📸 Image Grid</button>
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'gallery')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">🎞️ Gallery</button>
-                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'two_column')" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">📱 Two Column</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image', null, event)">Image</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'video', null, event)">Video</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'image_grid', null, event)" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">📸 Image Grid</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'gallery', null, event)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">🎞️ Gallery</button>
+                    <button type="button" class="add-block-btn" onclick="addBlock(<?= $p['id'] ?>, 'two_column', null, event)" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">📱 Two Column</button>
                   </div>
                   <div class="help-text" style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-left: 3px solid #667eea; border-radius: 4px; font-size: 0.85rem;">
                     <strong>🆕 Image Grid:</strong> Create flexible photo layouts. Use <code>grid_layout</code>: "2x2", "3x1", "custom". For custom grids, set <code>width</code> and <code>height</code> in each image object.
@@ -399,7 +399,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
                   <input type="hidden" name="gallery_json_str" id="gallery-input-<?= $p['id'] ?>"
                     value="<?= htmlspecialchars($galleryJson) ?>">
                   <div class="add-block-bar">
-                    <button type="button" class="add-block-btn" onclick="addGalleryItem(<?= $p['id'] ?>)">+ Add
+                    <button type="button" class="add-block-btn" onclick="addGalleryItem(<?= $p['id'] ?>, event)">+ Add
                       Image</button>
                   </div>
                 </div>

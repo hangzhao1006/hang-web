@@ -110,7 +110,13 @@ function switchTab(id, tabName) {
 }
 
 // ====== BLOCK LOGIC ======
-function addBlock(id, type, insertAtIndex = null) {
+function addBlock(id, type, insertAtIndex = null, event = null) {
+  // 防止事件冒泡
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   if (!projectBlocks[id]) projectBlocks[id] = [];
   const newBlock = { type, id: Date.now() };
 
@@ -231,7 +237,13 @@ function syncBlocksJson(pid) {
 }
 
 // ====== GALLERY LOGIC ======
-function addGalleryItem(id) {
+function addGalleryItem(id, event) {
+  // 防止事件冒泡
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   if (!projectGalleries[id]) projectGalleries[id] = [];
   projectGalleries[id].push({
     src: '',
@@ -261,6 +273,9 @@ function syncGalleryJson(pid) {
   if (!input) return;
   input.value = JSON.stringify(projectGalleries[pid] || []);
 }
+
+// Store Sortable instances to avoid creating duplicates
+const gallerySortables = {};
 
 function renderGallery(id) {
   const container = document.getElementById('gallery-list-' + id);
@@ -310,8 +325,9 @@ function renderGallery(id) {
 
   syncGalleryJson(id);
 
-  if (typeof Sortable !== 'undefined') {
-    new Sortable(container, {
+  // Only create Sortable once per gallery
+  if (typeof Sortable !== 'undefined' && !gallerySortables[id]) {
+    gallerySortables[id] = new Sortable(container, {
       animation: 150,
       onEnd: function (evt) {
         const item = projectGalleries[id].splice(evt.oldIndex, 1)[0];
@@ -337,6 +353,14 @@ function resetGalleryToOriginal(pid, idx) {
 function renderBlocks(id) {
   const container = document.getElementById('blocks-container-' + id);
   if (!container) return;
+
+  // Save collapse states before re-rendering
+  const collapsedStates = {};
+  container.querySelectorAll('.content-block-item').forEach((blockEl, idx) => {
+    if (blockEl.classList.contains('collapsed')) {
+      collapsedStates[idx] = true;
+    }
+  });
 
   container.innerHTML = '';
 
@@ -771,6 +795,13 @@ function renderBlocks(id) {
   });
 
   syncBlocksJson(id);
+
+  // Restore collapse states after re-rendering
+  container.querySelectorAll('.content-block-item').forEach((blockEl, idx) => {
+    if (collapsedStates[idx]) {
+      blockEl.classList.add('collapsed');
+    }
+  });
 
   if (typeof Sortable !== 'undefined') {
     new Sortable(container, {
@@ -1362,7 +1393,13 @@ function showSlide(sliderId, index) {
 // ====== HERO FIELDS MANAGEMENT ======
 const projectHeroFields = {};
 
-function addHeroField(pid) {
+function addHeroField(pid, event) {
+  // 防止事件冒泡
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   if (!projectHeroFields[pid]) {
     const raw = document.getElementById('hero-fields-input-' + pid)?.value || '[]';
     try {

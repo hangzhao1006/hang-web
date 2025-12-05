@@ -47,10 +47,12 @@
     { image: '/uploads/2.1.JPG', title: 'Ehoura', slug: 'ehoura' },
     { image: '/uploads/3.10.PNG', title: 'SerenEcho', slug: 'serenecho' },
     { image: '/uploads/4.2.JPG', title: 'Symbiophony', slug: 'symbiophony' },
+    { image: '/uploads/skinme.png', title: 'SkinMe', slug: 'skinme' },
     { image: '/uploads/shadow.png', title: 'ShadowPlay', slug: 'shadowplay' },
     { image: '/uploads/5.2.jpg', title: 'SeePal', slug: 'seepal' },
     { image: '/uploads/7.1.png', title: 'TideEcho', slug: 'tideecho' },
-    { image: '/uploads/model/1.png', title: 'Model', slug: 'model' }
+    { image: '/uploads/model/1.png', title: 'Model', slug: 'model' },
+    { image: '/uploads/song2.png', title: 'Song', slug: 'song' }
   ];
 
   const CONFIG = {

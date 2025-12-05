@@ -145,7 +145,6 @@ $bodyClass = 'bg-' . $bgStyle;
     <?php endforeach; ?>
 
     <div class="grid-item"></div>
-    <div class="grid-item"></div>
     <!-- <div class="grid-item"></div> -->
 
   </div>
