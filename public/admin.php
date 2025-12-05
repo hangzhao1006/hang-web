@@ -53,6 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 
+  if ($act === 'reorder' && $is_logged_in) {
+    require_csrf();
+    $orderMap = json_decode($_POST['order_map'] ?? '{}', true);
+    if (is_array($orderMap)) {
+      update_project_orders($orderMap);
+      echo json_encode(['ok' => true]);
+      exit;
+    }
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Invalid order map']);
+    exit;
+  }
+
   if ($is_logged_in && in_array($act, ['create', 'update', 'delete'], true)) {
     require_csrf();
 
@@ -178,6 +191,10 @@ $projects = $is_logged_in ? get_projects(false) : [];
         <button class="btn-primary"
           onclick="document.getElementById('create-form').classList.toggle('hidden')">+ New Project</button>
 
+        <button class="btn-primary" id="sort-toggle-btn" onclick="toggleSortMode()" style="background: #667eea;">
+          <span id="sort-icon">⇅</span> Sort Projects
+        </button>
+
         <!-- 背景切換器 -->
         <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
           <label style="font-size: 0.9rem; color: #666;">背景樣式：</label>
@@ -188,6 +205,12 @@ $projects = $is_logged_in ? get_projects(false) : [];
           </select>
           <span id="bg-status" style="font-size: 0.8rem; color: #28a745;"></span>
         </div>
+      </div>
+
+      <div id="sort-hint" class="sort-hint hidden">
+        <span>🔄 拖拽項目卡片來調整順序</span>
+        <button class="btn-primary" onclick="saveSortOrder()">✓ 保存排序</button>
+        <button class="btn-text" onclick="cancelSortMode()">取消</button>
       </div>
       <div id="create-form" class="editor-card hidden">
         <div class="card-body">

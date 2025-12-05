@@ -1613,3 +1613,54 @@ input[type=range]::-webkit-slider-runnable-track {
 .content-block-item .block-handle:active {
   cursor: grabbing;
 }
+
+/* ================================
+   Project Sorting Styles
+   ================================ */
+
+.sort-hint {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sort-hint span {
+  flex: 1;
+  font-weight: 500;
+}
+
+.sort-hint button {
+  margin: 0;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
+  background: #f0f0f0;
+}
+
+.sortable-chosen {
+  cursor: grabbing !important;
+}
+
+.sortable-drag {
+  opacity: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}

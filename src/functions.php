@@ -155,6 +155,20 @@ function delete_project(int $id): void
   $stmt->execute([':id' => $id]);
 }
 
+// 批量更新项目排序
+function update_project_orders(array $orderMap): void
+{
+  $pdo = get_pdo();
+  $stmt = $pdo->prepare("UPDATE projects SET order_index = :order_index WHERE id = :id");
+
+  foreach ($orderMap as $id => $order) {
+    $stmt->execute([
+      ':id' => (int) $id,
+      ':order_index' => (int) $order
+    ]);
+  }
+}
+
 // 查询
 function get_projects(bool $only_featured = false): array
 {

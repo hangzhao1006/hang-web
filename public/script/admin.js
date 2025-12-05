@@ -1476,3 +1476,134 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 });
 
+// ====== Project Sorting Feature ======
+let sortableInstance = null;
+let isSortMode = false;
+let originalOrder = [];
+
+function toggleSortMode() {
+  isSortMode = !isSortMode;
+  const projectList = document.querySelector('.project-list');
+  const sortHint = document.getElementById('sort-hint');
+  const sortBtn = document.getElementById('sort-toggle-btn');
+  const sortIcon = document.getElementById('sort-icon');
+
+  if (isSortMode) {
+    // Enter sort mode
+    sortHint.classList.remove('hidden');
+    sortBtn.style.background = '#f5576c';
+    sortIcon.textContent = '✕';
+
+    // Collapse all cards
+    document.querySelectorAll('.editor-card').forEach(card => {
+      card.classList.add('collapsed');
+    });
+
+    // Save original order
+    originalOrder = Array.from(projectList.children).map(card => card.id);
+
+    // Initialize SortableJS
+    sortableInstance = Sortable.create(projectList, {
+      animation: 150,
+      handle: '.card-header',
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag'
+    });
+  } else {
+    // Exit sort mode
+    cancelSortMode();
+  }
+}
+
+function cancelSortMode() {
+  isSortMode = false;
+  const sortHint = document.getElementById('sort-hint');
+  const sortBtn = document.getElementById('sort-toggle-btn');
+  const sortIcon = document.getElementById('sort-icon');
+
+  sortHint.classList.add('hidden');
+  sortBtn.style.background = '#667eea';
+  sortIcon.textContent = '⇅';
+
+  if (sortableInstance) {
+    sortableInstance.destroy();
+    sortableInstance = null;
+  }
+
+  // Restore original order if not saved
+  if (originalOrder.length > 0) {
+    const projectList = document.querySelector('.project-list');
+    originalOrder.forEach(id => {
+      const card = document.getElementById(id);
+      if (card) projectList.appendChild(card);
+    });
+  }
+}
+
+async function saveSortOrder() {
+  const projectList = document.querySelector('.project-list');
+  const cards = Array.from(projectList.children);
+
+  // Build order map: { project_id: order_index }
+  const orderMap = {};
+  cards.forEach((card, index) => {
+    const projectId = card.id.replace('project-', '');
+    // Higher index = higher priority (reverse order since we display newest first)
+    orderMap[projectId] = cards.length - index;
+  });
+
+  try {
+    const csrfToken = document.querySelector('input[name="csrf"]')?.value || '';
+
+    const response = await fetch('admin.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        action: 'reorder',
+        csrf: csrfToken,
+        order_map: JSON.stringify(orderMap)
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      // Success - exit sort mode
+      isSortMode = false;
+      const sortHint = document.getElementById('sort-hint');
+      const sortBtn = document.getElementById('sort-toggle-btn');
+      const sortIcon = document.getElementById('sort-icon');
+
+      sortHint.classList.add('hidden');
+      sortBtn.style.background = '#667eea';
+      sortIcon.textContent = '⇅';
+
+      if (sortableInstance) {
+        sortableInstance.destroy();
+        sortableInstance = null;
+      }
+
+      // Show success message
+      const statusEl = document.getElementById('bg-status');
+      if (statusEl) {
+        statusEl.textContent = '✓ 排序已保存';
+        statusEl.style.color = '#28a745';
+        setTimeout(() => {
+          statusEl.textContent = '';
+        }, 2000);
+      }
+
+      // Update original order
+      originalOrder = Array.from(projectList.children).map(card => card.id);
+    } else {
+      throw new Error(data.error || 'Failed to save order');
+    }
+  } catch (error) {
+    console.error('Failed to save sort order:', error);
+    alert('保存排序失敗: ' + error.message);
+  }
+}
+
