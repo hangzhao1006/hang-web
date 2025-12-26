@@ -47,7 +47,7 @@
     { image: '/uploads/2.1.JPG', title: 'Ehoura', slug: 'ehoura' },
     { image: '/uploads/3.10.PNG', title: 'SerenEcho', slug: 'serenecho' },
     { image: '/uploads/4.2.JPG', title: 'Symbiophony', slug: 'symbiophony' },
-    { image: '/uploads/skinme.png', title: 'SkinMe', slug: 'skinme' },
+    { image: '/uploads/skinmecover.png', title: 'SkinMe', slug: 'skinme' },
     { image: '/uploads/shadow.png', title: 'ShadowPlay', slug: 'shadowplay' },
     { image: '/uploads/5.2.jpg', title: 'SeePal', slug: 'seepal' },
     { image: '/uploads/7.1.png', title: 'TideEcho', slug: 'tideecho' },
