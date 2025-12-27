@@ -42,7 +42,7 @@
 
   // 1. 項目資料（圖片 + 項目資訊）
   const PROJECTS = [
-    { image: '/uploads/j/h4q-crop.jpg', title: 'Units, Joints, Forms', slug: 'joint-optimization' },
+    { image: '/uploads/l1 copy.png', title: 'LightScale', slug: 'joint-optimization' },
     { image: '/uploads/tuchsure/1.4.JPG', title: 'Techsure', slug: 'tuchsure' },
     { image: '/uploads/2.1.JPG', title: 'Ehoura', slug: 'ehoura' },
     { image: '/uploads/3.10.PNG', title: 'SerenEcho', slug: 'serenecho' },
