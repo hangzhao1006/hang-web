@@ -91,7 +91,8 @@ $bodyClass = 'bg-' . $bgStyle;
   <div class="hero-section">
     <div class="hero-text">
       I create AI Systems <br>
-      for <span class="highlight">Interaction, Sensing</span> and<span class="highlight">Real-World Experience</span>.
+      for <span class="highlight">Interaction, Sensing <br>
+      </span> and <span class="highlight">Real-World Experience</span>.
     </div>
     <div class="hero-sub">
       Multimodal AI · ML Systems · Edge AI · Embedded Sensing · Full-Stack Prototyping
