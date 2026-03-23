@@ -90,8 +90,8 @@ $bodyClass = 'bg-' . $bgStyle;
   <!-- 4. Hero 区域 -->
   <div class="hero-section">
     <div class="hero-text">
-      I create digital <br>
-      <span class="highlight">experiences</span> & visual <span class="highlight">narratives</span>.
+      I create AI Systems <br>
+      for <span class="highlight">Interaction, Sensing</span> and<span class="highlight">Real-World Experience</span>.
     </div>
     <div class="hero-sub">
       Creating across interaction, visual systems, and computational art
