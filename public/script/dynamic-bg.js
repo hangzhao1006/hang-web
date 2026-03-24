@@ -42,7 +42,7 @@
 
   // 1. 項目資料（圖片 + 項目資訊）
   const PROJECTS = [
-    { image: '/uploads/l1 copy.png', title: 'LightScale', slug: 'joint-optimization' },
+    { image: '/uploads/lightscale-crop.jpg', title: 'LightScale', slug: 'joint-optimization' },
     { image: '/uploads/tuchsure/1.4.JPG', title: 'Techsure', slug: 'tuchsure' },
     { image: '/uploads/2.1.JPG', title: 'Ehoura', slug: 'ehoura' },
     { image: '/uploads/3.10.PNG', title: 'SerenEcho', slug: 'serenecho' },
@@ -51,8 +51,8 @@
     { image: '/uploads/shadow.png', title: 'ShadowPlay', slug: 'shadowplay' },
     { image: '/uploads/5.2.jpg', title: 'SeePal', slug: 'seepal' },
     { image: '/uploads/7.1.png', title: 'TideEcho', slug: 'tideecho' },
-    { image: '/uploads/model/1.png', title: 'Model', slug: 'model' },
-    { image: '/uploads/song2.png', title: 'Song', slug: 'song' }
+    { image: '/uploads/model/1.png', title: 'Model', slug: 'model' }//,
+    //{ image: '/uploads/song2.png', title: 'Song', slug: 'song' }
   ];
 
   const CONFIG = {
