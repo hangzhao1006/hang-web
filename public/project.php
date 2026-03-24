@@ -71,7 +71,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <header class="project-header is-dark">
         <!-- h1：和 index.php 一模一样 -->
         <h1>
-            <img src="/uploads/logo.svg" alt="Hang Zhao Logo" class="header-logo">
+            <img src="/logo.svg" alt="Hang Zhao Logo" class="header-logo">
             <span><?= htmlspecialchars($config['site_name']) ?></span>
         </h1>
 
@@ -457,7 +457,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
     <footer class="project-footer">
         <p>© <?= date(format: 'Y') ?> <?= h($config['site_name']) ?>, All Rights Reserved.</p>
-        <img src="/uploads/logo.svg" class="footer-logo">
+        <img src="/logo.svg" class="footer-logo">
     </footer>
     <script src="script/test.js"></script>
     <script src="script/project.js?v=<?= time() ?>"></script>

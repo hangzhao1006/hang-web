@@ -2,14 +2,14 @@
 
 @font-face {
   font-family: 'Intrepid';
-  src: url('/uploads/Intrepid.ttf') format('truetype');
+  src: url('/fonts/Intrepid.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Jost';
-  src: url('/uploads/Jost/Jost-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/Jost/Jost-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
