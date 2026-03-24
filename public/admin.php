@@ -282,8 +282,8 @@ $projects = $is_logged_in ? get_projects(false) : [];
                     <div class="form-group full"><label>Tools (comma-separated)</label><input name="meta_tool"
                         value="<?= htmlspecialchars($meta['tool'] ?? '') ?>" placeholder="e.g. Python, OpenCV, Blender">
                     </div>
-                    <div class="form-group full"><label>Client</label><input name="meta_client"
-                        value="<?= htmlspecialchars($meta['client'] ?? '') ?>"></div>
+                    <div class="form-group full"><label>Client</label><textarea name="meta_client"
+                        rows="3" style="resize:vertical;"><?= htmlspecialchars($meta['client'] ?? '') ?></textarea></div>
                     <div class="form-group full"><label>Tags</label><input name="tags"
                         value="<?= htmlspecialchars($p['tags']) ?>"></div>
                     <div class="form-group full"><label class="checkbox-label"><input type="checkbox" name="featured"

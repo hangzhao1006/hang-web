@@ -155,7 +155,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                     ?>
                 </span>
             </div>
-            <div class="hud-item context"><label>Context</label><span><?= h(g('client')) ?></span></div>
+            <div class="hud-item context"><label>Context</label><span><?= nl2br(h(g('client'))) ?></span></div>
 
             <?php
             // 动态渲染自定义 hero 字段
