@@ -2,3 +2,9 @@
 **/test
 .test
 fly.toml
+.git
+data/
+test/
+tools/
+*.sqlite
+*.db
