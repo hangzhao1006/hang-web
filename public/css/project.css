@@ -23,13 +23,20 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+  font-weight: 300 700;
+  font-style: normal;
+}
+
 html,
 body {
     margin: 0;
     padding: 0;
     width: 100%;
     min-height: 100%;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     cursor: none;
     overflow-x: hidden;
 }
@@ -627,9 +634,9 @@ body:has(.hero-style-professional) .project-header .header-logo {
 .hud-item label {
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: #888;
+    color: #b3b3b3;
     margin-bottom: 8px;
-    font-family: monospace;
+    font-family: 'Archivo Black', sans-serif;
 }
 
 .hud-item span {
@@ -737,10 +744,10 @@ body:has(.hero-style-professional) .project-header .header-logo {
 }
 
 .row-label {
-    font-family: monospace;
+    font-family: 'Archivo Black', sans-serif;
     font-size: 1rem;
     text-transform: uppercase;
-    color: #999;
+    color: #b3b3b3;
     position: sticky;
     top: 40px;
     height: fit-content;
@@ -760,7 +767,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 } */
 
 .content-subtitle {
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     color: #000;
@@ -785,11 +792,33 @@ body:has(.hero-style-professional) .project-header .header-logo {
 }
 
 .lead-text p {
+    font-family: 'Quicksand', sans-serif;
     font-size: 1.1rem;
     line-height: 1.6;
     font-weight: 400;
     color: #111;
     letter-spacing: 0;
+}
+
+.content-markdown,
+.content-markdown p,
+.content-markdown li,
+.content-markdown h1,
+.content-markdown h2,
+.content-markdown h3,
+.content-markdown h4 {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.row-content p,
+.row-content li,
+.row-content h1,
+.row-content h2,
+.row-content h3,
+.row-content h4,
+.row-content ul,
+.row-content ol {
+    font-family: 'Quicksand', sans-serif;
 }
 
 .row-content ul {
