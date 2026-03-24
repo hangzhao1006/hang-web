@@ -641,7 +641,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 .hud-item span {
     font-size: 1rem;
-    font-family: monospace, 'Courier New', Courier;
+    font-family: 'Quicksand', sans-serif;
     font-weight: 500;
     color: #000;
 }
@@ -660,7 +660,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
     overflow: hidden;
     border-radius: 20px;
     font-size: 0.85rem;
-    font-family: monospace, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-weight: 500;
     color: #111;
     transition: all 0.3s ease;
