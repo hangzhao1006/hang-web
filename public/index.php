@@ -90,11 +90,12 @@ $bodyClass = 'bg-' . $bgStyle;
   <!-- 4. Hero 区域 -->
   <div class="hero-section">
     <div class="hero-text">
-      I create digital <br>
-      <span class="highlight">experiences</span> & visual <span class="highlight">narratives</span>.
+      I create AI Systems <br>
+      for <span class="highlight">Interaction, Sensing <br>
+      </span> and <span class="highlight">Real-World Experience</span>.
     </div>
     <div class="hero-sub">
-      Creating across interaction, visual systems, and computational art
+      Multimodal AI · ML Systems · Edge AI · Embedded Sensing · Full-Stack Prototyping
     </div>
 
     <!-- Particle Project Title (只在 compact 模式显示) -->
