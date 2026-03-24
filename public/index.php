@@ -19,6 +19,7 @@ $bodyClass = 'bg-' . $bgStyle;
   <meta charset="utf-8">
   <title><?= htmlspecialchars($config['site_name']) ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/uploads/logo.svg">
   <link rel="stylesheet" href="css/test.css">
 </head>
 
