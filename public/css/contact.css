@@ -1,5 +1,12 @@
 /* css/contact.css */
 
+@font-face {
+  font-family: 'Jost';
+  src: url('/uploads/Jost/Jost-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 /* --- 1. 全局白底设定 --- */
 .contact-page {
     background-color: #ffffff !important;
@@ -37,7 +44,10 @@
 .back-link {
     color: #000;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-family: 'Intrepid', sans-serif;
+    font-size: 1.2rem;
+    font-weight: normal;
+    letter-spacing: 2px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;

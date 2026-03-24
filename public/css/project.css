@@ -2,6 +2,27 @@
    Project Page Global Setup
    ================================ */
 
+@font-face {
+  font-family: 'Intrepid';
+  src: url('/uploads/Intrepid.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url('/uploads/Jost/Jost-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('/uploads/Archivo_Black/ArchivoBlack-Regular.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
 html,
 body {
     margin: 0;
@@ -165,11 +186,11 @@ body {
 /* 布局保持你原来的样式 */
 .project-header h1 {
     margin: -5px 0 15px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Intrepid', sans-serif;
     font-size: 1.4rem;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -192,10 +213,11 @@ body {
 
 .project-header .nav a {
     margin-left: 30px;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-family: 'Intrepid', sans-serif;
+    font-weight: normal;
+    font-size: 1.2rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     position: relative;
     cursor: none;
 }
@@ -255,10 +277,11 @@ body {
 /* 顶部导航 */
 .nav a {
     margin-left: 30px;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-family: 'Intrepid', sans-serif;
+    font-weight: normal;
+    font-size: 1.2rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     position: relative;
     /* color: #fff; */
     text-decoration: none;
@@ -453,7 +476,8 @@ body {
 }
 
 .title {
-    font-size: 6rem;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 4rem;
     font-weight: 900;
     line-height: 0.95;
     margin: 0 0 20px 0;

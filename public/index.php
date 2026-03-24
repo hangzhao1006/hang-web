@@ -73,7 +73,7 @@ $bodyClass = 'bg-' . $bgStyle;
       <a href="/about.php">About</a>
       <a href="/contact.php">Contact</a>
       <a href="/admin.php">Admin</a>
-      <a href="/demo.php">Demo</a>
+      <!-- <a href="/demo.php">Demo</a> -->
     </nav>
 
     <!-- Filters removed -->
