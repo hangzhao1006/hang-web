@@ -264,6 +264,47 @@ header h1 {
   max-width: 1000px;
 }
 
+/* --- 3.1. Hero 底部磨砂渐变遮罩 --- */
+/* backdrop-filter 不支持渐变，用多层叠加模拟 */
+.hero-frosted-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-frosted-overlay::before,
+.hero-frosted-overlay::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* 下层：底部 33%，最强模糊 */
+.hero-frosted-overlay::before {
+  bottom: 0;
+  height: 33%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(to top, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+}
+
+/* 上层：中间 66%，轻微模糊 */
+.hero-frosted-overlay::after {
+  bottom: 0;
+  height: 66%;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  mask-image: linear-gradient(to top, black 0%, transparent 60%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 60%);
+}
+
 /* --- 3.5. Particle Project Title (独立层，不受 canvas 影响) --- */
 .particle-project-title {
   position: absolute;

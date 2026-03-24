@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// 1.5. 滚动时背景粒子层逐渐模糊
+window.addEventListener('scroll', () => {
+  if (!bg) return;
+  const scrollY = window.scrollY;
+  const heroHeight = window.innerHeight * 0.7; // hero 高度约 70vh
+  const progress = Math.min(scrollY / heroHeight, 1); // 0 → 1
+  const blurAmount = progress * 16; // 最大 16px 模糊
+  bg.style.filter = `blur(${blurAmount}px)`;
+});
+
 // 1. 鼠标移动与视差
 document.addEventListener('mousemove', (e) => {
   const x = e.clientX;
