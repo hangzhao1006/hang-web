@@ -101,28 +101,29 @@ $config = require __DIR__ . '/../src/config.php';
                     <div class="year">2025–Now</div>
                     <div class="details">
                         <strong>Harvard GSD</strong><br>
-                        MDes (Mediums) · Boston
+                        Master in Design Studies(Mediums) · Boston, USA
                     </div>
                 </div>
                 <div class="resume-item">
                     <div class="year">2025–Now</div>
                     <div class="details">
                         <strong>MIT</strong><br>
-                        Cross-registration student in Computer Science & AI & Media Arts and Sciences
+                        Cross-registration student  
+                        Computer Science & AI & Media Arts and Sciences · Boston, USA
                     </div>
                 </div>
                 <div class="resume-item">
                     <div class="year">2020–2025</div>
                     <div class="details">
                         <strong>Tsinghua University</strong><br>
-                        B.F.A. Info Design & B.A. Economics · GPA 3.9/4.0
+                        B.F.A. Information Design & B.A. Economics · GPA 3.9/4.0 · Beijing, China
                     </div>
                 </div>
                 <div class="resume-item">
                     <div class="year">2023–2024</div>
                     <div class="details">
                         <strong>Cornell University</strong><br>
-                        Exchange in Info Sci, Systems & Technology
+                        Exchange in Info Sci, Systems & Technology · Ithaca, USA
                     </div>
                 </div>
             </div>
