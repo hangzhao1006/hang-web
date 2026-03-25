@@ -65,7 +65,7 @@ $config = require __DIR__ . '/../src/config.php';
                     I explore the seam between <strong>assistive technology</strong>, <strong>interactive
                         media</strong>, and <strong>AI-driven sensing</strong>.
                 </p>
-                <p>
+                <p class="lead">
                     I build things you can wear, touch, and hear: from tactile guidance gloves to time-perception
                     devices and data-driven light installations.
                 </p>
@@ -85,12 +85,12 @@ $config = require __DIR__ . '/../src/config.php';
             <div class="block">
                 <h3>Focus</h3>
                 <div class="tags-cloud">
-                    <span>Human–Computer Interaction</span>
-                    <span>Assistive Tech</span>
-                    <span>Wearable Interfaces</span>
-                    <span>Computer Vision on Edge</span>
-                    <span>Haptics/Audio Feedback</span>
-                    <span>Interactive Installations</span>
+                    <span>Multimodal AI  </span>
+                    <span>Full-Stack AI Systems</span>
+                    <span>ML Systems </span>
+                    <span>Embedded Sensing</span>
+                    <span>Computer Vision</span>
+                    <span>Human-Centered AI Systems</span>
                 </div>
             </div>
 
@@ -105,10 +105,17 @@ $config = require __DIR__ . '/../src/config.php';
                     </div>
                 </div>
                 <div class="resume-item">
+                    <div class="year">2025–Now</div>
+                    <div class="details">
+                        <strong>MIT</strong><br>
+                        Cross-registration student in Computer Science & AI & Media Arts and Sciences
+                    </div>
+                </div>
+                <div class="resume-item">
                     <div class="year">2020–2025</div>
                     <div class="details">
                         <strong>Tsinghua University</strong><br>
-                        B.F.A. Info Design & B.A. Economics · GPA 3.87/4.0
+                        B.F.A. Info Design & B.A. Economics · GPA 3.9/4.0
                     </div>
                 </div>
                 <div class="resume-item">
@@ -174,59 +181,50 @@ $config = require __DIR__ . '/../src/config.php';
                 <h3>Skills</h3>
 
                 <div class="skill-row">
+                    <span class="label">AI & ML Systems</span>
+                    <span class="value">
+                        PyTorch, 
+                        RAG Pipelines, 
+                        Vector Databases (Chroma), 
+                        Model Deployment (Vertex AI), 
+                        CI/CD (GitHub Actions), 
+                        Docker & Compose, 
+                        Data Versioning (DVC)
+                    </span>
+                </div>
+
+                <div class="skill-row">
+                    <span class="label">Computer Vision & Edge AI</span>
+                    <span class="value">
+                        OpenCV, CLIP, YOLOv8 Edge Deployment (RK3588 / RKNN), Real-Time Inference
+                    </span>
+                </div>
+
+                <div class="skill-row">
+                    <span class="label">Embedded & Sensing Systems</span>
+                    <span class="value">
+                        ESP32 / Arduino, Sensor Fusion (PPG / GSR / IMU), Wearable Systems, Edge Devices
+                    </span>
+                </div>
+
+                <div class="skill-row">
+                    <span class="label">Full-Stack AI Systems</span>
+                    <span class="value">
+                        JavaScript, React, PHP, SQL / SQLite, API Development
+                    </span>
+                </div>
+
+                <div class="skill-row">
+                    <span class="label">Design & Interaction</span>
+                    <span class="value">
+                        Figma, Blender, Fusion 360, Adobe AE/PR/PS/AI
+                    </span>
+                </div>
+
+                <div class="skill-row">
                     <span class="label">Programming</span>
                     <span class="value">
-                        Python, C++, JavaScript, PHP, SQL/SQLite
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">MLOps</span>
-                    <span class="value">
-                        Containerized ML (Docker & Compose),
-                        Model Deployment on Vertex AI,
-                        GitHub Actions CI/CD,
-                        Vector Databases (Chroma),
-                        RAG Pipelines, Data Versioning (DVC)
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">AI & Vision</span>
-                    <span class="value">
-                        OpenCV, CLIP, Data Visualization, YOLOv8 Edge Deployment (RK3588/RKNN)
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">Computational Design</span>
-                    <span class="value">
-                        Rhino + Grasshopper, Parametric Modeling,
-                        Geometry Optimization, Simulation for Fabrication
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">Design & Media</span>
-                    <span class="value">
-                        Figma (UI/UX), Blender, 360 Fusion,
-                        Adobe AE/PR/PS/AI
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">Fabrication</span>
-                    <span class="value">
-                        3D Printing, CNC (Mastercam),
-                        Laser Cutting, Physical Prototyping
-                    </span>
-                </div>
-
-                <div class="skill-row">
-                    <span class="label">Hardware</span>
-                    <span class="value">
-                        ESP32/Arduino, PPG/GSR/IMU Sensors,
-                        Wearables, Basic PCB Design
+                        Python, C++, R, JavaScript, PHP, SQL/SQLite, HTML, CSS, React
                     </span>
                 </div>
             </div>

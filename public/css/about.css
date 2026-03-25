@@ -7,11 +7,25 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('/fonts/Archivo_Black/ArchivoBlack-Regular.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
 /* --- 1. 全局白底设定 --- */
 .about-page {
     background-color: #ffffff !important;
     color: #111111;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
     cursor: none; /* 保持自定义鼠标 */
@@ -90,7 +104,7 @@
 
 .caption {
     margin-top: 15px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.8rem;
     color: #666;
     text-transform: uppercase;
@@ -98,15 +112,16 @@
 }
 
 .bio-text h1 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-size: 3rem;
-    font-weight: 800;
+    font-weight: 900;
     margin: 0 0 20px 0;
     line-height: 1;
     letter-spacing: -1px;
 }
 
 .bio-text .lead {
+    font-family: 'Quicksand', sans-serif;
     font-size: 1.1rem;
     color: #333;
     margin-bottom: 20px;
@@ -148,7 +163,7 @@
 }
 
 .block h3 {
-    font-family: 'Courier New', monospace;
+    font-family: 'Archivo Black', monospace;
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -179,7 +194,7 @@
     margin-bottom: 30px;
 }
 .resume-item .year {
-    font-family: 'Courier New', monospace;
+    font-family: 'Archivo Black', monospace;
     font-size: 0.9rem;
     color: #666;
 }
@@ -271,9 +286,13 @@ footer {
 
 /* --- project-header on white background --- */
 .about-page .project-header h1 {
-    font-size: 1.4rem;
-    margin: 0;
+    font-size: 1.7rem;
+    margin: -5px 0 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+.about-page .project-header .header-logo {
+    filter: invert(1);
+    mix-blend-mode: normal;
 }
