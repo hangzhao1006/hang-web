@@ -64,24 +64,23 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <div class="mobile-nav-overlay"></div>
     <nav class="mobile-nav-menu">
         <a href="/">Selected Works</a>
-        <a href="about.php">About</a>
-        <a href="contact.php">Contact</a>
-        <a href="admin.php">Admin</a>
+        <a href="/about.php">About</a>
+        <a href="/contact.php">Contact</a>
+        <a href="/skillset.php">Skillset</a>
+        <a href="/admin.php">Admin</a>
     </nav>
 
     <header class="project-header is-dark">
-        <!-- h1：和 index.php 一模一样 -->
         <h1>
             <img src="/logo.svg" alt="Hang Zhao Logo" class="header-logo">
             <span><?= htmlspecialchars($config['site_name']) ?></span>
         </h1>
-
-        <!-- nav：project 自己的链接 & 样式 -->
         <nav class="nav">
             <a href="/">Selected Works</a>
-            <a href="about.php">About</a>
-            <a href="contact.php">Contact</a>
-            <a href="admin.php">Admin</a>
+            <a href="/about.php">About</a>
+            <a href="/contact.php">Contact</a>
+            <a href="/skillset.php">Skillset</a>
+            <a href="/admin.php">Admin</a>
         </nav>
     </header>
 
