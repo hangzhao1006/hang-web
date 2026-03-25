@@ -30,6 +30,27 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/fonts/Libre_Baskerville/LibreBaskerville-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/fonts/Libre_Baskerville/LibreBaskerville-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+@font-face {
+    font-family: 'Libre Baskerville';
+    src: url('/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html,
 body {
     margin: 0;
@@ -792,7 +813,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 }
 
 .lead-text p {
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Libre Baskerville', serif;
     font-size: 1.1rem;
     line-height: 1.6;
     font-weight: 400;
@@ -802,7 +823,9 @@ body:has(.hero-style-professional) .project-header .header-logo {
 
 .content-markdown,
 .content-markdown p,
-.content-markdown li,
+.content-markdown li {
+    font-family: 'Libre Baskerville', serif;
+}
 .content-markdown h1,
 .content-markdown h2,
 .content-markdown h3,
@@ -838,7 +861,7 @@ body:has(.hero-style-professional) .project-header .header-logo {
 .row-content li {
     font-size: 1.10rem;
     color: #555555;
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: 'Libre Baskerville', serif;
     margin-bottom: 8px;
     display: list-item;
 }
@@ -903,11 +926,11 @@ body:has(.hero-style-professional) .project-header .header-logo {
 }
 
 figcaption {
+    font-family: 'Quicksand', sans-serif;
     margin-top: 15px;
     font-size: 0.85rem;
     color: #777;
     text-align: center;
-    font-family: monospace;
 }
 
 /* ================================
@@ -971,6 +994,7 @@ figcaption {
 }
 
 .slide-caption {
+    font-family: 'Quicksand', sans-serif;
     margin-top: 15px;
     text-align: center;
     font-family: monospace;
@@ -1012,6 +1036,7 @@ figcaption {
 }
 
 .slide-counter {
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.9rem;
     letter-spacing: 2px;
 }
@@ -1406,6 +1431,7 @@ figcaption {
 }
 
 .grid-cell-item figcaption {
+    font-family: 'Quicksand', sans-serif;
     position: absolute;
     bottom: 0;
     left: 0;
