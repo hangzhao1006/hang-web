@@ -114,3 +114,18 @@ fly logs
 fly ssh console
 sqlite3 /opt/render/project/src/public/uploads/portfolio.sqlite "SELECT count(*) FROM projects;"
 ```
+
+
+## 备份数据库到 GitHub
+
+在 admin 后台改完内容后，本地终端跑：
+
+```bash
+./backup.sh
+```
+
+会自动从 Fly 下载最新数据库并提交到 GitHub。首次使用需要先赋权：
+
+```bash
+chmod +x backup.sh
+```

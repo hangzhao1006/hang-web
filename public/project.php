@@ -42,6 +42,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <meta charset="utf-8">
     <title><?= h($project['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <link rel="stylesheet" href="css/test.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/project.css?v=<?= time() ?>">
 

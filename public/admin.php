@@ -161,6 +161,7 @@ $projects = $is_logged_in ? get_projects(false) : [];
   <meta charset="utf-8">
   <title>Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
   <link rel="stylesheet" href="css/admin.css?v=<?= time() ?>">
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">

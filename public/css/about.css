@@ -268,3 +268,12 @@ footer {
         gap: 5px;
     }
 }
+
+/* --- project-header on white background --- */
+.about-page .project-header h1 {
+    font-size: 1.4rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

@@ -9,10 +9,11 @@ $config = require __DIR__ . '/../src/config.php';
     <meta charset="utf-8">
     <title>Contact — <?= htmlspecialchars($config['site_name']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="/css/test.css?v=<?= time() ?>"> <!-- 基础重置 -->
-    <link rel="stylesheet" href="/css/contact.css?v=<?= time() ?>"> <!-- 专属样式 -->
+    <link rel="stylesheet" href="/css/test.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/contact.css?v=<?= time() ?>">
 </head>
 
 <body class="contact-page">
@@ -23,12 +24,31 @@ $config = require __DIR__ . '/../src/config.php';
         <div class="cursor-reflection"></div>
     </div>
 
-    <!-- 2. 悬浮返回 -->
-    <nav class="fixed-nav">
-        <a href="/" class="back-link">
-            <span class="icon">←</span> <span class="text">Home</span>
-        </a>
+    <!-- Mobile Navigation -->
+    <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav-menu">
+        <a href="/">Selected Works</a>
+        <a href="/about.php">About</a>
+        <a href="/contact.php">Contact</a>
+        <a href="/admin.php">Admin</a>
     </nav>
+
+    <!-- Header -->
+    <header class="project-header on-light">
+        <h1>
+            <img src="/logo.svg" alt="Hang Zhao Logo" class="header-logo">
+            <span><?= htmlspecialchars($config['site_name']) ?></span>
+        </h1>
+        <nav class="nav">
+            <a href="/">Selected Works</a>
+            <a href="/about.php">About</a>
+            <a href="/contact.php">Contact</a>
+            <a href="/admin.php">Admin</a>
+        </nav>
+    </header>
 
     <main class="contact-container">
         
