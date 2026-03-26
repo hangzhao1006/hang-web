@@ -650,6 +650,10 @@ footer {
   display: none;
 }
 
+.skillset-title{
+  font-family: 'Archivo Black', sans-serif;
+  font-weight: 900;
+}
 @media (max-width: 1024px) {
   .glass-grid {
     grid-template-columns: repeat(2, 1fr);

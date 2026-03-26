@@ -249,91 +249,95 @@ const SELF_ATT=[
   ["x19","x20",0.75],["t-mlalgo","t-physml",0.9],["t-mlalgo","t-media",0.7],
 ];
 
-// ═══ EDGES ═══
+// ═══ EDGES ═══  [from, to, weight(0-1)]
 const E=[];
 let _s=42;function sr(){_s=((_s*1103515245+12345)&0x7fffffff);return _s/0x7fffffff}
 
-// S0→S1 same modality, time-forward
+// S0→S1 same modality, time-forward (weak — foundational)
 N.filter(n=>n.st===0).forEach(t=>{
   const tg=N.filter(e=>e.st===1&&(e.mod===t.mod||e.mod.includes(t.mod))&&e.tOrd>=t.tOrd);
-  [...tg].sort(()=>sr()-0.5).slice(0,Math.min(2,tg.length)).forEach(e=>E.push([t.id,e.id]));
+  [...tg].sort(()=>sr()-0.5).slice(0,Math.min(2,tg.length)).forEach(e=>E.push([t.id,e.id,0.2]));
 });
 // S1→repr
 N.filter(n=>n.st===1).forEach(e=>{
-  if(e.mod==="A"||e.mod==="AB")E.push([e.id,"hA"]);
-  if(e.mod==="B"||e.mod==="AB")E.push([e.id,"hB"]);
-  if(e.mod==="C")E.push([e.id,"hC"]);
+  if(e.mod==="A"||e.mod==="AB")E.push([e.id,"hA",0.4]);
+  if(e.mod==="B"||e.mod==="AB")E.push([e.id,"hB",0.4]);
+  if(e.mod==="C")E.push([e.id,"hC",0.4]);
 });
-// repr→cotrm
-E.push(["hA","st-coAB"],["hB","st-coAB"],["hB","st-coBC"],["hC","st-coBC"],["hA","st-coAC"],["hC","st-coAC"]);
-// cotrm→S3
-N.filter(n=>n.st===3&&n.mod==="AB").forEach(n=>E.push(["st-coAB",n.id]));
-N.filter(n=>n.st===3&&n.mod==="BC").forEach(n=>E.push(["st-coBC",n.id]));
-N.filter(n=>n.st===3&&n.mod==="AC").forEach(n=>E.push(["st-coAC",n.id]));
-// S3→concat
-N.filter(n=>n.st===3).forEach(n=>E.push([n.id,"st-cat"]));
-// concat→trm struct
-E.push(["st-cat","st-sa"],["st-sa","st-ffn"],["st-ffn","st-an"]);
-// concat→S4 courses
-N.filter(n=>n.st===4&&!n.type).forEach(n=>{E.push(["st-cat",n.id]);E.push([n.id,"st-an"])});
-// Skip connections
-E.push(["hA","st-an"],["hC","st-an"],["st-cat","st-an"]);
-// addnorm→late outputs
-N.filter(n=>n.st===5&&(n.yr||0)>=2025).forEach(n=>E.push(["st-an",n.id]));
-// Early outputs branch from nearby same-stage courses
+// repr→cotrm (structural, strong)
+E.push(["hA","st-coAB",0.7],["hB","st-coAB",0.7],["hB","st-coBC",0.7],["hC","st-coBC",0.7],["hA","st-coAC",0.7],["hC","st-coAC",0.7]);
+// cotrm→S3 (medium-strong)
+N.filter(n=>n.st===3&&n.mod==="AB").forEach(n=>E.push(["st-coAB",n.id,0.5]));
+N.filter(n=>n.st===3&&n.mod==="BC").forEach(n=>E.push(["st-coBC",n.id,0.5]));
+N.filter(n=>n.st===3&&n.mod==="AC").forEach(n=>E.push(["st-coAC",n.id,0.5]));
+// S3→concat (medium)
+N.filter(n=>n.st===3).forEach(n=>E.push([n.id,"st-cat",0.4]));
+// concat→trm struct (strong — backbone)
+E.push(["st-cat","st-sa",0.8],["st-sa","st-ffn",0.8],["st-ffn","st-an",0.8]);
+// concat→S4 courses (strong — key fusion)
+N.filter(n=>n.st===4&&!n.type).forEach(n=>{E.push(["st-cat",n.id,0.7]);E.push([n.id,"st-an",0.7])});
+// Skip connections (medium — residual)
+E.push(["hA","st-an",0.5],["hC","st-an",0.5],["st-cat","st-an",0.6]);
+// addnorm→late outputs (strong — direct output)
+N.filter(n=>n.st===5&&(n.yr||0)>=2025).forEach(n=>E.push(["st-an",n.id,0.8]));
+// Early outputs branch from nearby same-stage courses (medium)
 N.filter(n=>n.st===5&&(n.yr||0)<2025).forEach(o=>{
   const srcSt=o.srcStage;
   const near=N.filter(n=>n.st===srcSt&&!n.type&&[...o.mod].some(m=>n.mod.includes(m)));
-  near.sort((a,b)=>Math.abs(a.tOrd-o.tOrd)-Math.abs(b.tOrd-o.tOrd)).slice(0,3).forEach(n=>E.push([n.id,o.id]));
+  near.sort((a,b)=>Math.abs(a.tOrd-o.tOrd)-Math.abs(b.tOrd-o.tOrd)).slice(0,3).forEach(n=>E.push([n.id,o.id,0.5]));
 });
 // Mid outputs (2025, srcStage 3) branch from S3
 N.filter(n=>n.st===5&&(n.yr||0)===2025&&n.srcStage===3).forEach(o=>{
   const near=N.filter(n=>n.st===3&&[...o.mod].some(m=>n.mod.includes(m)));
-  near.sort((a,b)=>Math.abs(a.tOrd-o.tOrd)-Math.abs(b.tOrd-o.tOrd)).slice(0,2).forEach(n=>E.push([n.id,o.id]));
+  near.sort((a,b)=>Math.abs(a.tOrd-o.tOrd)-Math.abs(b.tOrd-o.tOrd)).slice(0,2).forEach(n=>E.push([n.id,o.id,0.6]));
 });
-// S5/S4/S3/S1 → S6: manually mapped by semantic relevance
+// S5/S4/S3/S1 → S6: manually mapped by semantic relevance [from, to, weight]
 // s00 Multimodal AI ← fusion courses + multimodal projects
-E.push(["t-mlalgo","s00"],["t-physml","s00"],["t-media","s00"],["o-audeate","s00"],["o-pgmoe","s00"]);
+E.push(["t-mlalgo","s00",0.9],["t-physml","s00",0.8],["t-media","s00",0.8],["o-audeate","s00",0.9],["o-pgmoe","s00",0.7]);
 // s01 ML Systems ← ML courses + ML projects
-E.push(["t-mlalgo","s01"],["x18","s01"],["o-pgmoe","s01"],["o-skin","s01"]);
+E.push(["t-mlalgo","s01",0.9],["x18","s01",0.7],["o-pgmoe","s01",0.9],["o-skin","s01",0.5]);
 // s02 Edge AI ← edge/embedded projects + mobile sensing
-E.push(["o-tuch","s02"],["e-ubiq","s02"],["x20","s02"],["t-mlalgo","s02"]);
+E.push(["o-tuch","s02",0.9],["e-ubiq","s02",0.6],["x20","s02",0.7],["t-mlalgo","s02",0.5]);
 // s03 Embedded Sensing ← sensor courses + wearable projects
-E.push(["x20","s03"],["x19","s03"],["e-ubiq","s03"],["o-audeate","s03"],["o-seren","s03"]);
+E.push(["x20","s03",0.9],["x19","s03",0.7],["e-ubiq","s03",0.6],["o-audeate","s03",0.8],["o-seren","s03",0.6]);
 // s04 Physical Comp ← smart space, interaction tech, haptic projects
-E.push(["e-smart","s04"],["e-ubiq","s04"],["e-ixt1","s04"],["e-ixt2","s04"],["o-ehoura","s04"],["o-seren","s04"]);
+E.push(["e-smart","s04",0.8],["e-ubiq","s04",0.7],["e-ixt1","s04",0.6],["e-ixt2","s04",0.7],["o-ehoura","s04",0.8],["o-seren","s04",0.7]);
 // s05 Full-Stack Proto ← web, digital prod, full-stack projects
-E.push(["x07","s05"],["e-web","s05"],["x13","s05"],["o-skin","s05"],["o-audeate","s05"]);
+E.push(["x07","s05",0.7],["e-web","s05",0.6],["x13","s05",0.8],["o-skin","s05",0.9],["o-audeate","s05",0.7]);
 // s06 Human-AI Ix ← HCI studios, blind navigation
-E.push(["x05","s06"],["x06","s06"],["x08","s06"],["o-seepal","s06"],["o-shadow","s06"]);
+E.push(["x05","s06",0.9],["x06","s06",0.8],["x08","s06",0.7],["o-seepal","s06",0.9],["o-shadow","s06",0.8]);
 // s07 Interaction Dsgn ← IxD courses + interaction projects
-E.push(["x06","s07"],["x08","s07"],["x11","s07"],["o-ehoura","s07"],["o-symbio","s07"]);
+E.push(["x06","s07",0.9],["x08","s07",0.8],["x11","s07",0.9],["o-ehoura","s07",0.7],["o-symbio","s07",0.6]);
 // s08 Tangible Interface ← smart space, haptic/sensor projects
-E.push(["e-smart","s08"],["o-seren","s08"],["o-symbio","s08"],["o-tide","s08"],["e-ixt2","s08"]);
+E.push(["e-smart","s08",0.7],["o-seren","s08",0.9],["o-symbio","s08",0.8],["o-tide","s08",0.7],["e-ixt2","s08",0.6]);
 // s09 Info Viz ← infographics, data viz courses
-E.push(["x01","s09"],["x02","s09"],["x14","s09"],["x15","s09"]);
+E.push(["x01","s09",0.9],["x02","s09",0.8],["x14","s09",0.8],["x15","s09",0.7]);
 // s10 UX Research ← usability, psych, HCI
-E.push(["e-usab","s10"],["x17","s10"],["x05","s10"],["e-dsgnpsy","s10"],["o-seepal","s10"]);
+E.push(["e-usab","s10",0.9],["x17","s10",0.8],["x05","s10",0.7],["e-dsgnpsy","s10",0.8],["o-seepal","s10",0.6]);
 // s11 Data-Driven Dsgn ← quant aesthetics, info design, data science
-E.push(["x15","s11"],["x14","s11"],["x12","s11"],["x18","s11"]);
+E.push(["x15","s11",0.9],["x14","s11",0.7],["x12","s11",0.6],["x18","s11",0.8]);
 // s12 Quant Analysis ← data science, finance courses
-E.push(["x16","s12"],["x18","s12"],["e-corpfin","s12"],["e-invest","s12"]);
+E.push(["x16","s12",0.7],["x18","s12",0.9],["e-corpfin","s12",0.6],["e-invest","s12",0.5]);
 // s13 System Thinking ← diploma, professional practice, comprehensive
-E.push(["t-diploma","s13"],["x10","s13"],["x09","s13"],["t-media","s13"]);
+E.push(["t-diploma","s13",0.9],["x10","s13",0.6],["x09","s13",0.5],["t-media","s13",0.7]);
 // s14 Wearable Proto ← wearable projects + sensor courses
-E.push(["o-audeate","s14"],["o-tuch","s14"],["x20","s14"],["e-ubiq","s14"],["o-seren","s14"]);
+E.push(["o-audeate","s14",0.9],["o-tuch","s14",0.9],["x20","s14",0.8],["e-ubiq","s14",0.6],["o-seren","s14",0.7]);
 // s15 Research→Proto ← thesis + research projects
-E.push(["t-diploma","s15"],["o-pgmoe","s15"],["o-audeate","s15"],["x13","s15"]);
+E.push(["t-diploma","s15",0.8],["o-pgmoe","s15",0.9],["o-audeate","s15",0.9],["x13","s15",0.6]);
 // s16 Creative Coding ← web dev, dynamic infographics, creative projects
-E.push(["x07","s16"],["e-web","s16"],["x01","s16"],["o-tide","s16"]);
+E.push(["x07","s16",0.7],["e-web","s16",0.6],["x01","s16",0.8],["o-tide","s16",0.7]);
 // s17 Sensor Fusion ← mobile sensor, biomech, wearable projects
-E.push(["x20","s17"],["x19","s17"],["o-audeate","s17"],["o-tuch","s17"],["e-ubiq","s17"]);
-// Long skips
+E.push(["x20","s17",0.9],["x19","s17",0.8],["o-audeate","s17",0.9],["o-tuch","s17",0.7],["e-ubiq","s17",0.6]);
+// Long skips (medium — cross-layer)
 ["e-ubiq","e-ixt2","e-prosem","e-cpp"].forEach(id=>{
-  N.filter(n=>n.st===4&&!n.type).forEach(t=>E.push([id,t.id]));
+  N.filter(n=>n.st===4&&!n.type).forEach(t=>E.push([id,t.id,0.4]));
 });
 
 const skipSet=new Set(["hA→st-an","hC→st-an","st-cat→st-an",...["e-ubiq","e-ixt2","e-prosem","e-cpp"].flatMap(id=>N.filter(n=>n.st===4&&!n.type).map(t=>id+"→"+t.id))]);
+
+// Build edge weight map
+const eW={};
+E.forEach(([a,b,w])=>{eW[a+"→"+b]=w||0.3});
 
 function trace(id){
   const fw={},bw={};
@@ -355,14 +359,28 @@ function NNSelfAttn(){
   const pts=useRef([]);const raf=useRef(null);const td=useRef({ns:new Set(),es:new Set(),saN:{}});const amb=useRef(null);const tm=useRef(0);
   const dpr=typeof window!=='undefined'?(window.devicePixelRatio||1)*2:2;
 
-  const spawn=useCallback(ed=>{const r=[];ed.forEach(e=>{const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];if(f&&t&&f.x&&t.x)for(let i=0;i<2;i++)r.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:Math.random()*0.3,sp:0.002+Math.random()*0.003,sz:0.3+Math.random()*0.9,al:true})});pts.current=r},[]);
+  const spawn=useCallback((ed,ns)=>{const r=[];
+    // Flow edge particles
+    ed.forEach(e=>{const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];const w=eW[e]||0.3;if(f&&t&&f.x&&t.x){const cnt=Math.ceil(w*6);for(let i=0;i<cnt;i++)r.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:Math.random()*0.4,sp:0.002+w*0.004+Math.random()*0.003,sz:0.2+w*0.6+Math.random()*0.3,w,al:true})}});
+    // SA arc particles for traced nodes
+    if(ns)SELF_ATT.forEach(([a,b,w])=>{
+      if(!ns.has(a)&&!ns.has(b))return;
+      const na=nMap[a],nb=nMap[b];if(!na||!nb||!na.x||!nb.x)return;
+      const sameX=Math.abs(na.x-nb.x)<30;
+      let cx,cy;
+      if(sameX){cx=na.x+12+w*8;cy=(na.y+nb.y)/2}
+      else{cx=(na.x+nb.x)/2;cy=Math.min(na.y,nb.y)-4-w*3}
+      const cnt=Math.ceil(w*4);
+      for(let i=0;i<cnt;i++)r.push({fx:na.x+(sameX?3:0),fy:na.y,tx:nb.x+(sameX?3:0),ty:nb.y,cx,cy,t:Math.random()*0.5,sp:0.003+w*0.004+Math.random()*0.003,sz:0.25+w*0.55+Math.random()*0.25,w,al:true});
+    });
+    pts.current=r},[]);
   const hit=useCallback((mx,my)=>{for(const n of N){if(!n.x)return null;const dx=mx-n.x,dy=my-n.y;const r=n.type==="struct"?22:n.type==="repr"?16:n.st===0?5:n.st===6?16:n.st===5?13:11;if(dx*dx+dy*dy<(r+5)*(r+5))return n}return null},[]);
-  const oc=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));if(n&&n.id!==act){setAct(n.id);const d=trace(n.id);td.current=d;spawn(d.es)}else{setAct(null);td.current={ns:new Set(),es:new Set(),saN:{}};pts.current=[]}},[act,spawn,hit]);
+  const oc=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));if(n&&n.id!==act){setAct(n.id);const d=trace(n.id);td.current=d;spawn(d.es,d.ns)}else{setAct(null);td.current={ns:new Set(),es:new Set(),saN:{}};pts.current=[]}},[act,spawn,hit]);
   const om=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));setHov(n?n.id:null);setTip(n?{x:e.clientX-r.left+12,y:e.clientY-r.top-30,n}:null);cvs.current.style.cursor=n?'pointer':'default'},[hit]);
 
   useEffect(()=>{
     const c=cvs.current,ctx=c.getContext("2d");c.width=CW*dpr;c.height=CH*dpr;ctx.scale(dpr,dpr);
-    if(!amb.current){amb.current=[];for(let i=0;i<150;i++)amb.current.push({x:Math.random()*CW,y:Math.random()*CH,vx:(Math.random()-0.5)*0.04,vy:(Math.random()-0.5)*0.02,sz:Math.random()*0.7,al:0.03+Math.random()*0.1})}
+    if(!amb.current){amb.current=[];for(let i=0;i<300;i++)amb.current.push({x:Math.random()*CW,y:Math.random()*CH,vx:(Math.random()-0.5)*0.02,vy:(Math.random()-0.5)*0.01,sz:Math.random()*0.4,al:0.02+Math.random()*0.06})}
     function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 
     function draw(){
@@ -417,36 +435,72 @@ function NNSelfAttn(){
         const cc=MC[na.mod]||MC.A;
         const sameX=Math.abs(na.x-nb.x)<30;
         ctx.beginPath();
-        if(sameX){ctx.moveTo(na.x+4,na.y);ctx.quadraticCurveTo(na.x+18+w*12,(na.y+nb.y)/2,nb.x+4,nb.y)}
-        else{const my=Math.min(na.y,nb.y)-6-w*5;ctx.moveTo(na.x,na.y);ctx.quadraticCurveTo((na.x+nb.x)/2,my,nb.x,nb.y)}
-        if(dim){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},0.003)`;ctx.lineWidth=0.04}
-        else if(both){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.2+w*0.45})`;ctx.lineWidth=0.5+w*2}
-        else if(one){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.04+w*0.1})`;ctx.lineWidth=0.15+w*0.5}
-        else{ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.04+w*0.08})`;ctx.lineWidth=0.2+w*0.5}
+        if(sameX){ctx.moveTo(na.x+3,na.y);ctx.quadraticCurveTo(na.x+12+w*8,(na.y+nb.y)/2,nb.x+3,nb.y)}
+        else{const my=Math.min(na.y,nb.y)-4-w*3;ctx.moveTo(na.x,na.y);ctx.quadraticCurveTo((na.x+nb.x)/2,my,nb.x,nb.y)}
+        if(dim){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},0.002)`;ctx.lineWidth=0.02}
+        else if(both){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.15+w*0.35})`;ctx.lineWidth=0.3+w*1}
+        else if(one){ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.03+w*0.08})`;ctx.lineWidth=0.1+w*0.3}
+        else{ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.02+w*0.04})`;ctx.lineWidth=0.08+w*0.2}
         ctx.stroke();
       });
 
       // ═══ FLOW EDGES ═══
-      E.forEach(([a,b])=>{
+      E.forEach(([a,b,ew])=>{
         const f=nMap[a],t=nMap[b];if(!f||!t||!f.x||!t.x)return;
         const ek=a+"→"+b;const ia=aE.has(ek);const sk=skipSet.has(ek);const cc=MC[f.mod]||MC.T;
-        const isToProj=t.st===5;
+        const isToProj=t.st===5;const w=ew||0.3;
         ctx.beginPath();
         if(sk){ctx.moveTo(f.x,f.y);ctx.quadraticCurveTo((f.x+t.x)/2,f.y<350?30:CH-30,t.x,t.y);ctx.setLineDash([3,3])}
         else if(isToProj){
-          // Branch UP to project row
           ctx.moveTo(f.x,f.y);ctx.bezierCurveTo(f.x,f.y-30,t.x,t.y+30,t.x,t.y);ctx.setLineDash([2,2]);
         }
         else{const dx=t.x-f.x;ctx.moveTo(f.x,f.y);ctx.bezierCurveTo(f.x+dx*0.35,f.y,t.x-dx*0.35,t.y,t.x,t.y);ctx.setLineDash([])}
-        if(ha){ctx.strokeStyle=ia?`rgba(${cc.r},${cc.g},${cc.b},${sk?0.4:isToProj?0.25:0.15})`:"rgba(255,255,255,0.003)";ctx.lineWidth=ia?(sk?0.8:isToProj?0.5:0.35):0.04}
-        else{ctx.strokeStyle=sk?"rgba(210,190,140,0.1)":isToProj?"rgba(215,195,140,0.08)":"rgba(255,255,255,0.04)";ctx.lineWidth=sk?0.6:0.3}
+        if(ha){ctx.strokeStyle=ia?`rgba(${cc.r},${cc.g},${cc.b},${w*0.35})`:"rgba(255,255,255,0.002)";ctx.lineWidth=ia?(0.1+w*0.4):0.02}
+        else{ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${w*0.05})`;ctx.lineWidth=0.05+w*0.2}
         ctx.stroke();ctx.setLineDash([]);
       });
 
-      // Particles
-      pts.current.forEach(p=>{p.t+=p.sp;if(p.t>=1){p.al=false;return}const t=p.t,mt=1-t,dx=p.tx-p.fx;const c1=p.fx+dx*0.35,c2=p.tx-dx*0.35;const px=mt*mt*mt*p.fx+3*mt*mt*t*c1+3*mt*t*t*c2+t*t*t*p.tx;const py=mt*mt*mt*p.fy+3*mt*mt*t*p.fy+3*mt*t*t*p.ty+t*t*t*p.ty;const al=Math.sin(t*Math.PI);ctx.beginPath();ctx.arc(px,py,p.sz+1.5,0,Math.PI*2);ctx.fillStyle=`rgba(210,195,130,${al*0.07})`;ctx.fill();ctx.beginPath();ctx.arc(px,py,p.sz,0,Math.PI*2);ctx.fillStyle=`rgba(240,225,165,${al*0.75})`;ctx.fill()});
+      // Particles — density, size, brightness all scale with weight
+      // Supports both bezier (flow edges) and quadratic (SA arcs) curves
+      pts.current.forEach(p=>{p.t+=p.sp;if(p.t>=1){p.al=false;return}const t=p.t,mt=1-t;
+        let px,py;
+        if(p.cx!==undefined){
+          // Quadratic curve: P = (1-t)²·P0 + 2(1-t)t·C + t²·P1
+          px=mt*mt*p.fx+2*mt*t*p.cx+t*t*p.tx;
+          py=mt*mt*p.fy+2*mt*t*p.cy+t*t*p.ty;
+        }else{
+          // Cubic bezier
+          const dx=p.tx-p.fx;const c1=p.fx+dx*0.35,c2=p.tx-dx*0.35;
+          px=mt*mt*mt*p.fx+3*mt*mt*t*c1+3*mt*t*t*c2+t*t*t*p.tx;
+          py=mt*mt*mt*p.fy+3*mt*mt*t*p.fy+3*mt*t*t*p.ty+t*t*t*p.ty;
+        }
+        const al=Math.sin(t*Math.PI);ctx.beginPath();ctx.arc(px,py,p.sz,0,Math.PI*2);
+        const bri=p.w||0.3;const r=Math.round(200+bri*55),g=Math.round(190+bri*55),b2=Math.round(140+bri*115);
+        ctx.fillStyle=`rgba(${r},${g},${b2},${al*(0.4+bri*0.5)})`;ctx.fill()});
       pts.current=pts.current.filter(p=>p.al);
-      if(ha&&pts.current.length<50){aE.forEach(e=>{if(Math.random()<0.03){const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];if(f&&t&&f.x&&t.x)pts.current.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:0,sp:0.002+Math.random()*0.003,sz:0.3+Math.random()*0.8,al:true})}})}
+      if(ha&&pts.current.length<400){
+        // Flow edge particles
+        aE.forEach(e=>{
+          const w=eW[e]||0.3;
+          if(Math.random()<w*0.12){
+            const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];
+            if(f&&t&&f.x&&t.x)pts.current.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:Math.random()*0.2,sp:0.002+w*0.005+Math.random()*0.003,sz:0.2+w*0.6+Math.random()*0.3,w,al:true})
+          }
+        });
+        // SA arc particles — along the quadratic curves
+        SELF_ATT.forEach(([a,b,w])=>{
+          const na=nMap[a],nb=nMap[b];if(!na||!nb||!na.x||!nb.x)return;
+          const aIn=aN.has(a)||a===act;const bIn=aN.has(b)||b===act;
+          if(!(aIn||bIn))return;
+          if(Math.random()<w*0.15){
+            const sameX=Math.abs(na.x-nb.x)<30;
+            let cx,cy;
+            if(sameX){cx=na.x+12+w*8;cy=(na.y+nb.y)/2}
+            else{cx=(na.x+nb.x)/2;cy=Math.min(na.y,nb.y)-4-w*3}
+            pts.current.push({fx:na.x+(sameX?3:0),fy:na.y,tx:nb.x+(sameX?3:0),ty:nb.y,cx,cy,t:Math.random()*0.2,sp:0.003+w*0.004+Math.random()*0.003,sz:0.25+w*0.55+Math.random()*0.25,w,al:true})
+          }
+        });
+      }
 
       // ═══ NODES ═══
       N.forEach(n=>{
@@ -469,9 +523,9 @@ function NNSelfAttn(){
           ctx.font="600 6px 'SF Mono',monospace";ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.06:0.6})`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(n.l,n.x,n.y);
           if(n.id==="st-an"){ctx.font="600 10px monospace";ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},0.2)`;ctx.fillText("+",n.x+tw/2+8,n.y)}
         }else if(n.st===0){
-          ctx.beginPath();ctx.arc(n.x,n.y,3.5,0,Math.PI*2);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${fa*1.5})`;ctx.fill();
-          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.06:0.5})`;ctx.lineWidth=0.3;ctx.stroke();
-          if(sa){ctx.strokeStyle=`rgba(${sa.r},${sa.g},${sa.b},0.4)`;ctx.lineWidth=0.5;ctx.stroke()}
+          ctx.beginPath();ctx.arc(n.x,n.y,2.5,0,Math.PI*2);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${fa*1.3})`;ctx.fill();
+          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.04:0.35})`;ctx.lineWidth=0.2;ctx.stroke();
+          if(sa){ctx.strokeStyle=`rgba(${sa.r},${sa.g},${sa.b},0.3)`;ctx.lineWidth=0.3;ctx.stroke()}
         }else if(n.st===1){
           rr(n.x-26,n.y-7,52,14,2);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${fa*0.8})`;ctx.fill();
           ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.05:0.35})`;ctx.lineWidth=0.35;ctx.stroke();
@@ -500,7 +554,7 @@ function NNSelfAttn(){
           ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.04:0.15})`;ctx.lineWidth=0.3;ctx.stroke();
           ctx.font="500 5px 'SF Mono',monospace";ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.05:0.5})`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(n.l,n.x,n.y);
         }
-        if((ia||ih)&&!dim){ctx.beginPath();ctx.arc(n.x,n.y,16,0,Math.PI*2);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},0.06)`;ctx.fill()}
+        if((ia||ih)&&!dim){ctx.beginPath();ctx.arc(n.x,n.y,10,0,Math.PI*2);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},0.04)`;ctx.fill()}
         ctx.globalAlpha=1;
       });
 

@@ -11,8 +11,8 @@ $config = require __DIR__ . '/../src/config.php';
   <link rel="icon" type="image/svg+xml" href="/logo.svg">
   <link rel="stylesheet" href="/css/test.css?v=<?= time() ?>">
   <style>
-    body { background: #090909; color: #fff; margin: 0; }
-    .skillset-page { background: #090909; min-height: 100vh; }
+    body { background: #000000; color: #fff; margin: 0; }
+    .skillset-page { background: #0b0b0b; min-height: 100vh; }
     .skillset-container {
       width: 90%;
       margin: 0 auto;
@@ -20,11 +20,11 @@ $config = require __DIR__ . '/../src/config.php';
       box-sizing: border-box;
     }
     .skillset-title {
-      font-family: 'Intrepid', sans-serif;
-      font-size: 0.8rem;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.9);
       margin-bottom: 30px;
       padding: 0 40px;
     }
@@ -80,7 +80,7 @@ $config = require __DIR__ . '/../src/config.php';
     // inline render after Babel compiles this block
     const { useState, useRef, useEffect, useCallback } = React;
   </script>
-  <script type="text/babel" src="/script/nn_final3.jsx" data-plugins="transform-react-jsx"></script>
+  <script type="text/babel" src="/script/new.jsx" data-plugins="transform-react-jsx"></script>
   <script type="text/babel">
     ReactDOM.createRoot(document.getElementById('react-root')).render(
       React.createElement(window.NNSelfAttn)
