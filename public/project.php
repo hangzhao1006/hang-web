@@ -65,7 +65,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <nav class="mobile-nav-menu">
         <a href="/">Selected Works</a>
         <a href="/about.php">About</a>
-        <a href="/skillset.php">Skillset</a>
+    <!-- <a href="/skillset.php">Skillset</a> -->
         <a href="/contact.php">Contact</a>
         <a href="/admin.php">Admin</a>
     </nav>
@@ -78,8 +78,8 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
         <nav class="nav">
             <a href="/">Selected Works</a>
             <a href="/about.php">About</a>
-            <a href="/contact.php">Contact</a>
             <a href="/skillset.php">Skillset</a>
+            <a href="/contact.php">Contact</a>
             <a href="/admin.php">Admin</a>
         </nav>
     </header>

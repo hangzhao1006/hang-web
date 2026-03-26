@@ -19,14 +19,36 @@ $config = require __DIR__ . '/../src/config.php';
       padding: 100px 0 60px;
       box-sizing: border-box;
     }
+    .skillset-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 0 40px;
+    }
     .skillset-title {
       font-family: 'Archivo Black', sans-serif;
       font-size: 1rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: rgba(255,255,255,0.9);
-      margin-bottom: 30px;
-      padding: 0 40px;
+      margin: 0;
+    }
+    .theme-toggle-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 5px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'SF Mono', monospace;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .theme-toggle-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
     }
     #react-root { width: 100%; }
   </style>
@@ -46,7 +68,7 @@ $config = require __DIR__ . '/../src/config.php';
   <nav class="mobile-nav-menu">
     <a href="/">Selected Works</a>
     <a href="/about.php">About</a>
-    <a href="/skillset.php">Skillset</a>
+    <!-- <a href="/skillset.php">Skillset</a> -->
     <a href="/contact.php">Contact</a>
     <a href="/admin.php">Admin</a>
   </nav>
@@ -59,14 +81,17 @@ $config = require __DIR__ . '/../src/config.php';
     <nav class="nav">
       <a href="/">Selected Works</a>
       <a href="/about.php">About</a>
-      <a href="/contact.php">Contact</a>
       <a href="/skillset.php">Skillset</a>
+      <a href="/contact.php">Contact</a>
       <a href="/admin.php">Admin</a>
     </nav>
   </header>
 
   <div class="skillset-container">
-    <div class="skillset-title">Curriculum Architecture · Multimodal Transformer</div>
+    <div class="skillset-title-row">
+      <div class="skillset-title">Curriculum Architecture · Multimodal Transformer</div>
+      <button class="theme-toggle-btn" onclick="window._toggleSkillsetTheme&&window._toggleSkillsetTheme()" id="theme-btn">☽ Dark</button>
+    </div>
     <div id="react-root"></div>
   </div>
 
@@ -80,7 +105,7 @@ $config = require __DIR__ . '/../src/config.php';
     // inline render after Babel compiles this block
     const { useState, useRef, useEffect, useCallback } = React;
   </script>
-  <script type="text/babel" src="/script/new.jsx" data-plugins="transform-react-jsx"></script>
+  <script type="text/babel" src="/script/new2.jsx" data-plugins="transform-react-jsx"></script>
   <script type="text/babel">
     ReactDOM.createRoot(document.getElementById('react-root')).render(
       React.createElement(window.NNSelfAttn)
