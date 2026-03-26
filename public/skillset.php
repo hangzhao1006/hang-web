@@ -46,8 +46,8 @@ $config = require __DIR__ . '/../src/config.php';
   <nav class="mobile-nav-menu">
     <a href="/">Selected Works</a>
     <a href="/about.php">About</a>
-    <a href="/contact.php">Contact</a>
     <a href="/skillset.php">Skillset</a>
+    <a href="/contact.php">Contact</a>
     <a href="/admin.php">Admin</a>
   </nav>
 

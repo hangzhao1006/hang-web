@@ -71,8 +71,8 @@ $bodyClass = 'bg-' . $bgStyle;
 
     <nav class="nav">
       <a href="/about.php">About</a>
-      <a href="/contact.php">Contact</a>
       <a href="/skillset.php">Skillset</a>
+      <a href="/contact.php">Contact</a>
       <a href="/admin.php">Admin</a>
     </nav>
 
