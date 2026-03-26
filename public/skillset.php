@@ -15,6 +15,7 @@ $config = require __DIR__ . '/../src/config.php';
     .skillset-page { background: #090909; min-height: 100vh; }
     .skillset-container {
       width: 90%;
+      margin: 0 auto;
       padding: 100px 0 60px;
       box-sizing: border-box;
     }
@@ -23,7 +24,7 @@ $config = require __DIR__ . '/../src/config.php';
       font-size: 0.8rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
       margin-bottom: 30px;
       padding: 0 40px;
     }
@@ -79,7 +80,7 @@ $config = require __DIR__ . '/../src/config.php';
     // inline render after Babel compiles this block
     const { useState, useRef, useEffect, useCallback } = React;
   </script>
-  <script type="text/babel" src="/script/nn_preview.jsx" data-plugins="transform-react-jsx"></script>
+  <script type="text/babel" src="/script/nn_final3.jsx" data-plugins="transform-react-jsx"></script>
   <script type="text/babel">
     ReactDOM.createRoot(document.getElementById('react-root')).render(
       React.createElement(window.NNSelfAttn)

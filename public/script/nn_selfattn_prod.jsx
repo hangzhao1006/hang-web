@@ -240,7 +240,7 @@ function NNSelfAttn(){
   const td=useRef({ns:new Set(),es:new Set()});
   const amb=useRef(null);
   const time=useRef(0);
-  const dpr=typeof window!=='undefined'?(window.devicePixelRatio||1):1;
+  const dpr=typeof window!=='undefined'?(window.devicePixelRatio||1)*2:2;
 
   const spawn=useCallback(edges=>{const r=[];edges.forEach(e=>{const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];if(f&&t)for(let i=0;i<2;i++)r.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:Math.random()*0.3,spd:0.002+Math.random()*0.003,sz:0.3+Math.random()*1,alive:true})});parts.current=r},[]);
 

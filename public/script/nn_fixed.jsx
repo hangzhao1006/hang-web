@@ -116,14 +116,14 @@ const N=[
   {id:"t03",l:"Physics ML",x:745,y:385,st:4,mod:"ABC",sch:"MIT"},
   {id:"t04",l:"Media Tech",x:745,y:425,st:4,mod:"ABC",sch:"MIT"},
 
-  // S5
-  {id:"o01",l:"Audeate",x:845,y:185,st:5,mod:"ABC",sch:"Harvard"},
-  {id:"o02",l:"Tuchsure",x:845,y:245,st:5,mod:"AB",sch:"THU"},
-  {id:"o03",l:"PG-MoE",x:845,y:305,st:5,mod:"BC",sch:"Harvard"},
-  {id:"o04",l:"SerenEcho",x:845,y:365,st:5,mod:"AB",sch:"THU"},
-  {id:"o05",l:"SeePal",x:845,y:425,st:5,mod:"AB",sch:"THU"},
-  {id:"o06",l:"TideEcho",x:845,y:475,st:5,mod:"AB",sch:"THU"},
-  {id:"o07",l:"SkinMe",x:845,y:530,st:5,mod:"BC",sch:"THU"},
+  // S5 — outputs ordered chronologically (earliest at top)
+  {id:"o01",l:"SerenEcho",x:845,y:185,st:5,mod:"AB",sch:"THU",yr:2024},
+  {id:"o02",l:"SeePal",x:845,y:235,st:5,mod:"AB",sch:"THU",yr:2024},
+  {id:"o03",l:"TideEcho",x:845,y:285,st:5,mod:"AB",sch:"THU",yr:2024},
+  {id:"o04",l:"SkinMe",x:845,y:335,st:5,mod:"BC",sch:"THU",yr:2024},
+  {id:"o05",l:"Tuchsure",x:845,y:395,st:5,mod:"AB",sch:"THU",yr:2025},
+  {id:"o06",l:"PG-MoE",x:845,y:445,st:5,mod:"BC",sch:"Harvard",yr:2025},
+  {id:"o07",l:"Audeate",x:845,y:500,st:5,mod:"ABC",sch:"Harvard",yr:2026},
 
   // S6
   {id:"s01",l:"Multimodal AI",x:960,y:60,st:6,mod:"ABC"},
@@ -191,26 +191,40 @@ N.filter(n=>n.st===5).forEach(o=>{N.filter(s=>s.st===6&&[...o.mod].some(m=>s.mod
 
 const skipSet=new Set(["hA→st-an","hC→st-an","st-cat→st-an",...["e-ubiq","e-ixt2","e-prosem","e-cpp"].flatMap(id=>N.filter(n=>n.st===4&&!n.type).map(t=>id+"→"+t.id))]);
 
+// Build self-attention weight lookup
+const SA_WEIGHTS={};
+SELF_ATT.forEach(([a,b,w])=>{SA_WEIGHTS[a+"↔"+b]=w;SA_WEIGHTS[b+"↔"+a]=w});
+
+// Get self-attention weight between two nodes (0 if no connection)
+function getSAWeight(a,b){return SA_WEIGHTS[a+"↔"+b]||0}
+
 function trace(id){
   const fw={},bw={};
   E.forEach(([a,b])=>{(fw[a]||(fw[a]=[])).push(b);(bw[b]||(bw[b]=[])).push(a)});
-  SELF_ATT.forEach(([a,b])=>{(fw[a]||(fw[a]=[])).push(b);(bw[b]||(bw[b]=[])).push(a);(fw[b]||(fw[b]=[])).push(a);(bw[a]||(bw[a]=[])).push(b)});
+  // Only trace through FLOW edges, not self-attention (SA is shown separately based on weight)
   const ns=new Set(),es=new Set();
   const f=i=>{if(ns.has(i))return;ns.add(i);(fw[i]||[]).forEach(n=>{es.add(i+"→"+n);f(n)})};
   const b=i=>{if(ns.has(i))return;ns.add(i);(bw[i]||[]).forEach(n=>{es.add(n+"→"+i);b(n)})};
-  b(id);ns.delete(id);f(id);return{ns,es};
+  b(id);ns.delete(id);f(id);
+  // Also collect SA neighbors with their weights
+  const saNeighbors={};
+  SELF_ATT.forEach(([a,b,w])=>{
+    if(ns.has(a)||a===id){if(!saNeighbors[b])saNeighbors[b]=0;saNeighbors[b]=Math.max(saNeighbors[b],w)}
+    if(ns.has(b)||b===id){if(!saNeighbors[a])saNeighbors[a]=0;saNeighbors[a]=Math.max(saNeighbors[a],w)}
+  });
+  return{ns,es,saNeighbors};
 }
 
 const CW=1060,CH=600;
 
 function NNSelfAttn(){
   const cvs=useRef(null);const[act,setAct]=useState(null);const[hov,setHov]=useState(null);const[tip,setTip]=useState(null);
-  const pts=useRef([]);const raf=useRef(null);const td=useRef({ns:new Set(),es:new Set()});const amb=useRef(null);const tm=useRef(0);
+  const pts=useRef([]);const raf=useRef(null);const td=useRef({ns:new Set(),es:new Set(),saNeighbors:{}});const amb=useRef(null);const tm=useRef(0);
   const dpr=typeof window!=='undefined'?(window.devicePixelRatio||1)*2:2;
 
   const spawn=useCallback(ed=>{const r=[];ed.forEach(e=>{const[a,b]=e.split("→");const f=nMap[a],t=nMap[b];if(f&&t)for(let i=0;i<2;i++)r.push({fx:f.x,fy:f.y,tx:t.x,ty:t.y,t:Math.random()*0.3,sp:0.002+Math.random()*0.003,sz:0.4+Math.random()*1.1,a:true})});pts.current=r},[]);
   const hit=useCallback((mx,my)=>{for(const n of N){const dx=mx-n.x,dy=my-n.y;const r=n.type==="struct"?20:n.type==="repr"?15:n.st===0?6:n.st===6?14:n.st===5?11:10;if(dx*dx+dy*dy<(r+5)*(r+5))return n}return null},[]);
-  const oc=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));if(n&&n.id!==act){setAct(n.id);const d=trace(n.id);td.current=d;spawn(d.es)}else{setAct(null);td.current={ns:new Set(),es:new Set()};pts.current=[]}},[act,spawn,hit]);
+  const oc=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));if(n&&n.id!==act){setAct(n.id);const d=trace(n.id);td.current=d;spawn(d.es)}else{setAct(null);td.current={ns:new Set(),es:new Set(),saNeighbors:{}};pts.current=[]}},[act,spawn,hit]);
   const om=useCallback(e=>{const r=cvs.current.getBoundingClientRect();const n=hit((e.clientX-r.left)*(CW/r.width),(e.clientY-r.top)*(CH/r.height));setHov(n?n.id:null);setTip(n?{x:e.clientX-r.left+12,y:e.clientY-r.top-30,n}:null);cvs.current.style.cursor=n?'pointer':'default'},[hit]);
 
   useEffect(()=>{
@@ -220,7 +234,7 @@ function NNSelfAttn(){
 
     function draw(){
       tm.current+=0.016;ctx.fillStyle="#0b0b0b";ctx.fillRect(0,0,CW,CH);
-      const ha=act!==null;const{ns:aN,es:aE}=td.current;
+      const ha=act!==null;const{ns:aN,es:aE,saNeighbors}=td.current;
 
       // Grid
       ctx.fillStyle="rgba(255,255,255,0.007)";for(let x=8;x<CW;x+=18)for(let y=8;y<CH;y+=18){ctx.beginPath();ctx.arc(x,y,0.25,0,Math.PI*2);ctx.fill()}
@@ -229,12 +243,12 @@ function NNSelfAttn(){
       if(!ha)amb.current.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=CW;if(p.x>CW)p.x=0;if(p.y<0)p.y=CH;if(p.y>CH)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);ctx.fillStyle=`rgba(190,175,130,${p.al})`;ctx.fill()});
 
       // Labels
-      ctx.save();ctx.font="500 6px 'SF Mono','Menlo','Courier New',monospace";ctx.textAlign="center";
-      [{x:55,t:"Token Embed"},{x:190,t:"Unimodal Enc"},{x:320,t:"Repr h_i"},{x:395,t:"Co-TRM (Q,K,V)"},{x:475,t:"Cross-Modal"},{x:575,t:"Concat+Proj"},{x:665,t:"TRM (×N)"},{x:745,t:"Fusion"},{x:845,t:"Output"},{x:960,t:"Skill Readout"}].forEach(lb=>{ctx.fillStyle="rgba(255,255,255,0.13)";ctx.fillText(lb.t,lb.x,18)});
+      ctx.save();ctx.font="500 7px 'SF Mono','Menlo','Courier New',monospace";ctx.textAlign="center";
+      [{x:55,t:"Token Embed"},{x:190,t:"Unimodal Enc"},{x:320,t:"Repr h_i"},{x:395,t:"Co-TRM (Q,K,V)"},{x:475,t:"Cross-Modal"},{x:575,t:"Concat+Proj"},{x:665,t:"TRM (×N)"},{x:745,t:"Fusion"},{x:845,t:"Output"},{x:960,t:"Skill Readout"}].forEach(lb=>{ctx.fillStyle="rgba(255,255,255,0.35)";ctx.fillText(lb.t,lb.x,18)});
       ctx.restore();
 
       // Seps
-      ctx.strokeStyle="rgba(255,255,255,0.015)";ctx.lineWidth=0.3;
+      ctx.strokeStyle="rgba(255,255,255,0.04)";ctx.lineWidth=0.3;
       [130,260,355,435,530,615,705,790,900].forEach(x=>{ctx.beginPath();ctx.moveTo(x,25);ctx.lineTo(x,CH-10);ctx.stroke()});
 
       // Modality bands
@@ -246,18 +260,23 @@ function NNSelfAttn(){
       // ═══ SELF-ATTENTION ARCS (weight → thickness + opacity) ═══
       SELF_ATT.forEach(([a,b,w])=>{
         const na=nMap[a],nb=nMap[b];if(!na||!nb)return;
-        const both=ha&&aN.has(a)&&aN.has(b);
-        const dim=ha&&!both;
+        const aInTrace=aN.has(a)||a===act;const bInTrace=aN.has(b)||b===act;
+        const both=ha&&aInTrace&&bInTrace;
+        const oneIn=ha&&(aInTrace||bInTrace)&&!both;
+        const dim=ha&&!both&&!oneIn;
         const cc=MC[na.mod]||MC.A;
         const midX=Math.max(na.x,nb.x)+16+w*14;
         ctx.beginPath();ctx.moveTo(na.x+3,na.y);ctx.quadraticCurveTo(midX,(na.y+nb.y)/2,nb.x+3,nb.y);
         if(dim){
-          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},0.006)`;ctx.lineWidth=0.08;
+          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},0.004)`;ctx.lineWidth=0.05;
         }else if(both){
-          // Active: weight directly scales both
-          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.15+w*0.4})`;ctx.lineWidth=0.5+w*2;
+          // Both nodes in trace: full weight visualization
+          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.2+w*0.5})`;ctx.lineWidth=0.6+w*2.5;
+        }else if(oneIn){
+          // One node in trace: show as faded weight hint
+          ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.05+w*0.15})`;ctx.lineWidth=0.2+w*0.8;
         }else{
-          // Default: weight scales both (the key visual!)
+          // Default: weight scales both opacity and thickness
           ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${0.02+w*0.08})`;ctx.lineWidth=0.15+w*0.7;
         }
         ctx.stroke();
@@ -281,8 +300,13 @@ function NNSelfAttn(){
 
       // ═══ NODES ═══
       N.forEach(n=>{
-        const cc=MC[n.mod]||MC.T;const ia=ha&&(aN.has(n.id)||n.id===act);const ih=n.id===hov;const dim=ha&&!ia;
-        ctx.globalAlpha=dim?0.06:1;const fa=ih?0.8:ia?0.55:0.22;const sa=n.sch?SA_C[n.sch]:null;
+        const cc=MC[n.mod]||MC.T;const ia=ha&&(aN.has(n.id)||n.id===act);const ih=n.id===hov;
+        // Fix 1: SA neighbors get weight-based opacity instead of binary dim
+        const saW=ha?saNeighbors[n.id]||0:0;
+        const dim=ha&&!ia&&saW===0;
+        const isSANeighbor=ha&&!ia&&saW>0;
+        ctx.globalAlpha=dim?0.04:isSANeighbor?(0.15+saW*0.6):1;
+        const fa=ih?0.8:ia?0.55:isSANeighbor?(0.1+saW*0.5):0.22;const sa=n.sch?SA_C[n.sch]:null;
 
         if(n.type==="repr"){
           rr(n.x-20,n.y-7,40,14,4);ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${fa*0.9})`;ctx.fill();
@@ -321,6 +345,8 @@ function NNSelfAttn(){
           ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.04:0.35})`;ctx.lineWidth=0.35;ctx.stroke();
           if(sa){ctx.strokeStyle=`rgba(${sa.r},${sa.g},${sa.b},0.28)`;ctx.lineWidth=0.5;ctx.stroke()}
           ctx.font="500 5.5px 'SF Mono','Menlo',monospace";ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.04:0.6})`;ctx.textAlign="center";ctx.fillText(n.l,n.x,n.y+17);
+          // Year label
+          if(n.yr){ctx.font="400 4px 'SF Mono','Menlo',monospace";ctx.fillStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.02:0.25})`;ctx.fillText(n.yr,n.x,n.y+25)}
         }else if(n.st===6){
           rr(n.x-33,n.y-5,66,10,2);ctx.fillStyle="rgba(255,255,255,0.012)";ctx.fill();
           ctx.strokeStyle=`rgba(${cc.r},${cc.g},${cc.b},${dim?0.03:0.08})`;ctx.lineWidth=0.25;ctx.stroke();
