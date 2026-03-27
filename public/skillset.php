@@ -8,7 +8,7 @@ $config = require __DIR__ . '/../src/config.php';
   <meta charset="utf-8">
   <title>Skillset — <?= htmlspecialchars($config['site_name']) ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/svg+xml" href="/logo.svg">
+  <link rel="icon" type="image/svg+xml" href="/logo-white.svg">
   <link rel="stylesheet" href="/css/test.css?v=<?= time() ?>">
   <style>
     body { background: #000000; color: #fff; margin: 0; }
@@ -75,7 +75,7 @@ $config = require __DIR__ . '/../src/config.php';
 
   <header class="project-header is-dark">
     <h1>
-      <img src="/logo.svg" alt="Hang Zhao Logo" class="header-logo">
+      <img src="/logo-white.svg" alt="Hang Zhao Logo" class="header-logo">
       <span><?= htmlspecialchars($config['site_name']) ?></span>
     </h1>
     <nav class="nav">

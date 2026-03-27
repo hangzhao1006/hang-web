@@ -293,6 +293,6 @@ footer {
     gap: 10px;
 }
 .about-page .project-header .header-logo {
-    filter: invert(1);
+    filter: none;
     mix-blend-mode: normal;
 }

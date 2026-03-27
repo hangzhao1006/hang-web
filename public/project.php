@@ -42,7 +42,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <meta charset="utf-8">
     <title><?= h($project['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="icon" type="image/svg+xml" href="/logo-white.svg">
     <link rel="stylesheet" href="css/test.css?v=<?= time() ?>">
     <link rel="stylesheet" href="css/project.css?v=<?= time() ?>">
 
@@ -72,7 +72,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
     <header class="project-header is-dark">
         <h1>
-            <img src="/logo.svg" alt="Hang Zhao Logo" class="header-logo">
+            <img src="/logo-white.svg" alt="Hang Zhao Logo" class="header-logo">
             <span><?= htmlspecialchars($config['site_name']) ?></span>
         </h1>
         <nav class="nav">
@@ -457,7 +457,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
 
     <footer class="project-footer">
         <p>© <?= date(format: 'Y') ?> <?= h($config['site_name']) ?>, All Rights Reserved.</p>
-        <img src="/logo.svg" class="footer-logo">
+        <img src="/logo-white.svg" class="footer-logo">
     </footer>
     <script src="script/test.js"></script>
     <script src="script/project.js?v=<?= time() ?>"></script>

@@ -290,7 +290,7 @@ SKS.forEach((s,i)=>add("s"+String(i).padStart(2,"0"),s,"skill",6,SKM[i],null));
 
   // Skills: single column, evenly distributed
   const sk=N.filter(n=>n.st===6);
-  sk.forEach((s,i)=>{s.x=SX[6];s.y=90+i*(490)/(sk.length-1)});
+  sk.forEach((s,i)=>{s.x=SX[6];s.y=90+i*20});
 
   // ═══ PROJECTS — row just below stage labels ═══
   const projs=N.filter(n=>n.st===5);

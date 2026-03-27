@@ -654,6 +654,7 @@ footer {
   font-family: 'Archivo Black', sans-serif;
   font-weight: 900;
 }
+
 @media (max-width: 1024px) {
   .glass-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -885,6 +886,7 @@ footer {
     pointer-events: none;
     overflow: hidden;
 }
+
 .project-header::before {
     content: "";
     position: absolute;
@@ -907,7 +909,7 @@ footer {
     text-decoration: none;
 }
 .project-header h1 {
-    margin: -5px 0 15px;
+    margin: 0;
     font-family: 'Intrepid', sans-serif;
     font-size: 1.7rem;
     letter-spacing: 3px;
