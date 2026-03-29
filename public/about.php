@@ -57,7 +57,7 @@ $config = require __DIR__ . '/../src/config.php';
         <!-- 左侧：个人形象与简介 (Sticky) -->
         <aside class="about-sidebar">
             <div class="profile-visual">
-                <img src="/uploads/portrait.JPG" alt="Hang Zhao" class="avatar">
+                <img src="/uploads/self.png" alt="Hang Zhao" class="avatar">
                 <div class="caption">Designer / Technologist</div>
             </div>
 
