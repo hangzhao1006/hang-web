@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($act === 'login') {
     if (hash_equals($config['admin_password'], $_POST['password'] ?? '')) {
       $_SESSION['admin_ok'] = true;
+      admin_set_cookie();
       header('Location: admin.php');
       exit;
     }
@@ -149,7 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 if (($_GET['action'] ?? '') === 'logout') {
   session_destroy();
-  header('Location: admin.php');
+  admin_clear_cookie();
+  header('Location: /');
   exit;
 }
 $projects = $is_logged_in ? get_projects(false) : [];
@@ -184,34 +186,33 @@ $projects = $is_logged_in ? get_projects(false) : [];
   </header>
   <main class="admin-container">
     <?php if (!$is_logged_in): ?>
-      <div class="login-card">
-        <form method="post"><input type="hidden" name="action" value="login"><input type="password" name="password"
-            placeholder="Password" required autofocus><button class="btn-primary" type="submit">Login</button></form>
-      </div><?php else: ?>
+      <div class="login-screen">
+        <img src="/logo.svg" alt="Logo" class="login-logo">
+        <form method="post">
+          <input type="hidden" name="action" value="login">
+          <input type="password" name="password" placeholder="enter password" required autofocus>
+          <button type="submit">Enter</button>
+          <span class="login-hint">hangzhao.design / cms</span>
+        </form>
+      </div>
+    <?php else: ?>
       <div class="actions-bar">
-        <button class="btn-primary"
-          onclick="document.getElementById('create-form').classList.toggle('hidden')">+ New Project</button>
-
-        <button class="btn-primary" id="sort-toggle-btn" onclick="toggleSortMode()" style="background: #667eea;">
-          <span id="sort-icon">⇅</span> Sort Projects
-        </button>
-
-        <!-- 背景切換器 -->
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
-          <label style="font-size: 0.9rem; color: #666;">背景樣式：</label>
-          <select id="bg-style-selector" onchange="updateBackgroundStyle(this.value)"
-                  style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
-            <option value="full" <?= ($config['background_style'] ?? 'full') === 'full' ? 'selected' : '' ?>>全屏背景 (BG.JPG)</option>
-            <option value="compact" <?= ($config['background_style'] ?? 'full') === 'compact' ? 'selected' : '' ?>>縮短背景 (動態 JS)</option>
+        <button class="btn-primary" onclick="document.getElementById('create-form').classList.toggle('hidden')">+ New Project</button>
+        <button class="btn-outline" id="sort-toggle-btn" onclick="toggleSortMode()">⇅ Sort</button>
+        <div class="bg-switcher">
+          <span class="bg-label">BG</span>
+          <select id="bg-style-selector" onchange="updateBackgroundStyle(this.value)">
+            <option value="full" <?= ($config['background_style'] ?? 'full') === 'full' ? 'selected' : '' ?>>Static</option>
+            <option value="compact" <?= ($config['background_style'] ?? 'full') === 'compact' ? 'selected' : '' ?>>Particles</option>
           </select>
-          <span id="bg-status" style="font-size: 0.8rem; color: #28a745;"></span>
+          <span id="bg-status"></span>
         </div>
       </div>
 
       <div id="sort-hint" class="sort-hint hidden">
-        <span>🔄 拖拽項目卡片來調整順序</span>
-        <button class="btn-primary" onclick="saveSortOrder()">✓ 保存排序</button>
-        <button class="btn-text" onclick="cancelSortMode()">取消</button>
+        <span>Drag cards to reorder</span>
+        <button class="btn-primary" onclick="saveSortOrder()">Save Order</button>
+        <button class="btn-text" onclick="cancelSortMode()">Cancel</button>
       </div>
       <div id="create-form" class="editor-card hidden">
         <div class="card-body">

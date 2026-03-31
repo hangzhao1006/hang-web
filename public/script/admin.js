@@ -309,12 +309,12 @@ function renderGallery(id) {
       <div class="gallery-controls">
         <button type="button"
                 onclick="startCropGallery(${id}, ${index})"
-                style="font-size:0.75rem; padding:4px 8px;">
+                class="btn-sm">
           Crop
         </button>
         <button type="button"
                 onclick="resetGalleryToOriginal(${id}, ${index})"
-                style="font-size:0.75rem; padding:4px 8px;">
+                class="btn-sm">
           Reset
         </button>
       </div>
@@ -508,7 +508,7 @@ function renderBlocks(id) {
           <div style="margin-top:8px;">
             <button type="button"
                     onclick="startCropBlock(${id}, ${index})"
-                    style="font-size:0.75rem; padding:4px 8px;">
+                    class="btn-sm">
               Crop Image
             </button>
           </div>

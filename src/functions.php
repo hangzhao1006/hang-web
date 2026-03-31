@@ -1,6 +1,31 @@
 <?php
 require_once __DIR__ . '/db.php';
 
+// ── Admin auth helpers ──
+function admin_cookie_name(): string { return 'hzadmin'; }
+function admin_cookie_secret(): string {
+    $cfg = require __DIR__ . '/config.php';
+    return hash('sha256', $cfg['admin_password'] . 'hzsalt');
+}
+function admin_set_cookie(): void {
+    $sig = hash_hmac('sha256', 'admin', admin_cookie_secret());
+    setcookie(admin_cookie_name(), $sig, [
+        'expires'  => time() + 86400 * 30,
+        'path'     => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+function admin_clear_cookie(): void {
+    setcookie(admin_cookie_name(), '', ['expires' => time() - 3600, 'path' => '/']);
+}
+function is_admin(): bool {
+    $val = $_COOKIE[admin_cookie_name()] ?? '';
+    if (!$val) return false;
+    $expected = hash_hmac('sha256', 'admin', admin_cookie_secret());
+    return hash_equals($expected, $val);
+}
+
 function now(): string
 {
   return date('Y-m-d H:i:s');

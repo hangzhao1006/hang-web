@@ -1,7 +1,9 @@
 <?php
+
 require __DIR__ . '/../src/functions.php';
 $config = require __DIR__ . '/../src/config.php';
 ensure_schema();
+$is_admin = is_admin();
 
 $filters = [
   'tag' => $_GET['tag'] ?? null,
@@ -55,9 +57,14 @@ $bodyClass = 'bg-' . $bgStyle;
   <nav class="mobile-nav-menu">
     <a href="/">Selected Works</a>
     <a href="/about.php">About</a>
-    <!-- <a href="/skillset.php">Skillset</a> -->
+    <a href="/skillset.php">Skillset</a>
     <a href="/contact.php">Contact</a>
-    <a href="/admin.php">Admin</a>
+    <?php if ($is_admin): ?>
+      <a href="/admin.php">Edit</a>
+      <a href="/admin.php?action=logout">Logout</a>
+    <?php else: ?>
+      <a href="/admin.php">Admin</a>
+    <?php endif; ?>
   </nav>
 
   <!-- 3. 顶部固定 UI 层 -->
@@ -74,7 +81,12 @@ $bodyClass = 'bg-' . $bgStyle;
       <a href="/about.php">About</a>
       <a href="/skillset.php">Skillset</a>
       <a href="/contact.php">Contact</a>
-      <a href="/admin.php">Admin</a>
+      <?php if ($is_admin): ?>
+        <a href="/admin.php">Edit</a>
+        <a href="/admin.php?action=logout">Logout</a>
+      <?php else: ?>
+        <a href="/admin.php">Admin</a>
+      <?php endif; ?>
     </nav>
 
     <!-- Filters removed -->

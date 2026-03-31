@@ -1,7 +1,9 @@
 <?php
+
 require __DIR__ . '/../src/functions.php';
 $config = require __DIR__ . '/../src/config.php';
 ensure_schema();
+$is_admin = is_admin();
 
 $id_or_slug = $_GET['id'] ?? $_GET['slug'] ?? null;
 if (!$id_or_slug) {
@@ -43,9 +45,9 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <title><?= h($project['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="/logo-white.svg">
-    <link rel="stylesheet" href="css/test.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="css/project.css?v=<?= time() ?>">
-
+    <link rel="stylesheet" href="/css/test.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/project.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/inline-edit.css?v=<?= time() ?>">
 </head>
 
 <body class="project-page">
@@ -65,9 +67,14 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <nav class="mobile-nav-menu">
         <a href="/">Selected Works</a>
         <a href="/about.php">About</a>
-    <!-- <a href="/skillset.php">Skillset</a> -->
+        <a href="/skillset.php">Skillset</a>
         <a href="/contact.php">Contact</a>
-        <a href="/admin.php">Admin</a>
+        <?php if ($is_admin): ?>
+          <a href="/admin.php">Edit</a>
+          <a href="/admin.php?action=logout">Logout</a>
+        <?php else: ?>
+          <a href="/admin.php">Admin</a>
+        <?php endif; ?>
     </nav>
 
     <header class="project-header is-dark">
@@ -80,7 +87,12 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
             <a href="/about.php">About</a>
             <a href="/skillset.php">Skillset</a>
             <a href="/contact.php">Contact</a>
-            <a href="/admin.php">Admin</a>
+            <?php if ($is_admin): ?>
+              <a href="/admin.php">Edit</a>
+              <a href="/admin.php?action=logout">Logout</a>
+            <?php else: ?>
+              <a href="/admin.php">Admin</a>
+            <?php endif; ?>
         </nav>
     </header>
 
@@ -124,20 +136,20 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     </header>
 
     <div class="hero-content hero-content-<?= h($heroStyle) ?>">
-        <h1 class="title"><?= h($project['title']) ?></h1>
+        <h1 class="title" <?= $is_admin ? 'data-field="title"' : '' ?>><?= h($project['title']) ?></h1>
         <?php if ($sub = g('subtitle')): ?>
-            <p class="subtitle"><?= h($sub) ?></p><?php endif; ?>
+            <p class="subtitle" <?= $is_admin ? 'data-field="subtitle"' : '' ?>><?= h($sub) ?></p><?php endif; ?>
         <div class="info-hud">
             <div class="hud-item year">
                 <label>Year</label>
-                <span>
+                <span <?= $is_admin ? 'data-field="year"' : '' ?>>
                     <?= h($project['year']) ?>
                     <?php if ($month = g('month')): ?>
                         <span style="font-size: 0.85em; color: #666;"> / <?= h($month) ?></span>
                     <?php endif; ?>
                 </span>
             </div>
-            <div class="hud-item"><label>Role</label><span><?= h(g('role')) ?></span></div>
+            <div class="hud-item"><label>Role</label><span <?= $is_admin ? 'data-field="role"' : '' ?>><?= h(g('role')) ?></span></div>
             <div class="hud-item tools">
                 <label>Tools</label>
                 <span>
@@ -155,7 +167,7 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
                     ?>
                 </span>
             </div>
-            <div class="hud-item context"><label>Context</label><span><?= nl2br(h(g('client'))) ?></span></div>
+            <div class="hud-item context"><label>Context</label><span <?= $is_admin ? 'data-field="client"' : '' ?>><?= nl2br(h(g('client'))) ?></span></div>
 
             <?php
             // 动态渲染自定义 hero 字段
@@ -462,6 +474,14 @@ $heroStyle = $meta['hero_style'] ?? 'creative'; // 'creative' or 'professional'
     <script src="script/test.js"></script>
     <script src="script/project.js?v=<?= time() ?>"></script>
 
+    <?php if ($is_admin): ?>
+    <button id="edit-fab" class="edit-fab" data-project-id="<?= (int)$project['id'] ?>" title="Edit page">✏</button>
+    <div id="edit-save-bar" class="edit-save-bar">
+        <span class="save-dot"></span>
+        <span class="save-msg"></span>
+    </div>
+    <script src="/script/inline-edit.js?v=<?= time() ?>"></script>
+    <?php endif; ?>
 
 </body>
 

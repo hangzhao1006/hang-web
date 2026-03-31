@@ -1,0 +1,80 @@
+/* ── Inline Edit Mode ── */
+
+.edit-fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 10000;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.edit-fab:hover {
+    background: rgba(255,255,255,0.22);
+    color: #fff;
+}
+.edit-fab.active {
+    background: rgba(255,220,100,0.2);
+    border-color: rgba(255,220,100,0.5);
+    color: #ffd84a;
+}
+
+/* Save indicator */
+.edit-save-bar {
+    position: fixed;
+    bottom: 32px;
+    right: 90px;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(20,20,20,0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    font-family: 'SF Mono', monospace;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+}
+.edit-save-bar.visible { display: flex; }
+.edit-save-bar .save-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ffd84a;
+    animation: pulse-dot 1.2s infinite;
+}
+.edit-save-bar .save-dot.saved { background: #6fcf97; animation: none; }
+@keyframes pulse-dot {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+
+/* Editable fields */
+body.edit-mode [data-field] {
+    outline: 1px dashed rgba(255,220,100,0.3);
+    outline-offset: 3px;
+    border-radius: 2px;
+    cursor: text;
+    transition: outline 0.2s;
+}
+body.edit-mode [data-field]:hover {
+    outline: 1px solid rgba(255,220,100,0.7);
+    background: rgba(255,220,100,0.04);
+}
+body.edit-mode [data-field]:focus {
+    outline: 2px solid rgba(255,220,100,0.9);
+    background: rgba(255,220,100,0.06);
+}
+[data-field]:focus { outline: none; }
