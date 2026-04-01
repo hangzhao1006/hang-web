@@ -141,6 +141,17 @@ function slugify(string $s): string
   $s = preg_replace('/[^a-z0-9-]+/', '-', $s);
   return trim($s, '-');
 }
+
+function unique_slug(string $base): string
+{
+  $pdo = get_pdo();
+  $slug = $base;
+  $i = 2;
+  while ($pdo->query("SELECT id FROM projects WHERE slug = " . $pdo->quote($slug))->fetch()) {
+    $slug = $base . '-' . $i++;
+  }
+  return $slug;
+}
 // CRUD
 function create_project(array $data): int
 {
@@ -148,7 +159,7 @@ function create_project(array $data): int
   $stmt = $pdo->prepare("INSERT INTO projects (title, slug, description, tags, image_url, gallery_json, meta_json, url, year, month, featured, order_index, created_at, updated_at) VALUES (:title, :slug, :description, :tags, :image_url, :gallery_json, :meta_json, :url, :year, :month, :featured, :order_index, :created_at, :updated_at)");
   $stmt->execute([
     ':title' => $data['title'],
-    ':slug' => ($data['slug'] ?? '') ?: slugify($data['title']),
+    ':slug' => unique_slug(($data['slug'] ?? '') ?: slugify($data['title'])),
     ':description' => $data['description'] ?? '',
     ':tags' => $data['tags'] ?? '',
     ':image_url' => $data['image_url'] ?? '',
